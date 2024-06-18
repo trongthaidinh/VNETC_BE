@@ -48,14 +48,16 @@ io.on('connection', (socket) => {
 app.use(express.urlencoded({extended: true}));
 
 //routes
+// app.use('/',(req,res)=> {
+//   res.send('ok')
+// })
 app.use('/navigation',navigationRoute)
-// app.use('/account',accountRoute)
-app.use('/',(req,res)=> {
-  res.send('ok')
-})
+app.use('/account',accountRoute)
+
 
 //middleware error handler
 // app.use(errorHandlingMiddleWare)
+
 
 server.listen(env.PORT, () => {
   console.log(`Server running at:${ env.PORT }/`)

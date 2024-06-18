@@ -86,14 +86,14 @@ const getAllNavigations = async () => {
 }
 
 const getNavigation = async (data) => {
-    const { type } = data
+    const { childs, parentNavId } = data
 
     let result
-    if (type == NAV.PARENT) {
+    if (childs == 0) {
         result = await ParentNav.find({}, { title: 1 })
         return result
     }
-    result = await ChildNav.find({ parentNavId: data.parentNavId }, { title: 1, parentNavId: 1 })
+    result = await ChildNav.find({ parentNavId }, { title: 1, parentNavId: 1 })
     return result
 }
 

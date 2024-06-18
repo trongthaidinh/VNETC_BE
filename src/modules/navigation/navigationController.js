@@ -6,14 +6,17 @@ import { NAVIGATION as NAV } from "~/utils/appConst"
 
 const getNavigation = async (req, res, next) => {
     try {
-        const type = req.query.type
+        const data = {
+            childs: req.query.childs,
+            parentNavId: req.query.parentId
+        }
 
         if (Object.keys(req.query).length === 0) {
             const re = await navigationModel.getAllNavigations()
             res.status(200).json(re)
         }
 
-        const re = await navigationModel.getNavigation({ type, parentNavId: req.body.parentNavId })
+        const re = await navigationModel.getNavigation(data)
         res.status(200).json(re)
     } catch (error) {
         next(error)
