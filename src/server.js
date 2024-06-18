@@ -48,7 +48,7 @@ io.on('connection', (socket) => {
 app.use(express.urlencoded({extended: true}));
 
 //routes
-// app.use('/navigation',navigationRoute)
+app.use('/navigation',navigationRoute)
 // app.use('/account',accountRoute)
 app.use('/',(req,res)=> {
   res.send('ok')
