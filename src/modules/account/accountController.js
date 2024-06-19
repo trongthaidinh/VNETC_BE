@@ -4,6 +4,15 @@ const { StatusCodes } = require("http-status-codes")
 const { SuccessRes } = require("~/utils/SuccessRes")
 const { accountService } = require("./accountService")
 
+const getAllAccount = async (req, res, next) => {
+    try {
+        const accounts = await accountModel.getAllAccount()
+        res.status(StatusCodes.OK).json(SuccessRes(accounts,'Get all account successful'))
+    } catch (error) {
+        next(error)
+    }
+}
+
 const addAccount = async (req, res, next) => {
     const {accCreateId, username, fullName, email, password} = req.body
     try {
@@ -56,5 +65,6 @@ export const accountController = {
     addAccount,
     deleteAccount,
     changePassword,
-    updateAccount
+    updateAccount,
+    getAllAccount
 }

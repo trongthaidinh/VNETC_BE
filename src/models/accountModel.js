@@ -74,7 +74,7 @@ const changePassword = async (data) => {
 const updateAccount = async (data) => {
     const {accountId, username, fullName} = data
 
-    const account = await getAccountById(accountId)
+    const account = await getAccountById(accountId,{username:1,fullName:1})
     account.username = username
     account.fullName = fullName
     await account.save()
@@ -97,7 +97,7 @@ const getAccountById = async (id, projection) => {
     return account
 }
 const getAllAccount = async () => {
-    const accounts = await Account.find({email: {$ne: env.ADMIN_EMAIL}, _destroy:{$ne: true}})
+    const accounts = await Account.find({_destroy:{$ne: true}},{password:0,_destroy:0})
     return accounts
 }
 

@@ -5,11 +5,10 @@ const Router = express.Router()
 
 Router.route('/')
     .post(valid.addAccount, conntrol.addAccount)
-     .put(conntrol.changePassword)
+    .put(conntrol.changePassword)
     .delete(conntrol.deleteAccount)
-//  .get()
+    .patch(conntrol.updateAccount)
+    .get(conntrol.getAllAccount)
 
-Router.route('/:id')
-    .get()
 
 export const accountRoute = Router
