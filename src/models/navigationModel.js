@@ -9,6 +9,11 @@ const parentNavSchema = new Schema({
         type: String,
         required: true
     },
+    slug: {
+        type: String,
+        required: true,
+        unique: true
+    },
     createdBy: {
         type: String,
         required: true
@@ -51,6 +56,9 @@ const addNaigation = async (data) => {
             if (navExists) {
                 throw new Error()
             }
+
+            //xử lý trùng slug
+
             nav = new ParentNav(newData)
         } else {
             const navExists = await ChildNav.exists({ title: newData.title })
@@ -68,33 +76,30 @@ const addNaigation = async (data) => {
     return nav
 }
 
-const getAllNavigations = async () => {
+const getNavigations = async (childs) => {
     let parentNavs = await ParentNav.find({}, { title: 1 })
-    let childNavs = await ChildNav.find({}, { title: 1, parentNavId: 1 })
 
-    parentNavs.forEach((p, index) => {
-        let childs = []
-        childNavs.forEach(c => {
-            if (p._id.toString() == c.parentNavId.toString()) {
-                childs.push(c)
-            }
+    if (childs == 0) {
+        let childNavs = await ChildNav.find({}, { title: 1, parentNavId: 1 })
+        parentNavs.forEach((p, index) => {
+            let childs = []
+            childNavs.forEach(c => {
+                if (p._id.toString() == c.parentNavId.toString()) {
+                    childs.push(c)
+                }
+            });
+            parentNavs[index] = { ...parentNavs[index]._doc, childs }
         });
-        parentNavs[index] = { ...parentNavs[index]._doc, childs }
-    });
+    }
 
     return parentNavs
 }
 
-const getNavigation = async (data) => {
-    const { childs, parentNavId } = data
-
-    let result
-    if (childs == 0) {
-        result = await ParentNav.find({}, { title: 1 })
-        return result
-    }
-    result = await ChildNav.find({ parentNavId }, { title: 1, parentNavId: 1 })
-    return result
+const getNavigationBySlug = async (slug) => {
+    const parentNav = await ParentNav.findOne({ slug }, { title: 1 })
+    const childNavs = await ChildNav.find({ parentNavId: parentNav._id.toString() }, { title: 1 })
+    parentNav._doc.childs = childNavs
+    return parentNav
 }
 
 const deleteNavigation = async (data) => {
@@ -130,16 +135,16 @@ const updateNavigation = async (data) => {
             }
 
             //check title exist
-            const childNavs = await ChildNav.find({title,parentNavId:childNav.parentNavId})
+            const childNavs = await ChildNav.find({ title, parentNavId: childNav.parentNavId })
             if (childNavs.length > 0) {
                 throw new ApiErr(StatusCodes.CONFLICT, 'Title is exists')
             }
 
             childNav.title = title
             await childNav.save()
-            
+
         } else {
-            const updateParentNav = await ChildNav.findByIdAndUpdate(id,{title})
+            const updateParentNav = await ChildNav.findByIdAndUpdate(id, { title })
             if (!updateParentNav) {
                 throw new ApiErr(StatusCodes.NOT_FOUND, 'Not found navigation')
             }
@@ -152,8 +157,8 @@ const updateNavigation = async (data) => {
 
 export const navigationModel = {
     addNaigation,
-    getAllNavigations,
-    getNavigation,
+    getNavigations,
+    getNavigationBySlug,
     deleteNavigation,
     updateNavigation
 }

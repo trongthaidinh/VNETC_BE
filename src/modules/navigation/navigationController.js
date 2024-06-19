@@ -6,18 +6,19 @@ import { NAVIGATION as NAV } from "~/utils/appConst"
 
 const getNavigation = async (req, res, next) => {
     try {
-        const data = {
-            childs: req.query.childs,
-            parentNavId: req.query.parentId
-        }
-
-        if (Object.keys(req.query).length === 0) {
-            const re = await navigationModel.getAllNavigations()
-            res.status(200).json(re)
-        }
-
-        const re = await navigationModel.getNavigation(data)
+        const childs = req.query.childs
+        const re = await navigationModel.getNavigations(childs || 0)
         res.status(200).json(re)
+    } catch (error) {
+        next(error)
+    }
+}
+
+const getNaigationBySlug = async (req, res, next) => {
+    try {
+        const slug = req.params.slug
+        const result = await navigationModel.getNavigationBySlug(slug)
+        res.status(StatusCodes.OK).json(SuccessRes(result, 'Get navigation successful'))
     } catch (error) {
         next(error)
     }
@@ -65,6 +66,7 @@ const deleteNavigation = async (req, res, next) => {
 
 export const navigationController = {
     getNavigation,
+    getNaigationBySlug,
     updateNavigation,
     addNavigation,
     deleteNavigation

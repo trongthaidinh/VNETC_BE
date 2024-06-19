@@ -3,6 +3,7 @@ import { Account } from "~/models/accountModel"
 import { navigationModel } from "~/models/navigationModel"
 import ApiErr from "~/utils/ApiError"
 import { NAVIGATION as NAV } from "~/utils/appConst"
+import slugify from "~/utils/stringToSlug"
 
 
 const getAllNavigation = async (data) => {
@@ -44,6 +45,7 @@ const addNaigation = async (data) => {
     }
 
     newData.createdBy = account.fullName
+    newData.slug = slugify(newData.title)
 
     const newNav = await navigationModel.addNaigation({ type, newData })
     return newNav
