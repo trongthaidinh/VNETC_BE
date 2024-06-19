@@ -4,6 +4,12 @@ import { accountValidation as valid } from '~/validations/accountValidation'
 const Router = express.Router()
 
 Router.route('/')
- .post(valid.addAccount,conntrol.addAccount)
+    .post(valid.addAccount, conntrol.addAccount)
+     .put(conntrol.changePassword)
+    .delete(conntrol.deleteAccount)
+//  .get()
+
+Router.route('/:id')
+    .get()
 
 export const accountRoute = Router

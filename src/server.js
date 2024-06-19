@@ -8,6 +8,7 @@ import { env } from './config/environment'
 import { errorHandlingMiddleWare } from './middlewares/errorHandlingMiddleWare'
 import navigationRoute from './routes/navigationRoute'
 import { accountRoute } from './routes/accountRoute'
+import { categoryRoute } from './routes/categoryRoute'
 
 const app = express()
 const server = http.createServer(app,()=>{
@@ -53,10 +54,11 @@ app.use(express.urlencoded({extended: true}));
 // })
 app.use('/navigation',navigationRoute)
 app.use('/account',accountRoute)
+app.use('/category',categoryRoute)
 
 
 //middleware error handler
-// app.use(errorHandlingMiddleWare)
+app.use(errorHandlingMiddleWare)
 
 
 server.listen(env.PORT, () => {
