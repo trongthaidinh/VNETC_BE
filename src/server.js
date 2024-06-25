@@ -28,6 +28,8 @@ app.use(cors())
 app.use(bodyParser.json())
 app.use(morgan('dev'))
 
+console.log('aaa');
+
 mongoose.connect(env.MONGODB_URI)
 const db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:'))
