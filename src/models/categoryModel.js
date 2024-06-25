@@ -6,15 +6,16 @@ const { Schema } = mongoose
 const categorySchema = new Schema({
     name: {
         type: String,
-        required: true
-    },
-    createdBy: {
-        type: String,
-        required: true
+        required: true,
+        unique:true
     },
     slug:{
         type:String,
         required:true
+    },
+    createdBy: {
+        type: String,
+        required: true
     },
     updatedBy: {
         type: String,
@@ -39,7 +40,7 @@ const createNew = async (data) => {
 }
 
 const getCates = async () => {
-    const cates = await Category.find({},{name:1})
+    const cates = await Category.find()
     return cates
 }
 
@@ -49,7 +50,7 @@ const updateCate = async (data) => {
     const updated = await Category.findByIdAndUpdate(id, { name, updatedBy })
 
     if (!updated) {
-        throw new Error('Category not found')
+        throw new Error('Update fail')
     }
     return updated
 }

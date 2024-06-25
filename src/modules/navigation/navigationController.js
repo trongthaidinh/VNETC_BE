@@ -8,7 +8,7 @@ const getNavigation = async (req, res, next) => {
     try {
         const childs = req.query.childs
         const re = await navigationModel.getNavigations(childs || 0)
-        res.status(200).json(re)
+        SuccessRes(res, re, 'Get navigation succesful')
     } catch (error) {
         next(error)
     }
@@ -18,7 +18,7 @@ const getNaigationBySlug = async (req, res, next) => {
     try {
         const slug = req.params.slug
         const result = await navigationModel.getNavigationBySlug(slug)
-        res.status(StatusCodes.OK).json(SuccessRes(result, 'Get navigation successful'))
+        SuccessRes(res,result, 'Get navigation successful')
     } catch (error) {
         next(error)
     }
@@ -37,7 +37,7 @@ const addNavigation = async (req, res, next) => {
         }
 
         const added = await navigationService.addNaigation(data)
-        res.status(StatusCodes.OK).json(SuccessRes(added, 'Add navigation successful'))
+        SuccessRes(res,added, 'Add navigation successful')
     } catch (error) {
         next(error)
     }
@@ -49,7 +49,7 @@ const updateNavigation = (req, res, next) => {
         const { type, id, title } = req.body
 
         const updated = navigationModel.updateNavigation(req.body)
-        res.status(200).json(updated)
+        SuccessRes(res, updated,'Update succcessful')
     } catch (error) {
         next(error)
     }
@@ -58,7 +58,7 @@ const updateNavigation = (req, res, next) => {
 const deleteNavigation = async (req, res, next) => {
     try {
         const deleted = await navigationModel.deleteNavigation(req.body)
-        res.status(StatusCodes.OK).json(SuccessRes(deleted, 'Delete successful'))
+        SuccessRes(res,deleted, 'Delete successful')
     } catch (error) {
         next(error)
     }

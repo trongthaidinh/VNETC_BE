@@ -7,18 +7,18 @@ const { accountService } = require("./accountService")
 const getAllAccount = async (req, res, next) => {
     try {
         const accounts = await accountModel.getAllAccount()
-        res.status(StatusCodes.OK).json(SuccessRes(accounts,'Get all account successful'))
+        SuccessRes(res, accounts, 'Get all account successful')
     } catch (error) {
         next(error)
     }
 }
 
 const addAccount = async (req, res, next) => {
-    const {accCreateId, username, fullName, email, password} = req.body
+    const { accCreateId, username, fullName, email, password } = req.body
     try {
         const data = {
             accCreateId,
-            user:{
+            user: {
                 username,
                 fullName,
                 email,
@@ -26,36 +26,36 @@ const addAccount = async (req, res, next) => {
             }
         }
         const added = await accountService.addAccount(data)
-        res.status(StatusCodes.OK).json(SuccessRes(added,'Add account successful'))
+        SuccessRes(res, added, 'Add account successful')
     } catch (error) {
         next(error)
     }
 }
 
-const deleteAccount = async (req,res,next) => {
+const deleteAccount = async (req, res, next) => {
     try {
         const deleted = await accountService.deleteAccount(req.body)
-        res.status(StatusCodes.OK).json(SuccessRes(deleted,'Delete successful'))
+        SuccessRes(res, deleted, 'Delete successful')
     } catch (error) {
         next(error)
     }
 }
 
-const changePassword = async (req,res,next) => {
+const changePassword = async (req, res, next) => {
     try {
         const changed = await accountService.changePassword(req.body)
-        res.status(StatusCodes.OK).json(SuccessRes(changed,'Change password successful'))
+        SuccessRes(res,changed, 'Change password successful')
     } catch (error) {
         next(error)
     }
 }
 
-const updateAccount = async (req,res,next) => {
+const updateAccount = async (req, res, next) => {
     try {
-        
+
         const updated = await accountModel.updateAccount(req.body)
         delete updated.password
-        res.status(StatusCodes.OK).json(SuccessRes(updated,'Update successful'))
+        SuccessRes(res,updated, 'Update successful')
     } catch (error) {
         next(error)
     }

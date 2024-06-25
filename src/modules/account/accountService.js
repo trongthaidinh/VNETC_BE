@@ -31,6 +31,15 @@ const deleteAccount = async (data) => {
     return deleted
 }
 
+const findById = async (id, projection) => {
+    console.log(id);
+    const account = await Account.findOne({ _id: id }, projection || {})
+    console.log(account);
+    if (!account) {
+        throw new ApiErr(StatusCodes.NOT_FOUND, 'Not found account')
+    }
+    return account
+}
 //Auth
 const login = async (data) => {
     const {email, password} = data
@@ -66,5 +75,6 @@ export const accountService = {
     addAccount,
     login,
     deleteAccount,
-    changePassword
+    changePassword,
+    findById
 }

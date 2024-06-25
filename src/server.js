@@ -9,6 +9,9 @@ import { errorHandlingMiddleWare } from './middlewares/errorHandlingMiddleWare'
 import navigationRoute from './routes/navigationRoute'
 import { accountRoute } from './routes/accountRoute'
 import { categoryRoute } from './routes/categoryRoute'
+import { newsRoute } from './routes/newsRoute'
+import { partnerRoute } from './routes/partnerRoute'
+import { contactRoute } from './routes/contactRoute'
 
 const app = express()
 const server = http.createServer(app,()=>{
@@ -55,8 +58,9 @@ app.use(express.urlencoded({extended: true}));
 app.use('/navigation',navigationRoute)
 app.use('/account',accountRoute)
 app.use('/category',categoryRoute)
-
-
+app.use('/news',newsRoute)
+app.use('/partner',partnerRoute)
+app.use('/contact',contactRoute)
 //middleware error handler
 app.use(errorHandlingMiddleWare)
 

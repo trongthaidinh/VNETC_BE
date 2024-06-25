@@ -87,15 +87,7 @@ const deleteAccount = async (id) => {
     }
     return true
 }
-const getAccountById = async (id, projection) => {
-    console.log(id);
-    const account = await Account.findOne({ _id: id }, projection || {})
-    console.log(account);
-    if (!account) {
-        throw new ApiErr(StatusCodes.NOT_FOUND, 'Not found account')
-    }
-    return account
-}
+
 const getAllAccount = async () => {
     const accounts = await Account.find({_destroy:{$ne: true}},{password:0,_destroy:0})
     return accounts
@@ -104,7 +96,6 @@ const getAllAccount = async () => {
 export const accountModel = {
     addAccount,
     isAdmin,
-    getAccountById,
     changePassword,
     getAllAccount,
     updateAccount,

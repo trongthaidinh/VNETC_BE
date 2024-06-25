@@ -21,14 +21,14 @@ const contactSchema = new Schema({
     content:{
         type:String,
     },
-    createdBy: {
-        type: String,
-        required: true
-    },
-    updatedBy: {
-        type: String,
-        required: true
-    },
+    // createdBy: {
+    //     type: String,
+    //     required: true
+    // },
+    // updatedBy: {
+    //     type: String,
+    //     default: null
+    // },
 }, { timestamps: true })
 
 export const Contact = mongoose.model('Contact', contactSchema)

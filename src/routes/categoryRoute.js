@@ -3,9 +3,9 @@ import { categoryController as controller} from '~/modules/category/categoryCont
 const Router = express.Router()
 
 Router.route('/')
-    .get()
+    .get(controller.getCates)
     .post(controller.addCategory)
-    .put()
-    .delete()
+Router.route('/:id')
+    .delete(controller.deleteCate)    
 
 export const categoryRoute = Router

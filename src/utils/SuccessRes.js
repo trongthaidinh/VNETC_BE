@@ -1,8 +1,10 @@
-export const SuccessRes = (data,message) =>{
-  const res = {
+import { StatusCodes } from "http-status-codes"
+
+export const SuccessRes = (res,data,message) =>{
+  const response = {
     status:true,
     data:data,
     message:message
   }
-  return res
+  res.status(StatusCodes.OK).json(response)
 }
