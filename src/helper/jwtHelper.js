@@ -6,8 +6,7 @@ let generateToken = (user, secretSignature, tokenLife) => {
     const userData = {
       _id: user._id,
       username:user.username,
-      email: user.email,
-      roleID:user.roleID
+      email: user.email
     }
     // Thực hiện ký và tạo token
     jwt.sign(

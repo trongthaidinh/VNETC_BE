@@ -8,7 +8,8 @@ import bcryptjs from 'bcryptjs'
 const accountSchema = new Schema({
     username: {
         type: String,
-        required: true
+        required: true,
+        unique:true
     },
     password: {
         type: String,
@@ -43,7 +44,6 @@ const isAdmin = (email) => {
         throw new Error('not is admin')
     }
 }
-
 const addAccount = async (data) => {
     const { email } = data
     const accountExist = await Account.exists({ email: email })
@@ -54,15 +54,14 @@ const addAccount = async (data) => {
         throw new ApiErr(StatusCodes.CONFLICT, 'Email is exist')
     }
 
-    // const salt = bcryptjs.genSaltSync(10)
-    // const hash = bcryptjs.hashSync(password,salt)
-    // data.password = hash
+    const salt = bcryptjs.genSaltSync(10)
+    const hash = bcryptjs.hashSync(password,salt)
+    data.password = hash
 
     const newAccount = new Account(data)
     await newAccount.save()
     return newAccount
 }
-
 const changePassword = async (data) => {
     const { accountId, newPassword } = data
     const changed = await Account.findByIdAndUpdate(accountId, { password: newPassword })
@@ -87,7 +86,6 @@ const deleteAccount = async (id) => {
     }
     return true
 }
-
 const getAllAccount = async () => {
     const accounts = await Account.find({_destroy:{$ne: true}},{password:0,_destroy:0})
     return accounts

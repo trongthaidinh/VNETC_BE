@@ -1,3 +1,6 @@
-const q = undefined && {}
+const pt = (data) => {
+    const {page = 0, limit = 10} = data
+    console.log(page, limit);
+}
 
-console.log(q);
+pt({})

@@ -2,8 +2,6 @@ import express, { request } from 'express'
 import { navigationController as controller } from '~/modules/navigation/navigationController'
 const Router = express.Router()
 
-
-
 //http://localhost:8686/navigation
 Router.route('/')
     .get(controller.getNavigation)
@@ -15,5 +13,4 @@ Router.route('/')
 Router.route('/:slug')
     .get(controller.getNaigationBySlug)
 
-
-export default Router
+export const navigationRoute = Router

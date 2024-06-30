@@ -1,26 +1,33 @@
 import { SuccessRes } from "~/utils/SuccessRes"
 import { partnerService } from "./partnerService"
 
-const { default: cloudinary } = require("~/helper/cloundinary")
-
-const addPartner = async (req, res, next) => {
+const create = async (req, res, next) => {
     try {
-        const added = await partnerService.addPartner(req)
-        SuccessRes(res, added, 'Add partner successful')
+        const created = await partnerService.create(req, req.account.username)
+        SuccessRes(res, created, 'Add partner successful')
     } catch (error) {
         next(error)
     }
 }
-const deletePartner = async (req, res, next) => {
+const deleteById = async (req, res, next) => {
     try {
-        const deleted = await partnerService.deletePartner(req.params.id)
+        const deleted = await partnerService.deleteById(req.params.id)
         SuccessRes(res, deleted, 'Delete partner successful')
+    } catch (error) {
+        next(error)
+    }
+}
+const getAll = async (req, res, next) => {
+    try {
+        const geted = await partnerService.getAll()
+        SuccessRes(res, geted, 'Delete partner successful')
     } catch (error) {
         next(error)
     }
 }
 
 export const partnerController = {
-    addPartner,
-    deletePartner
+    create,
+    deleteById,
+    getAll
 }

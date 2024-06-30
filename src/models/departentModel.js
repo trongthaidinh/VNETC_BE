@@ -2,7 +2,7 @@ import mongoose from "mongoose"
 const { Schema } = mongoose
 
 const departmentSchema = new Schema({
-    username:{
+    name:{
         type:String,
         required:true
     },
@@ -12,7 +12,7 @@ const departmentSchema = new Schema({
     },
     updatedBy: {
         type: String,
-        required: true
+        default: null
     },
 }, { timestamps: true })
 

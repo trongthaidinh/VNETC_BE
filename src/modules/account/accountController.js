@@ -13,20 +13,10 @@ const getAllAccount = async (req, res, next) => {
     }
 }
 
-const addAccount = async (req, res, next) => {
-    const { accCreateId, username, fullName, email, password } = req.body
+const create = async (req, res, next) => {
     try {
-        const data = {
-            accCreateId,
-            user: {
-                username,
-                fullName,
-                email,
-                password
-            }
-        }
-        const added = await accountService.addAccount(data)
-        SuccessRes(res, added, 'Add account successful')
+        const created = await accountService.create(req.body,req.account.username)
+        SuccessRes(res, created, 'Add account successful')
     } catch (error) {
         next(error)
     }
@@ -60,9 +50,8 @@ const updateAccount = async (req, res, next) => {
         next(error)
     }
 }
-
 export const accountController = {
-    addAccount,
+    create,
     deleteAccount,
     changePassword,
     updateAccount,

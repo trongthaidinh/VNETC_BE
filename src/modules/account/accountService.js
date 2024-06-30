@@ -1,24 +1,31 @@
 import { StatusCodes } from "http-status-codes"
-import { date } from "joi"
 import { env } from "~/config/environment"
+import { jwtHelper } from "~/helper/jwtHelper"
 import { Account, accountModel } from "~/models/accountModel"
 import ApiErr from "~/utils/ApiError"
+import bcrypt from 'bcryptjs'
 
-const addAccount = async (data) => {
-    const {accCreateId, user} = data
-    const admin = await Account.findById(accCreateId)
 
-    if (!admin) {
-        throw new ApiErr(499,'Add account fail1')
-    }else if (admin.email != env.ADMIN_EMAIL) {
-        throw new ApiErr(499,'Add account fail2')
+const create = async (account, creator) => {
+    const emailExists = await Account.exists({email: account.email})
+    if (emailExists) {
+        throw new ApiErr(StatusCodes.BAD_REQUEST,'Email is already in use!')
     }
-
-    user.createdBy = admin.fullName
-
-    const createdUser = await accountModel.addAccount(user)
-    return createdUser
+    const usernameExists = await Account.exists({email: account.email})
+    if (usernameExists) {
+        throw new ApiErr(StatusCodes.BAD_REQUEST,'Username is already in use!')
+    }
+    console.log(account);
+    console.log(creator);
+    const salt = bcrypt.genSaltSync(10)
+    const ac = new Account(account)
+    ac.password = bcrypt.hashSync(account.password, salt)
+    ac.createdBy = creator
+    ac.updatedBy = creator
+    await ac.save()
+    return ac
 }
+
 const deleteAccount = async (data) => {
     const {accDelId, id} = data
     const accDel = await Account.findById(accDelId)
@@ -40,18 +47,17 @@ const findById = async (id, projection) => {
     }
     return account
 }
-//Auth
-const login = async (data) => {
-    const {email, password} = data
-    const account = await Account.findOne({email},{})
-    if (!account) {
-        throw new ApiErr(StatusCodes.NOT_FOUND,'Not found account')
+const save = async (data) => {
+    if (creator) {
+        if (!account.createdBy) {
+            account.createdBy = creator
+        }
+        account.updatedBy = creator
     }
-    if (password != account.password) {
-        throw new ApiErr(StatusCodes.CONFLICT,'Wrong password')
-    }
-    return account
+    const account = new Account(account)
+    await account.save()
 }
+//Auth
 const changePassword = async (data) => {
     const {accChangeId, email, oldPassword, newPassword} = data
 
@@ -72,8 +78,8 @@ const changePassword = async (data) => {
 
 
 export const accountService = {
-    addAccount,
-    login,
+    create,
+    save,
     deleteAccount,
     changePassword,
     findById

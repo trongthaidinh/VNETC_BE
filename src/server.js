@@ -6,12 +6,7 @@ import mongoose from 'mongoose'
 import http from 'http'
 import { env } from './config/environment'
 import { errorHandlingMiddleWare } from './middlewares/errorHandlingMiddleWare'
-import navigationRoute from './routes/navigationRoute'
-import { accountRoute } from './routes/accountRoute'
-import { categoryRoute } from './routes/categoryRoute'
-import { newsRoute } from './routes/newsRoute'
-import { partnerRoute } from './routes/partnerRoute'
-import { contactRoute } from './routes/contactRoute'
+import initApis from './routes/api'
 
 const app = express()
 const server = http.createServer(app,()=>{
@@ -53,16 +48,9 @@ io.on('connection', (socket) => {
 // Cho phép lý dữ liệu từ form method POST
 app.use(express.urlencoded({extended: true}));
 
-//routes
-// app.use('/',(req,res)=> {
-//   res.send('ok')
-// })
-app.use('/navigation',navigationRoute)
-app.use('/account',accountRoute)
-app.use('/category',categoryRoute)
-app.use('/news',newsRoute)
-app.use('/partner',partnerRoute)
-app.use('/contact',contactRoute)
+//Khởi tạo các routes
+initApis(app)
+
 //middleware error handler
 app.use(errorHandlingMiddleWare)
 

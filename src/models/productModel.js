@@ -16,7 +16,7 @@ const productSchema = new Schema({
     },
     updatedBy: {
         type: String,
-        required: true
+        default: null
     },
 }, { timestamps: true })
 
