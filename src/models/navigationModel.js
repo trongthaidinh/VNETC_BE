@@ -140,37 +140,38 @@ const updateNavigation = async (data, navid) => {
   const { type, title } = data
 
   try {
-    if (type == NAV.CHILD) {
-      console.log("1")
-      //check childNav exists
+    if (type === NAV.CHILD) {
+      // Check if child navigation exists
       const childNav = await ChildNav.findById(navid)
 
       if (!childNav) {
-        throw new ApiErr(StatusCodes.NOT_FOUND, "Not found navigation")
+        return { success: false, message: "Not found navigation" }
       }
-      //check title exist
+
+      // Check if title exists
       const childNavs = await ChildNav.find({
         title,
         parentNavId: childNav.parentNavId,
       })
       if (childNavs.length > 0) {
-        throw new ApiErr(StatusCodes.CONFLICT, "Title is exists")
+        console.log("abc")
+        return { success: false, message: "Title already exists" }
       }
 
       childNav.title = title
       await childNav.save()
     } else {
-      console.log("2")
       const updateParentNav = await ParentNav.findByIdAndUpdate(navid, {
         title,
       })
       if (!updateParentNav) {
-        throw new ApiErr(StatusCodes.NOT_FOUND, "Not found navigation")
+        return { success: false, message: "Not found navigation" }
       }
     }
-    return true
+    return { success: true, message: "Navigation updated successfully" }
   } catch (error) {
-    throw new ApiErr(444, "Update fail")
+    console.error("Error updating navigation:", error)
+    return { success: false, message: "Update failed" }
   }
 }
 

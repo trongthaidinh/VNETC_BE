@@ -44,12 +44,10 @@ const addNavigation = async (req, res, next) => {
   }
 }
 
-const updateNavigation = (req, res, next) => {
+const updateNavigation = async (req, res, next) => {
   try {
-    // const accountId = req.query.accountId
-    // // const { type, id, title } = req.body
     const id = req.params.slug
-    const updated = navigationModel.updateNavigation(req.body, id)
+    const updated = await navigationModel.updateNavigation(req.body, id)
     SuccessRes(res, updated, "Update succcessful")
   } catch (error) {
     next(error)
