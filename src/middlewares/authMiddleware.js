@@ -3,7 +3,6 @@ import { jwtHelper } from "~/helper/jwtHelper"
 
 let isAuth = async (req, res, next) => {
   let tokenFromClient = req.header("Authorization")
-  console.log(tokenFromClient)
   if (tokenFromClient) {
     const tokens = tokenFromClient.split(" ")
     if (tokens.length > 1) {
@@ -19,7 +18,7 @@ let isAuth = async (req, res, next) => {
       )
       // Nếu token hợp lệ, lưu thông tin giải mã được vào đối tượng req, dùng cho các xử lý ở phía sau.
       req.account = account.data
-
+      console.log(req.account)
       // Cho phép req đi tiếp sang controller.
       next()
     } catch (error) {

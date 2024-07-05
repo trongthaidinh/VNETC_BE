@@ -27,17 +27,10 @@ const getNaigationBySlug = async (req, res, next) => {
 
 const addNavigation = async (req, res, next) => {
   try {
-    const { accountId, type } = req.body
-    const newData = req.body
-    delete newData.accountId
-    delete newData.type
-    const data = {
-      type,
-      accountId,
-      newData,
-    }
+    const account_id = req.account._id
+    const data = req.body
 
-    const added = await navigationService.addNavigation(data)
+    const added = await navigationService.addNavigation(data, account_id)
     SuccessRes(res, added, "Add navigation successful")
   } catch (error) {
     next(error)

@@ -53,27 +53,26 @@ export const ChildNav = mongoose.model("ChildNav", childNavSchema)
 export const ParentNav = mongoose.model("ParentNav", parentNavSchema)
 
 const addNavigation = async (data) => {
-  const { type, newData } = data
-  console.log(type)
   let nav
-
   try {
-    if (type == NAV.PARENT) {
-      const navExists = await ParentNav.exists({ title: newData.title })
+    if (data.type == NAV.PARENT) {
+      console.log("parent")
+      const navExists = await ParentNav.exists({ title: data.title })
       if (navExists) {
         throw new Error()
       }
 
       //xử lý trùng slug
+      console.log("vaoday", navExists)
 
-      nav = new ParentNav(newData)
+      nav = new ParentNav(data)
     } else {
-      const navExists = await ChildNav.exists({ title: newData.title })
-      const parentNavExist = await ParentNav.findById(newData.parentNavId)
+      const navExists = await ChildNav.exists({ title: data.title })
+      const parentNavExist = await ParentNav.findById(data.parentNavId)
       if (!parentNavExist || navExists) {
         throw new Error()
       }
-      nav = new ChildNav(newData)
+      nav = new ChildNav(data)
     }
   } catch (error) {
     throw new ApiErr(StatusCodes.NOT_FOUND, "Add fail")
@@ -109,7 +108,6 @@ const getNavigationBySlug = async (slug) => {
     { parentNavId: parentNav._id.toString() },
     { title: 1 }
   )
-  console.log("vaoday")
   parentNav._doc.childs = childNavs
   return parentNav
 }

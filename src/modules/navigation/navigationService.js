@@ -38,18 +38,16 @@ const getNaigation = async (data) => {
   return navs
 }
 
-const addNavigation = async (data) => {
-  const { type, accountId, newData } = data
-
+const addNavigation = async (data, accountId) => {
   const account = await Account.findById(accountId)
   if (!account) {
     throw new ApiErr(StatusCodes.NOT_FOUND, "Add fail")
   }
 
-  newData.createdBy = account.fullName
-  newData.slug = slugify(newData.title)
-
-  const newNav = await navigationModel.addNavigation({ type, newData })
+  data.createdBy = account.fullName
+  data.slug = slugify(data.title)
+  console.log(data)
+  const newNav = await navigationModel.addNavigation({ data })
   return newNav
 }
 
