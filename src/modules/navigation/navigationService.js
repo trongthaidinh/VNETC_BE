@@ -49,7 +49,7 @@ const addNavigation = async (data) => {
   newData.createdBy = account.fullName
   newData.slug = slugify(newData.title)
 
-  const newNav = await navigationModel.addNaigation({ type, newData })
+  const newNav = await navigationModel.addNavigation({ type, newData })
   return newNav
 }
 

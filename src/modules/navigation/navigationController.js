@@ -17,6 +17,7 @@ const getNavigation = async (req, res, next) => {
 const getNaigationBySlug = async (req, res, next) => {
   try {
     const slug = req.params.slug
+    console.log(slug)
     const result = await navigationModel.getNavigationBySlug(slug)
     SuccessRes(res, result, "Get navigation successful")
   } catch (error) {
@@ -36,7 +37,7 @@ const addNavigation = async (req, res, next) => {
       newData,
     }
 
-    const added = await navigationService.addNaigation(data)
+    const added = await navigationService.addNavigation(data)
     SuccessRes(res, added, "Add navigation successful")
   } catch (error) {
     next(error)
@@ -45,10 +46,10 @@ const addNavigation = async (req, res, next) => {
 
 const updateNavigation = (req, res, next) => {
   try {
-    const accountId = req.query.accountId
-    const { type, id, title } = req.body
-
-    const updated = navigationModel.updateNavigation(req.body)
+    // const accountId = req.query.accountId
+    // // const { type, id, title } = req.body
+    const id = req.params.slug
+    const updated = navigationModel.updateNavigation(req.body, id)
     SuccessRes(res, updated, "Update succcessful")
   } catch (error) {
     next(error)

@@ -2,6 +2,7 @@ import { config } from "dotenv"
 import configService from "./ConfigService"
 import { SuccessRes } from "~/utils/SuccessRes"
 import ApiErr from "~/utils/ApiError"
+import { location } from "express/lib/response"
 config()
 
 export const addConfigController = async (req, res, next) => {
@@ -21,10 +22,29 @@ export const addConfigController = async (req, res, next) => {
     next(error)
   }
 }
-export const getConfigById = async (req, res, next) => {}
+// export const getConfigById = async (req, res, next) => {
+//   try {
+//     const id = await req.params.id
+//     const Config = await configService.getConfig(id)
+//     SuccessRes(res, Config, "Get Config success")
+//   } catch (error) {
+//     next(error)
+//   }
+// }
+// export const deleteConfig = async (req, res, next) => {
+//   try {
+//     const id = await req.params.id
+//     const Config = await configService.deleteConfig(id)
+//     SuccessRes(res, Config, "Delete Config success")
+//   } catch (error) {
+//     next(error)
+//   }
+// }
 export const getAllConfig = async (req, res, next) => {
   try {
-    const products = await configService.getAll(req.query)
-    SuccessRes(res, products, "Get all Config success")
-  } catch (error) {}
+    const Config = await configService.getAll(req.query)
+    SuccessRes(res, Config, "Get all Config success")
+  } catch (error) {
+    next(error)
+  }
 }

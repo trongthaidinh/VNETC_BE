@@ -38,9 +38,6 @@ class ConfigService {
           title: data.title[index],
           image_url: url,
           position: data.position[index],
-          createAt: new Date().toISOString(),
-          updateAt: new Date().toISOString(),
-          createBy: creator,
         }
       })
       console.log(data)
@@ -50,6 +47,9 @@ class ConfigService {
       config.homepage_slider = JSON.stringify(homepageSlider)
       config.contact_email = data.contact_email
       config.phone_number = data.phone_number
+      config.created_at = new Date().toISOString()
+      config.updated_at = new Date().toISOString()
+      config.createBy = creator
       await config.save()
       return config
     } catch (err) {
@@ -63,7 +63,28 @@ class ConfigService {
       .limit(limit)
     return Config
   }
-  async getConfig() {}
+  async getConfig(id) {
+    try {
+      const config = await Configuration.findById(id)
+      if (!config) {
+        throw new ApiErr(444, "Find fail")
+      }
+      return config
+    } catch (error) {
+      next(error)
+    }
+  }
+  async deleteConfig(id) {
+    try {
+      const deleted = await Configuration.findByIdAndDelete(id)
+      if (!deleted) {
+        throw new ApiErr(444, "Delete fail")
+      }
+      return deleted
+    } catch (error) {
+      next(error)
+    }
+  }
 }
 const configService = new ConfigService()
 

@@ -52,8 +52,9 @@ const childNavSchema = new Schema(
 export const ChildNav = mongoose.model("ChildNav", childNavSchema)
 export const ParentNav = mongoose.model("ParentNav", parentNavSchema)
 
-const addNaigation = async (data) => {
+const addNavigation = async (data) => {
   const { type, newData } = data
+  console.log(type)
   let nav
 
   try {
@@ -103,10 +104,12 @@ const getNavigations = async (childs) => {
 
 const getNavigationBySlug = async (slug) => {
   const parentNav = await ParentNav.findOne({ slug }, { title: 1 })
+  console.log("vaoday1")
   const childNavs = await ChildNav.find(
     { parentNavId: parentNav._id.toString() },
     { title: 1 }
   )
+  console.log("vaoday")
   parentNav._doc.childs = childNavs
   return parentNav
 }
@@ -133,17 +136,18 @@ const deleteNavigation = async (data) => {
   }
 }
 
-const updateNavigation = async (data) => {
-  const { type, id, title } = data
-  console.log(data)
+const updateNavigation = async (data, navid) => {
+  const { type, title } = data
+
   try {
     if (type == NAV.CHILD) {
+      console.log("1")
       //check childNav exists
-      const childNav = await ChildNav.findById(id)
+      const childNav = await ChildNav.findById(navid)
+
       if (!childNav) {
         throw new ApiErr(StatusCodes.NOT_FOUND, "Not found navigation")
       }
-
       //check title exist
       const childNavs = await ChildNav.find({
         title,
@@ -156,19 +160,22 @@ const updateNavigation = async (data) => {
       childNav.title = title
       await childNav.save()
     } else {
-      const updateParentNav = await ChildNav.findByIdAndUpdate(id, { title })
+      console.log("2")
+      const updateParentNav = await ParentNav.findByIdAndUpdate(navid, {
+        title,
+      })
       if (!updateParentNav) {
         throw new ApiErr(StatusCodes.NOT_FOUND, "Not found navigation")
       }
     }
     return true
   } catch (error) {
-    throw new ApiErr(444, "Delete fail")
+    throw new ApiErr(444, "Update fail")
   }
 }
 
 export const navigationModel = {
-  addNaigation,
+  addNavigation,
   getNavigations,
   getNavigationBySlug,
   deleteNavigation,

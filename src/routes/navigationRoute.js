@@ -9,6 +9,8 @@ Router.route("/")
   .delete(controller.deleteNavigation)
   .put(controller.updateNavigation)
 
-Router.route("/:slug").get(controller.getNaigationBySlug)
+Router.route("/:slug")
+  .get(controller.getNaigationBySlug)
+  .put(controller.updateNavigation)
 
 export const navigationRoute = Router

@@ -1,3 +1,4 @@
+const { type } = require("express/lib/response")
 const mongoose = require("mongoose")
 
 const configSchema = new mongoose.Schema({
@@ -13,7 +14,19 @@ const configSchema = new mongoose.Schema({
   contact_email: {
     type: String,
   },
-  phone_number: {
+  hotlines: {
+    type: String,
+  },
+  address: {
+    type: String,
+  },
+  created_at: {
+    type: Date,
+  },
+  updated_at: {
+    type: Date,
+  },
+  createBy: {
     type: String,
   },
 })
