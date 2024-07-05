@@ -2,37 +2,40 @@ import { StatusCodes } from "http-status-codes"
 import cloudinary from "~/helper/cloundinary"
 import { ProductDetail } from "~/models/productDetailModel"
 import ApiErr from "~/utils/ApiError"
-
+import { ObjectId } from "mongodb"
 const { Product } = require("~/models/productModel")
 
 const create = async (req, creator) => {
-  let uploadImage = new Promise((res, rej) => {
-    cloudinary.uploader.upload(req.file.path, async (err, result) => {
-      if (err) {
-        rej(err)
-      } else {
-        res(result)
-      }
+  try {
+    // Upload image to Cloudinary
+    const uploadImage = await new Promise((resolve, reject) => {
+      cloudinary.uploader.upload(req.file.path, (err, result) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve(result)
+        }
+      })
     })
-  })
 
-  await uploadImage
-    .then(async (result) => {
-      const product = new Product(req.body)
-      product.image = result.secure_url
-      product.createdBy = creator
-      await product.save()
+    // Create and save the product
+    const product = new Product(req.body)
+    product.image = uploadImage.secure_url
+    product.category_id = new ObjectId(req.body.categoryID)
+    product.createdBy = creator
+    await product.save()
 
-      const productDetail = new ProductDetail(req.body)
-      productDetail.createdBy = creator
-      productDetail.productId = product.id
-      await productDetail.save()
-      return product
-    })
-    .catch(async (err) => {
-      console.log(err)
-      throw new ApiErr(444, "Create fail")
-    })
+    // Create and save the product detail
+    const productDetail = new ProductDetail(req.body)
+    productDetail.createdBy = creator
+    productDetail.productId = product.id
+    await productDetail.save()
+
+    return product
+  } catch (err) {
+    console.error(err)
+    throw new ApiErr(444, "Create fail")
+  }
 }
 
 const getAll = async (query) => {

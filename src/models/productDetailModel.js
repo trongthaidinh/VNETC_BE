@@ -8,6 +8,7 @@ const productDetailSchema = new Schema({
     weight:Number,
     size:String,
     warranty:Number,
+
     productId:{
         type:Schema.Types.ObjectId,
         ref:'Product'
