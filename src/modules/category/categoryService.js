@@ -6,20 +6,16 @@ import {News} from "~/models/newsModel";
 const {accountModel} = require("~/models/accountModel")
 
 const addCategory = async (data, profile) => {
-    try {
-        const {name, type} = data
-        const slug = slugify(name)
-        const cateExists = await Category.exists({name})
-        if (cateExists) {
-            throw new ApiErr(444, "Category already exists")
-        }
-        const category = new Category({name, slug, type})
-        category.createdBy = profile
-        await category.save()
-        return category
-    } catch (er) {
-        throw new Error(er)
+    const {name, type} = data
+    const slug = slugify(name)
+    const cateExists = await Category.exists({name})
+    if (cateExists) {
+        throw new ApiErr(444, "Category already exists")
     }
+    const category = new Category({name, slug, type})
+    category.createdBy = profile
+    await category.save()
+    return category
 }
 const deleteCate = async (id) => {
 
@@ -38,13 +34,8 @@ const deleteCate = async (id) => {
     return true
 }
 const getCates = async () => {
-    try {
-        const cates = await Category.find()
-        return cates
-    } catch (err) {
-        throw new Error(er)
-    }
-
+    const cates = await Category.find()
+    return cates
 }
 
 const updateCate = async (data) => {
