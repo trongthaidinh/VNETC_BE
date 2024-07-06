@@ -38,8 +38,13 @@ const deleteCate = async (id) => {
     return true
 }
 const getCates = async () => {
-    const cates = await Category.find()
-    return cates
+    try {
+        const cates = await Category.find()
+        return cates
+    } catch (err) {
+        throw new Error(er)
+    }
+
 }
 
 const updateCate = async (data) => {
