@@ -7,7 +7,7 @@ const addCategory = async (req, res, next) => {
     try {
         const profile = req.account
         const added = await categoryService.addCategory(req.body,profile)
-        SuccessRes(res, added, 'Add categor successful')
+        SuccessRes(res, added, 'Add category successful')
     } catch (error) {
         next(error)
     }
@@ -22,7 +22,7 @@ const getCates = async (req, res, next) => {
 }
 const deleteCate = async (req, res, next) => {
     try {
-        const deleted = await categoryModel.deleteCate(req.params.id)
+        const deleted = await categoryService.deleteCate(req.params.id)
         SuccessRes(res,deleted,'Deleted successful')
     } catch (error) {
         next(error)
