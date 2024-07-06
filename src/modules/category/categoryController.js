@@ -5,7 +5,8 @@ import { categoryModel } from "~/models/categoryModel"
 
 const addCategory = async (req, res, next) => {
     try {
-        const added = await categoryService.addCategory(req.body)
+        const profile = req.account
+        const added = await categoryService.addCategory(req.body,profile)
         SuccessRes(res, added, 'Add categor successful')
     } catch (error) {
         next(error)
