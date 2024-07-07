@@ -4,7 +4,7 @@ const { Schema } = mongoose
 const productDetailSchema = new Schema({
     brand:String,
     wattage:Number,
-    species:String,
+    // species:String,
     weight:Number,
     size:String,
     warranty:Number,
