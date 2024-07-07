@@ -1,6 +1,6 @@
-const pt = (data) => {
-    const {page = 0, limit = 10} = data
-    console.log(page, limit);
-}
+let abc = [{name:'name 1'},{name:'nam2'}]
 
-pt({})
+abc.forEach((element,index) => {
+    abc[index].age = 12 
+});
+console.log(abc);
