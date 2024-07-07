@@ -1,38 +1,53 @@
-const { SuccessRes } = require("~/utils/SuccessRes")
-const { productService } = require("./productService")
+import ApiErr from "~/utils/ApiError"
+
+const {SuccessRes} = require("~/utils/SuccessRes")
+const {productService} = require("./productService")
 
 const create = async (req, res, next) => {
-    try{
+    try {
         const created = await productService.create(req, req.account.username)
         if (!created) {
-            throw new ApiErr(444,'Create fail')
-
+            throw new ApiErr(444, "Create fail")
         }
-        SuccessRes(res, created, 'Create new product success')
-    }catch(error){
+        SuccessRes(res, created, "Create new product success")
+    } catch (error) {
         next(error)
     }
 }
 
 const getAll = async (req, res, next) => {
-    try{
+    try {
         const products = await productService.getAll(req.query)
-        SuccessRes(res, products, 'Get all product success')
-    }catch(error){
+        SuccessRes(res, products, "Get all product success")
+    } catch (error) {
         next(error)
     }
 }
 const getProductById = async (req, res, next) => {
-    try{
+    try {
         const products = await productService.getProductById(req.params.id)
-        SuccessRes(res, products, 'Get all product success')
-    }catch(error){
+        SuccessRes(res, products, "Get all product success")
+    } catch (error) {
         next(error)
     }
 }
+const updateProduct = async (req, res, next) => {
+    try {
 
+    } catch (e) {
+
+    }
+}
+// const deleteById = async (req, res, next) => {
+//   try {
+//
+//   }catch (e) {
+//
+//   }
+// }
 export const productController = {
     create,
     getAll,
-    getProductById
+    getProductById,
+    updateProduct
 }

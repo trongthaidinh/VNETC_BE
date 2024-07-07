@@ -12,7 +12,7 @@ import { ConfigRoute } from "./ConfigRoute"
 const initApis = (app) => {
   app.use("/api/navigation", navigationRoute)
   app.use("/api/account", accountRoute)
-  // app.use('/api/category', categoryRoute)
+  app.use('/api/category', categoryRoute)
   // app.use('/api/news', newsRoute)
   app.use("/api/partner", partnerRoute)
   // app.use('/api/contact', contactRoute)
