@@ -1,4 +1,5 @@
 import ApiErr from "~/utils/ApiError"
+import isAuth from "~/middlewares/authMiddleware";
 
 const {SuccessRes} = require("~/utils/SuccessRes")
 const {productService} = require("./productService")
@@ -33,9 +34,9 @@ const getProductById = async (req, res, next) => {
 }
 const updateProduct = async (req, res, next) => {
     try {
-        const {_id: accountID} = req.account;
+        const {username: accountName} = req.account;
         const {body: data, params: {id}, file: imageData} = req;
-        const product = await productService.updateProduct(id, accountID, data, imageData);
+        const product = await productService.updateProduct(id, accountName, data, imageData);
         SuccessRes(res, product, "Update product success");
     } catch (error) {
         next(error);
@@ -49,9 +50,30 @@ const updateProduct = async (req, res, next) => {
 //
 //   }
 // }
+const createNewsDetail = async (req, res, next) => {
+    try {
+        const {username: accountName} = req.account;
+        const {body: data, params: {id}} = req;
+        const product = await productService.createProductDetail(id, accountName, data);
+        SuccessRes(res, product, "Create product detail success");
+    } catch (error) {
+        next(error);
+    }
+}
+
+const getAllProductDetail = async (req, res, next) => {
+    try {
+        
+    }catch (error) {
+        next(error);
+    }
+}
+
 export const productController = {
     create,
     getAll,
     getProductById,
-    updateProduct
+    updateProduct,
+    createNewsDetail,
+    getAllProductDetail
 }

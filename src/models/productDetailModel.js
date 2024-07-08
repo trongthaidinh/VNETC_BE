@@ -2,12 +2,12 @@ import mongoose from "mongoose"
 const { Schema } = mongoose
 
 const productDetailSchema = new Schema({
-    brand:String,
-    wattage:Number,
+    brand:String, //thương hiệu
+    wattage:Number, //công suất
     // species:String,
-    weight:Number,
-    size:String,
-    warranty:Number,
+    weight:Number, //trọng lượng
+    size:String, //kích thước
+    warranty:Number,//bảo hành
 
     productId:{
         type:Schema.Types.ObjectId,

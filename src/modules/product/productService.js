@@ -4,6 +4,7 @@ import {ProductDetail} from "~/models/productDetailModel"
 import ApiErr from "~/utils/ApiError"
 import {ObjectId} from "mongodb"
 import uploadImageToCloudinary from "~/utils/uploadImage"
+import mongoose from "mongoose";
 
 const {Product} = require("~/models/productModel")
 
@@ -42,13 +43,13 @@ const getAll = async (query) => {
     return products
 }
 
-const updateProduct = async (id, accountId, data, imageData) => {
+const updateProduct = async (id, accountName, data, imageData) => {
     try {
         const {updateName: name, updateCate: category_id} = data;
         const {secure_url: image} = await uploadImageToCloudinary(imageData.path);
         const productData = {
             name,
-            updatedBy: accountId,
+            updatedBy: accountName,
             image,
             category_id
         };
@@ -66,28 +67,60 @@ const updateProduct = async (id, accountId, data, imageData) => {
 
 
 const getProductById = async (id) => {
-    const product = await Product.findById(id)
-    const productDetail = await ProductDetail.findOne({productId: id})
-    if (!product && !productDetail) {
-        throw new ApiErr(StatusCodes.NOT_FOUND, "Not found product")
-    }
-    const result = {
-        id: product.id,
-        name: product.name,
-        image: product.image,
-        brand: productDetail.brand,
-        wattage: productDetail.wattage,
-        species: productDetail.species,
-        weight: productDetail.weight,
-        size: productDetail.size,
-        warranty: productDetail.warranty,
-    }
-    return result
-}
+    try {
+        const [product, productDetails] = await Promise.all([
+            Product.findById(id).lean(),
+            ProductDetail.find({productId: id}).lean()
+        ]);
 
+        if (!product && !productDetails.length) {
+            throw new ApiErr(StatusCodes.NOT_FOUND, "Product not found");
+        }
+
+        const formattedDetails = productDetails.map(detail => ({
+            brand: detail.brand,
+            wattage: detail.wattage,
+            weight: detail.weight,
+            size: detail.size,
+            warranty: detail.warranty,
+        }));
+
+        const result = {
+            id: product ? product._id : null,
+            name: product ? product.name : null,
+            image: product ? product.image : null,
+            detail: formattedDetails,
+        };
+
+        return result;
+    } catch (error) {
+        console.error('Error fetching product by ID:', error);
+        throw error;
+    }
+};
+const createProductDetail = async (id, accountName, data) => {
+    try {
+        const existingProductDetail = await ProductDetail.findOne({productId: id, brand: data.brand});
+        if (existingProductDetail) {
+            throw new ApiErr(StatusCodes.BAD_REQUEST, "Brand already exists for this product");
+        }
+
+        const productDetail = new ProductDetail({
+            ...data,
+            productId: id,
+            createdBy: accountName,
+        });
+
+        await productDetail.save();
+        return productDetail;
+    } catch (error) {
+        throw new ApiErr(StatusCodes.NOT_ACCEPTABLE, "Error adding product detail");
+    }
+}
 export const productService = {
     create,
     getAll,
     getProductById,
-    updateProduct
+    updateProduct,
+    createProductDetail
 }
