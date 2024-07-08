@@ -33,11 +33,15 @@ const getProductById = async (req, res, next) => {
 }
 const updateProduct = async (req, res, next) => {
     try {
-
-    } catch (e) {
-
+        const {_id: accountID} = req.account;
+        const {body: data, params: {id}, file: imageData} = req;
+        const product = await productService.updateProduct(id, accountID, data, imageData);
+        SuccessRes(res, product, "Update product success");
+    } catch (error) {
+        next(error);
     }
 }
+
 // const deleteById = async (req, res, next) => {
 //   try {
 //
