@@ -10,6 +10,10 @@ const {Product} = require("~/models/productModel")
 
 const create = async (req, creator) => {
     try {
+        // const existingProduct = await product.findOne(id);
+        // if (existingProductDetail) {
+        //     throw new ApiErr(StatusCodes.BAD_REQUEST, "Already exists for this product");
+        // }
         const uploadImage = await uploadImageToCloudinary(req.file.path);
         const productData = {
             ...req.body,
@@ -17,15 +21,9 @@ const create = async (req, creator) => {
             category_id: new ObjectId(req.body.categoryID),
             createdBy: creator
         };
+
         const product = new Product(productData);
         await product.save();
-        // const productDetailData = {
-        //     ...req.body,
-        //     createdBy: creator,
-        //     productId: product.id
-        // };
-        // const productDetail = new ProductDetail(productDetailData);
-        // await productDetail.save();
 
         return product;
     } catch (error) {
@@ -57,7 +55,7 @@ const updateProduct = async (id, accountName, data, imageData) => {
             productData,
             {new: true, runValidators: true}
         );
-        if (!updatedProduct) throw new ApiErr(StatusCodes.UNAUTHORIZED, "UPDATE FAIL")
+        if (!updatedProduct) throw new ApiErr(StatusCodes.UNAUTHORIZED, "Cannot find Product ")
         return updatedProduct;
     } catch (error) {
         throw error;

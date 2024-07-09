@@ -6,18 +6,18 @@ import {productController as control} from "~/modules/product/productController"
 const Router = express.Router()
 
 Router.route("/")
-    .post(isAuth, upload.single("image"), control.create)
-    .get(isAuth, control.getAll)
+    .post( upload.single("image"), control.create)
+    .get(control.getAll)
 Router.route("/:id")
-    .get(isAuth, control.getProductById)
-    .patch(isAuth, upload.single("updateImage"), control.updateProduct)
-    .delete(isAuth, control.deleteProduct)
+    .get( control.getProductById)
+    .patch( upload.single("updateImage"), control.updateProduct)
+    .delete( control.deleteProduct)
 
 Router.route("/:id/detail")
-    .post(isAuth, control.createNewsDetail)
+    .post( control.createNewsDetail)
     // .get(isAuth, control.getAllProductDetail)
 
 Router.route("/:id/detail/:productId")
-    .patch(isAuth, control.updateProductDetail)
+    .patch( control.updateProductDetail)
 
 export const productRoute = Router
