@@ -26,7 +26,6 @@ const addNavigation = async (req, res, next) => {
             req.body,
             "admin"
             // req.account.username,
-            // {slug: slugify(title)}
         )
         SuccessRes(res, added, "Add navigation successful")
     } catch (error) {

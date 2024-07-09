@@ -6,8 +6,7 @@ import slugify from "~/utils/stringToSlug"
 
 const getAllNavigation = async () => {
     let parentNavs = await ParentNav.find({}, {title: 1, slug: 1})
-    let childNavs = await ChildNav.find({}, {title: 1, parentNavId: 1})
-  console.log(parentNavs)
+    let childNavs = await ChildNav.find({}, {title: 1, parentNavId: 1, slug: 1})
     return parentNavs.map((parent) => {
         const childs = childNavs.filter(
             (child) => parent._id.toString() === child.parentNavId.toString()
@@ -61,7 +60,10 @@ const addNavigation = async (data, creator) => {
         if (childNavExists) {
             throw new ApiErr(StatusCodes.CONFLICT, "Navigation is exists")
         }
-        nav = new ChildNav({title, parentNavId, createdBy: creator})
+        nav = new ChildNav({
+            title, parentNavId,
+            slug: slugify(title), createdBy: creator
+        })
         await nav.save()
     }
     return nav
