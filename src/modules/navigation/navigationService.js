@@ -5,9 +5,9 @@ import {NAVIGATION as NAV} from "~/utils/appConst"
 import slugify from "~/utils/stringToSlug"
 
 const getAllNavigation = async () => {
-    let parentNavs = await ParentNav.find({}, {title: 1})
+    let parentNavs = await ParentNav.find({}, {title: 1, slug: 1})
     let childNavs = await ChildNav.find({}, {title: 1, parentNavId: 1})
-
+  console.log(parentNavs)
     return parentNavs.map((parent) => {
         const childs = childNavs.filter(
             (child) => parent._id.toString() === child.parentNavId.toString()
