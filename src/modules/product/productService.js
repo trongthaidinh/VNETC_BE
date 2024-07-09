@@ -19,21 +19,20 @@ const create = async (req, creator) => {
         };
         const product = new Product(productData);
         await product.save();
-        const productDetailData = {
-            ...req.body,
-            createdBy: creator,
-            productId: product.id
-        };
-        const productDetail = new ProductDetail(productDetailData);
-        await productDetail.save();
+        // const productDetailData = {
+        //     ...req.body,
+        //     createdBy: creator,
+        //     productId: product.id
+        // };
+        // const productDetail = new ProductDetail(productDetailData);
+        // await productDetail.save();
 
         return product;
     } catch (error) {
         console.error("Error creating product:", error.message);
-        throw new ApiErr(StatusCodes.INTERNAL_SERVER_ERROR, "Error creating product");
+        throw error;
     }
 };
-
 
 const getAll = async (query) => {
     const {page = 0, limit = 8} = query
@@ -61,7 +60,7 @@ const updateProduct = async (id, accountName, data, imageData) => {
         if (!updatedProduct) throw new ApiErr(StatusCodes.UNAUTHORIZED, "UPDATE FAIL")
         return updatedProduct;
     } catch (error) {
-        throw new ApiErr(StatusCodes.NOT_ACCEPTABLE, "Error updating product")
+        throw error;
     }
 };
 
@@ -102,7 +101,7 @@ const createProductDetail = async (id, accountName, data) => {
     try {
         const existingProductDetail = await ProductDetail.findOne({productId: id, brand: data.brand});
         if (existingProductDetail) {
-            throw new ApiErr(StatusCodes.BAD_REQUEST, "Brand already exists for this product");
+            throw new ApiErr(StatusCodes.BAD_REQUEST, "Already exists for this product");
         }
 
         const productDetail = new ProductDetail({
@@ -114,7 +113,38 @@ const createProductDetail = async (id, accountName, data) => {
         await productDetail.save();
         return productDetail;
     } catch (error) {
-        throw new ApiErr(StatusCodes.NOT_ACCEPTABLE, "Error adding product detail");
+        throw error;
+    }
+}
+const updateProductDetail = async (id, data, user) => {
+    try {
+        const productData = {
+            ...data,
+            updatedBy: user.username,
+        };
+        const updatedProduct = await ProductDetail.findByIdAndUpdate(
+            id,
+            productData,
+            {new: true}
+        );
+        if (!updatedProduct) {
+            throw new ApiErr(StatusCodes.BAD_REQUEST, "Cannot find this product");
+        }
+        return updatedProduct;
+    } catch (error) {
+        throw error;
+    }
+}
+const deleteProduct = async (id) => {
+    try {
+        const result = await Promise.all([
+            Product.findByIdAndDelete(id),
+            ProductDetail.deleteMany({productId: id})
+        ]);
+        if (!result[0]) throw new ApiErr(StatusCodes.BAD_REQUEST, "Cannot find this product");
+        return result
+    } catch (error) {
+        throw error;
     }
 }
 export const productService = {
@@ -122,5 +152,7 @@ export const productService = {
     getAll,
     getProductById,
     updateProduct,
-    createProductDetail
+    createProductDetail,
+    updateProductDetail,
+    deleteProduct
 }

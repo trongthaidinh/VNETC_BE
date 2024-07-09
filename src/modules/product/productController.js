@@ -61,19 +61,38 @@ const createNewsDetail = async (req, res, next) => {
     }
 }
 
-const getAllProductDetail = async (req, res, next) => {
+// const getAllProductDetail = async (req, res, next) => {
+//     try {
+//
+//     }catch (error) {
+//         next(error);
+//     }
+// }
+const updateProductDetail = async (req, res, next) => {
     try {
-        
-    }catch (error) {
+        const {body: data, params: {productId}, account: user} = req
+        const product = await productService.updateProductDetail(productId, data, user);
+        SuccessRes(res, product, "Update product detail success");
+    } catch (error) {
         next(error);
     }
 }
-
+const deleteProduct = async (req, res, next) => {
+    try {
+        const {id} = req.params;
+        const product = await productService.deleteProduct(id)
+        SuccessRes(res, product, "Delete product success");
+    } catch (error) {
+        next(error);
+    }
+}
 export const productController = {
     create,
     getAll,
     getProductById,
     updateProduct,
     createNewsDetail,
-    getAllProductDetail
+    updateProductDetail,
+    deleteProduct
+    // getAllProductDetail
 }
