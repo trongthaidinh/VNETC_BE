@@ -6,6 +6,7 @@ const {productService} = require("./productService")
 
 const create = async (req, res, next) => {
     try {
+        console.log(req)
         const created = await productService.create(req, "admin")//req.account.username
         if (!created) {
             throw new ApiErr(444, "Create fail")

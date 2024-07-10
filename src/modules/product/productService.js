@@ -11,13 +11,13 @@ const {Product} = require("~/models/productModel")
 
 const create = async (req, creator) => {
     try {
-        if (!req.file || !req.body) {
+        if (!req.files || !req.body) {
             throw new ApiErr(StatusCodes.BAD_REQUEST, "Invalid request data");
         }
-        const uploadedImage = await uploadImageToCloudinary(req.file.path);
+        const uploadedImage = await uploadImageToCloudinary(req.files);
         const productData = {
             ...req.body,
-            image: uploadedImage.secure_url,
+            image: uploadedImage,
             category_id: new ObjectId(req.body.categoryID),
             createdBy: creator
         };
@@ -50,7 +50,7 @@ const updateProduct = async (id, accountName, data, imageData) => {
         if (!id || !accountName || !data || !imageData || !imageData.path) {
             throw new ApiErr(StatusCodes.BAD_REQUEST, "Invalid input data");
         }
-        const { updateName: name, updateCate: category_id } = data;
+        const {updateName: name, updateCate: category_id} = data;
         const [imageUpload, product] = await Promise.all([
             uploadImageToCloudinary(imageData.path),
             Product.findById(id)
@@ -58,7 +58,7 @@ const updateProduct = async (id, accountName, data, imageData) => {
         if (!product) {
             throw new ApiErr(StatusCodes.NOT_FOUND, "Product not found");
         }
-        const updatedFields = { name, updatedBy: accountName, image: imageUpload.secure_url, category_id };
+        const updatedFields = {name, updatedBy: accountName, image: imageUpload.secure_url, category_id};
         const productData = Object.keys(updatedFields).reduce((acc, key) => {
             if (updatedFields[key] !== undefined && updatedFields[key] !== product[key]) {
                 acc[key] = updatedFields[key];
@@ -66,8 +66,11 @@ const updateProduct = async (id, accountName, data, imageData) => {
             return acc;
         }, {});
         const result = await Promise.all([
-            Product.findByIdAndUpdate(id, productData, { new: true, runValidators: true }),
-            ProductDetail.findOneAndUpdate({ productId: id }, { ...data, updatedBy: accountName }, { new: true, runValidators: true })
+            Product.findByIdAndUpdate(id, productData, {new: true, runValidators: true}),
+            ProductDetail.findOneAndUpdate({productId: id}, {...data, updatedBy: accountName}, {
+                new: true,
+                runValidators: true
+            })
         ]);
 
         return result;
@@ -76,7 +79,6 @@ const updateProduct = async (id, accountName, data, imageData) => {
         throw new ApiErr(StatusCodes.INTERNAL_SERVER_ERROR, "Error updating product");
     }
 };
-
 
 
 // const updateProduct = async (id, accountName, data, imageData) => {
