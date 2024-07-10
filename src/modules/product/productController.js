@@ -43,13 +43,6 @@ const updateProduct = async (req, res, next) => {
     }
 }
 
-// const deleteById = async (req, res, next) => {
-//   try {
-//
-//   }catch (e) {
-//
-//   }
-// }
 const createNewsDetail = async (req, res, next) => {
     try {
         // const {username: accountName} = req.account;
@@ -61,13 +54,6 @@ const createNewsDetail = async (req, res, next) => {
     }
 }
 
-// const getAllProductDetail = async (req, res, next) => {
-//     try {
-//
-//     }catch (error) {
-//         next(error);
-//     }
-// }
 const updateProductDetail = async (req, res, next) => {
     try {
         const {body: data, params: {productId}} = req //, account: user

@@ -5,32 +5,38 @@ import ApiErr from "~/utils/ApiError"
 import {ObjectId} from "mongodb"
 import uploadImageToCloudinary from "~/utils/uploadImage"
 import mongoose from "mongoose";
+import req from "express/lib/request";
 
 const {Product} = require("~/models/productModel")
 
 const create = async (req, creator) => {
     try {
-        // const existingProduct = await product.findOne(id);
-        // if (existingProductDetail) {
-        //     throw new ApiErr(StatusCodes.BAD_REQUEST, "Already exists for this product");
-        // }
-        const uploadImage = await uploadImageToCloudinary(req.file.path);
+        if (!req.file || !req.body) {
+            throw new ApiErr(StatusCodes.BAD_REQUEST, "Invalid request data");
+        }
+        const uploadedImage = await uploadImageToCloudinary(req.file.path);
         const productData = {
             ...req.body,
-            image: uploadImage.secure_url,
+            image: uploadedImage.secure_url,
             category_id: new ObjectId(req.body.categoryID),
             createdBy: creator
         };
-
         const product = new Product(productData);
         await product.save();
-
+        const productDetailData = {
+            ...req.body,
+            productId: product._id,
+            createdBy: creator,
+        };
+        const productDetail = new ProductDetail(productDetailData);
+        await productDetail.save();
         return product;
     } catch (error) {
         console.error("Error creating product:", error.message);
-        throw error;
+        throw error
     }
 };
+
 
 const getAll = async (query) => {
     const {page = 0, limit = 8} = query
@@ -39,28 +45,61 @@ const getAll = async (query) => {
         .limit(limit)
     return products
 }
-
 const updateProduct = async (id, accountName, data, imageData) => {
     try {
-        const {updateName: name, updateCate: category_id} = data;
-        const {secure_url: image} = await uploadImageToCloudinary(imageData.path);
-        const productData = {
-            name,
-            updatedBy: accountName,
-            image,
-            category_id
-        };
-        const updatedProduct = await Product.findByIdAndUpdate(
-            id,
-            productData,
-            {new: true, runValidators: true}
-        );
-        if (!updatedProduct) throw new ApiErr(StatusCodes.UNAUTHORIZED, "Cannot find Product ")
-        return updatedProduct;
+        if (!id || !accountName || !data || !imageData || !imageData.path) {
+            throw new ApiErr(StatusCodes.BAD_REQUEST, "Invalid input data");
+        }
+        const { updateName: name, updateCate: category_id } = data;
+        const [imageUpload, product] = await Promise.all([
+            uploadImageToCloudinary(imageData.path),
+            Product.findById(id)
+        ]);
+        if (!product) {
+            throw new ApiErr(StatusCodes.NOT_FOUND, "Product not found");
+        }
+        const updatedFields = { name, updatedBy: accountName, image: imageUpload.secure_url, category_id };
+        const productData = Object.keys(updatedFields).reduce((acc, key) => {
+            if (updatedFields[key] !== undefined && updatedFields[key] !== product[key]) {
+                acc[key] = updatedFields[key];
+            }
+            return acc;
+        }, {});
+        const result = await Promise.all([
+            Product.findByIdAndUpdate(id, productData, { new: true, runValidators: true }),
+            ProductDetail.findOneAndUpdate({ productId: id }, { ...data, updatedBy: accountName }, { new: true, runValidators: true })
+        ]);
+
+        return result;
     } catch (error) {
-        throw error;
+        console.error("Error updating product:", error.message);
+        throw new ApiErr(StatusCodes.INTERNAL_SERVER_ERROR, "Error updating product");
     }
 };
+
+
+
+// const updateProduct = async (id, accountName, data, imageData) => {
+//     try {
+//         const {updateName: name, updateCate: category_id} = data;
+//         const {secure_url: image} = await uploadImageToCloudinary(imageData.path);
+//         const productData = {
+//             name,
+//             updatedBy: accountName,
+//             image,
+//             category_id
+//         };
+//         const updatedProduct = await Product.findByIdAndUpdate(
+//             id,
+//             productData,
+//             {new: true, runValidators: true}
+//         );
+//         if (!updatedProduct) throw new ApiErr(StatusCodes.UNAUTHORIZED, "Cannot find Product ")
+//         return updatedProduct;
+//     } catch (error) {
+//         throw error;
+//     }
+// };
 
 
 const getProductById = async (id) => {
@@ -80,6 +119,7 @@ const getProductById = async (id) => {
             weight: detail.weight,
             size: detail.size,
             warranty: detail.warranty,
+            content: detail.content
         }));
 
         const result = {
