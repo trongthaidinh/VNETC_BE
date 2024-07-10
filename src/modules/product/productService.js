@@ -58,7 +58,6 @@ const updateProduct = async (id, accountName, data, imageData) => {
         if (!product) {
             throw new ApiErr(StatusCodes.NOT_FOUND, "Product not found");
         }
-        console.log()
         const updatedFields = {name, updatedBy: accountName, image: imageUpload, category_id};
         const productData = Object.keys(updatedFields).reduce((acc, key) => {
             if (updatedFields[key] !== undefined && updatedFields[key] !== product[key]) {
