@@ -47,18 +47,19 @@ const getAll = async (query) => {
 }
 const updateProduct = async (id, accountName, data, imageData) => {
     try {
-        if (!id || !accountName || !data || !imageData || !imageData.path) {
+        if (!id || !accountName || !data || !imageData) {
             throw new ApiErr(StatusCodes.BAD_REQUEST, "Invalid input data");
         }
         const {updateName: name, updateCate: category_id} = data;
         const [imageUpload, product] = await Promise.all([
-            uploadImageToCloudinary(imageData.path),
+            uploadImageToCloudinary(imageData),
             Product.findById(id)
         ]);
         if (!product) {
             throw new ApiErr(StatusCodes.NOT_FOUND, "Product not found");
         }
-        const updatedFields = {name, updatedBy: accountName, image: imageUpload.secure_url, category_id};
+        console.log()
+        const updatedFields = {name, updatedBy: accountName, image: imageUpload, category_id};
         const productData = Object.keys(updatedFields).reduce((acc, key) => {
             if (updatedFields[key] !== undefined && updatedFields[key] !== product[key]) {
                 acc[key] = updatedFields[key];

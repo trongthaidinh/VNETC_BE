@@ -36,7 +36,7 @@ const getProductById = async (req, res, next) => {
 const updateProduct = async (req, res, next) => {
     try {
         // const {username: accountName} = req.account;
-        const {body: data, params: {id}, file: imageData} = req;
+        const {body: data, params: {id}, files: imageData} = req;
         const product = await productService.updateProduct(id, "admin", data, imageData);
         SuccessRes(res, product, "Update product success");
     } catch (error) {
