@@ -21,7 +21,44 @@ const addNewsDetail = async (req, res, next) => {
     }
 }
 
+const getNews = async (req, res, next) => {
+    try {
+        const getNews = await newsService.findAllNews(req.query)
+        SuccessRes(res, getNews, 'get news successful')
+    } catch (error) {
+        next(error)
+    }
+}
+const getNewsbyid = async (req, res, next) => {
+    try {
+        const getNews = await newsService.getNewsByNId(req.params.id)
+        SuccessRes(res, getNews, 'get news successful')
+    } catch (error) {
+        next(error)
+    }
+}
+const deleteNews = async (req, res, next) => {
+    try {
+        const deleteNews = await newsService.deleteNews(req.params.id)
+        SuccessRes(res, deleteNews, 'Delete news successful')
+    } catch (error) {
+        next(error)
+    }
+}
+const updateNews = async (req, res, next) => {
+    try {
+        const update = await newsService.updateNews(req.params.id, req.body, req.file)
+        SuccessRes(res, update, 'Updated successful')
+    } catch (error) {
+        next(error)
+    }
+}
+
 export const newsController = {
     addNews,
-    addNewsDetail
+    addNewsDetail,
+    getNews,
+    getNewsbyid,
+    deleteNews,
+    updateNews
 }

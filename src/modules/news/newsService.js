@@ -1,4 +1,4 @@
-import {accountService} from "../account/accountService";
+import {accountService as news, accountService} from "../account/accountService";
 
 import uploadSingleImageToCloudinary from "~/utils/uploadSingleImage"
 import {body} from "express-validator";
@@ -10,30 +10,29 @@ const {Category} = require("~/models/categoryModel");
 const {News, NewsDetail} = require("~/models/newsModel")
 
 const findAllNews = async (data) => {
-    const {page = 0, limit = 100, categoryId} = data
-    const query = categoryId || {}
-
+    const {page, limit, categoryId} = data
+    const query = {categoryId} || {}
     const news = await News.find(query)
-        .skip(page * limit)
+        .skip(limit * (page - 1))
         .limit(limit)
         .sort({createdAt: -1});
 
     return news
 }
-const createNews = async ({title, summary, views, categoryId, accCreateId}, image) => {
+const createNews = async ({title, summary, views, categoryId, accCreateId, content}, image) => {
     try {
         const uploadImage = await uploadSingleImageToCloudinary(image.path);
         const images = uploadImage.secure_url;
-        const [cateIdExist, account, findNew] = await Promise.all([ 
+
+        const [cateIdExist, account, findNew] = await Promise.all([
             Category.exists({_id: categoryId}),
             accountService.findById(accCreateId, {username: 1}),
             News.exists({title}),
         ]);
-        if (findNew) throw new ApiErr(StatusCodes.BAD_REQUEST, "Already exists");
-        if (!cateIdExist) {
-            throw new ApiErr(StatusCodes.BAD_REQUEST, "CategoryId does not exist");
-        }
-        // Create the news object
+
+        if (findNew) throw new ApiErr(StatusCodes.BAD_REQUEST, "News with this title already exists");
+        if (!cateIdExist) throw new ApiErr(StatusCodes.BAD_REQUEST, "Category ID does not exist");
+
         const news = new News({
             title,
             summary,
@@ -42,10 +41,19 @@ const createNews = async ({title, summary, views, categoryId, accCreateId}, imag
             categoryId,
             createdBy: account.username
         });
+        const newsDetail = new NewsDetail({
+            content,
+            newsId: news._id,
+            createdBy: account.username
+        });
+
         await news.save();
+        await newsDetail.save();
+
         return news;
     } catch (error) {
-        throw error;
+        console.error("Error creating news:", error);
+        throw new ApiErr(StatusCodes.INTERNAL_SERVER_ERROR, "Internal server error");
     }
 };
 
@@ -66,22 +74,76 @@ const createNewsDetail = async (data) => {
     return newsDetail
 }
 
-const getNewsByCateId = async (categoryId) => {
-    const news = await News.find({categoryId})
-    return news
-}
-const getNewsDetailByNewsId = async (newsId) => {
-    const newsDetail = await NewsDetail.find({newsId})
-    return newsDetail
-}
-const updateNews = async (data) => {
-    const {id, newData} = data
-    const updated = await News.findByIdAndUpdate(id, newData)
-    if (!updated) {
-        throw new Error('update fail')
+// const getNewsByCateId = async (categoryId) => {
+//     const news = await News.find({categoryId})
+//     return news
+// }
+// const getNewsByNId = async (newsId) => {
+//     try {
+//         const news = await News.findById({_id: newsId})
+//         const newsDetail = await NewsDetail.find({newsId})
+//         news['content'] = newsDetail.content
+//         return news
+//     } catch (e) {
+//         throw e
+//     }
+// }
+const getNewsByNId = async (newsId) => {
+    try {
+        const [news, newsDetail] = await Promise.all([
+            News.findByIdAndUpdate(
+                newsId,
+                {$inc: {views: 1}}, // Increment the views count by 1
+                {new: true, lean: true} // Return the updated document and convert to plain JS object
+            ),
+            NewsDetail.findOne({newsId}).lean()
+        ]);
+        if (!news) {
+            throw new Error(`News not found with id: ${newsId}`);
+        }
+        if (!newsDetail) {
+            throw new Error(`NewsDetail not found with newsId: ${newsId}`);
+        }
+        news.content = newsDetail.content;
+        return {
+            status: true,
+            data: news,
+            message: 'get news successful'
+        };
+    } catch (e) {
+        throw new Error('Error retrieving news: ' + e.message);
     }
-    return updated
-}
+};
+
+
+const updateNews = async (id, data, file) => {
+    try {
+        if (file) {
+            const uploadImage = await uploadSingleImageToCloudinary(file.path);
+            data.images = uploadImage.secure_url;
+        }
+        const updatedNews = await News.findByIdAndUpdate(
+            {_id: id},
+            {$set: {...data, updatedBy: "admin"}},
+            {new: true}
+        );
+        if (!updatedNews) {
+            throw new Error('Update failed: News not found');
+        }
+        const updatedNewsDetail = await NewsDetail.findOneAndUpdate(
+            {newsId: id},
+            {$set: {content: data.content, updatedBy: "admin"}},
+            {new: true}
+        );
+        if (!updatedNewsDetail) {
+            throw new Error('Update failed: NewsDetail not found');
+        }
+        return {updatedNews, updatedNewsDetail};
+    } catch (err) {
+        throw new Error('Error updating news: ' + err.message);
+    }
+};
+
 const updateNewsDetail = async (data) => {
     const {id, newData} = data
     const updated = await NewsDetail.findByIdAndUpdate(id, newData)
@@ -95,12 +157,9 @@ const deleteNews = async (id) => {
     if (!news) {
         throw new Error('Not found news')
     }
-
-    const newsDetailExist = await NewsDetail.exists({newsId: news._id})
-    if (newsDetailExist) {
-        throw new Error('Lỗi khóa ngoại')
+    if (news) {
+        NewsDetail.deleteOne({newsId: news._id})
     }
-
     await news.deleteOne()
     return true
 }
@@ -115,5 +174,8 @@ const deleteNewsDetail = async (id) => {
 export const newsService = {
     createNews,
     createNewsDetail,
-    findAllNews
+    findAllNews,
+    deleteNews,
+    updateNews,
+    getNewsByNId
 }
