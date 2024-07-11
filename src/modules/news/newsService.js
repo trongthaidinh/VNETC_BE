@@ -105,11 +105,7 @@ const getNewsByNId = async (newsId) => {
             throw new Error(`NewsDetail not found with newsId: ${newsId}`);
         }
         news.content = newsDetail.content;
-        return {
-            status: true,
-            data: news,
-            message: 'get news successful'
-        };
+        return news
     } catch (e) {
         throw new Error('Error retrieving news: ' + e.message);
     }
