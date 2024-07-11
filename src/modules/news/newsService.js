@@ -10,9 +10,10 @@ const {Category} = require("~/models/categoryModel");
 const {News, NewsDetail} = require("~/models/newsModel")
 
 const findAllNews = async (data) => {
-    const {page, limit, categoryId} = data
-    const query = {categoryId} || {}
-    const news = await News.find(query)
+    // const {page, limit, categoryId} = data
+    const {page, limit} = data
+    // const query = {categoryId} || {}
+    const news = await News.find()
         .skip(limit * (page - 1))
         .limit(limit)
         .sort({createdAt: -1});
@@ -74,20 +75,6 @@ const createNewsDetail = async (data) => {
     return newsDetail
 }
 
-// const getNewsByCateId = async (categoryId) => {
-//     const news = await News.find({categoryId})
-//     return news
-// }
-// const getNewsByNId = async (newsId) => {
-//     try {
-//         const news = await News.findById({_id: newsId})
-//         const newsDetail = await NewsDetail.find({newsId})
-//         news['content'] = newsDetail.content
-//         return news
-//     } catch (e) {
-//         throw e
-//     }
-// }
 const getNewsByNId = async (newsId) => {
     try {
         const [news, newsDetail] = await Promise.all([
