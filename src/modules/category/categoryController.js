@@ -14,7 +14,7 @@ const addCategory = async (req, res, next) => {
 }
 const getCates = async (req, res, next) => {
     try {
-        const cates = await categoryModel.getCates()
+        const cates = await categoryService.getCates()
         SuccessRes(res, cates, 'Get categories successful')
     } catch (error) {
         next(error)
