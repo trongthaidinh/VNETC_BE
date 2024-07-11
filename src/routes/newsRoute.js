@@ -1,9 +1,10 @@
 import express from 'express'
 import { newsController } from '~/modules/news/newsController'
+import {upload} from "~/middlewares/multipleUploadMiddleware";
 const Router = express.Router()
 
 Router.route('/')
-    .post(newsController.addNews)
+    .post(upload.single('images'),newsController.addNews)
     
     
 Router.route('/:id')
