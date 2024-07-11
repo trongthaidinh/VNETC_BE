@@ -101,31 +101,39 @@ const getNewsByNId = async (newsId) => {
 
 const updateNews = async (id, data, file) => {
     try {
-        if (file) {
-            const uploadImage = await uploadSingleImageToCloudinary(file.path);
-            data.images = uploadImage.secure_url;
-        }
-        const updatedNews = await News.findByIdAndUpdate(
-            {_id: id},
-            {$set: {...data, updatedBy: "admin"}},
-            {new: true}
-        );
+        const {path} = file;
+        const {content} = data;
+
+        const uploadImage = file ? await uploadSingleImageToCloudinary(path) : null;
+        const images = uploadImage ? uploadImage.secure_url : null;
+
+        const [updatedNews, updatedNewsDetail] = await Promise.all([
+            News.findByIdAndUpdate(
+                {_id: id},
+                {$set: {...data, images, updatedBy: "admin"}},
+                {new: true}
+            ),
+            NewsDetail.findOneAndUpdate(
+                {newsId: id},
+                {$set: {content, updatedBy: "admin"}},
+                {new: true}
+            ),
+        ]);
+
         if (!updatedNews) {
-            throw new Error('Update failed: News not found');
+            throw new Error('News not found');
         }
-        const updatedNewsDetail = await NewsDetail.findOneAndUpdate(
-            {newsId: id},
-            {$set: {content: data.content, updatedBy: "admin"}},
-            {new: true}
-        );
+
         if (!updatedNewsDetail) {
-            throw new Error('Update failed: NewsDetail not found');
+            throw new Error('NewsDetail not found');
         }
+
         return {updatedNews, updatedNewsDetail};
     } catch (err) {
-        throw new Error('Error updating news: ' + err.message);
+        throw new Error(`Error updating news: ${err.message}`);
     }
 };
+
 
 const updateNewsDetail = async (data) => {
     const {id, newData} = data
