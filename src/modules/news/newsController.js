@@ -5,7 +5,6 @@ const {SuccessRes} = require("~/utils/SuccessRes")
 
 const addNews = async (req, res, next) => {
     try {
-        console.log(req)
         const {body: data, file: image} = req
         const added = await newsService.createNews(data, image)
         SuccessRes(res, added, 'Add news succesfull')
@@ -54,12 +53,19 @@ const updateNews = async (req, res, next) => {
         next(error)
     }
 }
-const getTopViews = async (req,res, next) => {
+const getTopViews = async (req, res, next) => {
     try {
-        console.log("vaoday")
-        const result = await  newsService.getTopViews()
-        SuccessRes (res, result, 'Get Top Views Successs')
-    }catch (e) {
+        const result = await newsService.getTopViews()
+        SuccessRes(res, result, 'Get Top Views Successs')
+    } catch (e) {
+        next(e)
+    }
+}
+const getFeatured = async (req, res, next) => {
+    try {
+        const result = await newsService.getFeatured()
+        SuccessRes(res, result, 'Get Featured Successs')
+    } catch (e) {
         next(e)
     }
 }
@@ -70,5 +76,6 @@ export const newsController = {
     getNewsbyid,
     deleteNews,
     updateNews,
-    getTopViews
+    getTopViews,
+    getFeatured
 }

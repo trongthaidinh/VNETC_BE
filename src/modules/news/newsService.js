@@ -101,10 +101,9 @@ const getNewsByNId = async (newsId) => {
 
 const updateNews = async (id, data, file) => {
     try {
-        const {path} = file;
         const {content} = data;
 
-        const uploadImage = file ? await uploadSingleImageToCloudinary(path) : null;
+        const uploadImage = file ? await uploadSingleImageToCloudinary(file.path) : null;
         const images = uploadImage ? uploadImage.secure_url : null;
 
         const [updatedNews, updatedNewsDetail] = await Promise.all([
@@ -172,6 +171,14 @@ const getTopViews = async () => {
         throw e
     }
 }
+const getFeatured = async () => {
+    try {
+        const featured = await News.find({isFeatured: true}).limit(5).sort({createdAt: -1});
+        return featured
+    } catch (e) {
+        throw e
+    }
+}
 export const newsService = {
     createNews,
     createNewsDetail,
@@ -179,5 +186,6 @@ export const newsService = {
     deleteNews,
     updateNews,
     getNewsByNId,
-    getTopViews
+    getTopViews,
+    getFeatured
 }
