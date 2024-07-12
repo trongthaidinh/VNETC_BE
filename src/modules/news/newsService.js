@@ -12,7 +12,7 @@ const {News, NewsDetail} = require("~/models/newsModel")
 const findAllNews = async (data) => {
     const {page, limit, categoryId} = data
     // const {page, limit} = data
-    const query = {categoryId} || {}
+    const query = categoryId ? { categoryId } : {};
     const news = await News.find(query)
         .skip(limit * (page - 1))
         .limit(limit)

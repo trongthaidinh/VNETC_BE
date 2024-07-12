@@ -37,7 +37,10 @@ const getCates = async () => {
     const cates = await Category.find()
     return cates
 }
-
+const getByType = async (value) => {
+    const cates = await Category.find({type: value})
+    return cates
+}
 const updateCate = async (data) => {
     const {id, name, updatedBy} = data
 
@@ -54,4 +57,5 @@ export const categoryService = {
     deleteCate,
     updateCate,
     getCates,
+    getByType
 }
