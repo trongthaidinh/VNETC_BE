@@ -7,7 +7,7 @@ const Router = express.Router()
 Router.route('/')
     .post(upload.single('images'), newsController.addNews)
     .get(newsController.getNews)
-
+Router.route('/views').get(newsController.getTopViews)
 Router.route('/:id')
     .post(newsController.addNewsDetail)
     .get(newsController.getNewsbyid)

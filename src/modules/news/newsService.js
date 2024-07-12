@@ -10,10 +10,10 @@ const {Category} = require("~/models/categoryModel");
 const {News, NewsDetail} = require("~/models/newsModel")
 
 const findAllNews = async (data) => {
-    // const {page, limit, categoryId} = data
-    const {page, limit} = data
-    // const query = {categoryId} || {}
-    const news = await News.find()
+    const {page, limit, categoryId} = data
+    // const {page, limit} = data
+    const query = {categoryId} || {}
+    const news = await News.find(query)
         .skip(limit * (page - 1))
         .limit(limit)
         .sort({createdAt: -1});
@@ -161,12 +161,23 @@ const deleteNewsDetail = async (id) => {
     }
     return true
 }
-
+const getTopViews = async () => {
+    try {
+        const news = await News.find()
+            .limit(8)
+            .sort({views: -1});
+        console.log(news)
+        return news
+    } catch (e) {
+        throw e
+    }
+}
 export const newsService = {
     createNews,
     createNewsDetail,
     findAllNews,
     deleteNews,
     updateNews,
-    getNewsByNId
+    getNewsByNId,
+    getTopViews
 }
