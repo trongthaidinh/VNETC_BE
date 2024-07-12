@@ -1,10 +1,11 @@
 import mongoose from "mongoose"
-const { Schema } = mongoose
+
+const {Schema} = mongoose
 
 const serviceSchema = new Schema({
-    name:{
-        type:String,
-        required:true
+    name: {
+        type: String,
+        required: true
     },
     createdBy: {
         type: String,
@@ -12,8 +13,8 @@ const serviceSchema = new Schema({
     },
     updatedBy: {
         type: String,
-        required: true
+        default: null
     },
-}, { timestamps: true })
+}, {timestamps: true})
 
-export const Service = mongoose.model('Service', serviceSchema)
+export const ServiceModel = mongoose.model('Service', serviceSchema)

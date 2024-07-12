@@ -12,7 +12,7 @@ const {News, NewsDetail} = require("~/models/newsModel")
 const findAllNews = async (data) => {
     const {page, limit, categoryId} = data
     // const {page, limit} = data
-    const query = categoryId ? { categoryId } : {};
+    const query = categoryId ? {categoryId} : {};
     const news = await News.find(query)
         .skip(limit * (page - 1))
         .limit(limit)
@@ -22,7 +22,9 @@ const findAllNews = async (data) => {
 }
 const createNews = async ({title, summary, views, categoryId, accCreateId, content}, image) => {
     try {
+        if (!image.path) throw new ApiErr(StatusCodes.BAD_REQUEST, "Cant find Image");
         const uploadImage = await uploadSingleImageToCloudinary(image.path);
+        if (!uploadImage) throw new ApiErr(StatusCodes.BAD_REQUEST, "Upload Image fail");
         const images = uploadImage.secure_url;
 
         const [cateIdExist, account, findNew] = await Promise.all([
