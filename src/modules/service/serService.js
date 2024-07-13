@@ -22,9 +22,10 @@ class SerService {
         }
     }
 
-    async getService({page, limit}) {
+    async getService({page, limit, type}) {
         try {
-            const service = await ServiceModel.find().skip(limit * (page - 1)).limit(limit).sort({createdAt: -1})
+            const query = type ? {serviceType: type} : {};
+            const service = await ServiceModel.find(query).skip(limit * (page - 1)).limit(limit).sort({createdAt: -1})
             return service
         } catch (e) {
             throw e

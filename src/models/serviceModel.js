@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import {number} from "joi";
 
 const {Schema} = mongoose
 
@@ -23,6 +24,11 @@ const serviceSchema = new Schema({
         type: String,
         default: null
     },
+    serviceType: {
+        type: Number,
+        enum: [0, 1, 2],
+        required: true
+    }
 }, {timestamps: true})
 
 export const ServiceModel = mongoose.model('Service', serviceSchema)
