@@ -7,6 +7,14 @@ const serviceSchema = new Schema({
         type: String,
         required: true
     },
+    views: {
+        type: Number,
+        default: 0
+    },
+    isFeatured: {
+        type: Boolean,
+        default: false
+    },
     createdBy: {
         type: String,
         required: true

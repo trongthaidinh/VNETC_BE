@@ -1,6 +1,7 @@
 import ApiErr from "~/utils/ApiError";
 import {SuccessRes} from "~/utils/SuccessRes";
 import Service from "~/modules/service/serService";
+import {newsService} from "~/modules/news/newsService";
 
 export const addService = async (req, res, next) => {
     try {
@@ -21,12 +22,12 @@ export const getService = async (req, res, next) => {
         next(error)
     }
 }
-export  const getServiceById = async (req,res, next) =>{
+export const getServiceById = async (req, res, next) => {
     try {
         const id = req.params.id
         const result = await Service.getServiceById(id)
         SuccessRes(res, result, "Get Service by id success")
-    }catch (e) {
+    } catch (e) {
         next(e)
     }
 }
@@ -45,6 +46,22 @@ export const deleteService = async (req, res, next) => {
         const id = req.params.id
         const result = await Service.deleteService(id)
         SuccessRes(res, result, "Delete Service success")
+    } catch (e) {
+        next(e)
+    }
+}
+export const getByTopViews = async (req, res, next) => {
+    try {
+        const result = await Service.getByTopViews()
+        SuccessRes(res, result, "Get by Top Views Success")
+    } catch (e) {
+        next(e)
+    }
+}
+export const getByFeatured = async (req, res, next) => {
+    try {
+        const result = await Service.getFeatured()
+        SuccessRes(res, result, 'Get Featured Successs')
     } catch (e) {
         next(e)
     }

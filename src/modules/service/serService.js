@@ -71,7 +71,11 @@ class SerService {
 
     async getServiceById(serviceId) {
         try {
-            const service = await ServiceModel.findById(serviceId);
+            const service = await
+                ServiceModel.findByIdAndUpdate(
+                    serviceId,
+                    {$inc: {views: 1}},
+                    {new: true, lean: true});
             if (!service) {
                 throw new ApiErr(StatusCodes.BAD_REQUEST, "Service detail not found");
             }
@@ -83,10 +87,11 @@ class SerService {
             const data = {
                 _id: service._id,
                 name: service.name,
+                views: service.views,
                 createdBy: service.createdBy,
                 updatedBy: service.updatedBy,
-                createdAt: service.createdAt,
-                updatedAt: service.updatedAt,
+                // createdAt: service.createdAt,
+                // updatedAt: service.updatedAt,
                 content: serviceDetails.content // Ensure content is included
             };
             return data;
@@ -95,7 +100,24 @@ class SerService {
         }
     }
 
+    async getByTopViews() {
+        try {
+            const data = await ServiceModel.find()
+                .limit(8)
+                .sort({views: -1});
+            return data
+        } catch (e) {
+            throw e
+        }
+    }
 
+    async getFeatured() {
+        try {
+            return await ServiceModel.find({isFeatured: true}).limit(5).sort({createdAt: -1})
+        } catch (e) {
+            throw e
+        }
+    }
 }
 
 
