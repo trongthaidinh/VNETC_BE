@@ -7,7 +7,6 @@ export const addService = async (req, res, next) => {
     try {
         const data = req.body
         const result = await Service.addService(data)
-
         SuccessRes(res, result, "Create new Service success")
     } catch (error) {
         next(error)
