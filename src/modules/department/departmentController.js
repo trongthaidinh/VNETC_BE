@@ -39,10 +39,58 @@ const deleteDepartment = async (req, res, next) => {
         next(e)
     }
 }
-
-export const deparmentController = {
+const updateDepartment = async (req, res, next) => {
+    try {
+        const id = req.params.id
+        const data = req.body
+        const file = req.file
+        const result = await departmentService.updateDepartment(id, data, file)
+        SuccessRes(res, result, 'Updated Department')
+    } catch (e) {
+        next(e)
+    }
+}
+const updateMember = async (req, res, next) => {
+    try {
+        const id = req.params.memberId
+        const data = req.body
+        const result = await departmentService.updatedMember(id, data)
+        SuccessRes(res, result, 'Updated Member')
+    } catch (e) {
+        next(e)
+    }
+}
+const getMember = async (req, res, next) => {
+    try {
+        const id = req.params.id
+        const pagi = req.query
+        const result = await departmentService.getMember(id, pagi)
+        SuccessRes(res, result, 'Get Member Success')
+    } catch (e) {
+        next(e)
+    }
+}
+const deleteMember = async (req, res, next) => {
+    try {
+        const id = req.params.memberId
+        const result = await departmentService.deleteMember(id)
+        SuccessRes(res, result, 'Delete Member Success')
+    } catch (e) {
+        next(e)
+    }
+}
+const getMemberById = async (req,res, next) =>{
+    try {
+        const id = req.params.memberId
+        const result = await departmentService.getMemberById(id)
+        SuccessRes(res, result, 'Delete Member Success')
+    }catch (e) {
+        next(e)
+    }
+}
+export const departmentController = {
     create,
     getAll,
     createMember,
-    deleteDepartment
+    deleteDepartment, updateDepartment, updateMember, getMember, deleteMember,getMemberById
 }

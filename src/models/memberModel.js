@@ -1,5 +1,6 @@
 import {populate} from "dotenv"
 import mongoose from "mongoose"
+import {number} from "joi";
 
 const {Schema} = mongoose
 
@@ -13,6 +14,18 @@ const memberSchema = new Schema({
         enum: [0, 1],
         default: 1,
         required: true
+    },
+    yearOfBirth: {
+        type: Number,
+        require: true
+    },
+    qualification: {
+        type: String,
+        require: true
+    },
+    seniority: {
+        type: Number,
+        require: true
     },
     image: {
         type: String,
