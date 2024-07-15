@@ -2,11 +2,14 @@ import {ServiceModel} from "~/models/serviceModel";
 import {ServiceDetailModel} from "~/models/serviceDetailModel";
 import ApiErr from "~/utils/ApiError";
 import {StatusCodes} from "http-status-codes";
+import uploadSingleImageToCloudinary from "~/utils/uploadSingleImage";
 
 class SerService {
-    async addService(data) {
+    async addService(data, file) {
         try {
+            const uploadedImage = await uploadSingleImageToCloudinary(file.path);
             const service = new ServiceModel(data);
+            service.image = uploadedImage.secure_url
             await service.save();
 
             const newOrder = new ServiceDetailModel({
@@ -46,29 +49,53 @@ class SerService {
         }
     }
 
-    async updateService(serviceId, data) {
+    async updateService(serviceId, data, file) {
         try {
-            const service = await ServiceModel.findByIdAndUpdate(serviceId, data, {new: true});
-            if (!service) {
-                throw new Error('Service not found');
-            }
-            if (data.content || data.updatedBy) {
-                await ServiceDetailModel.updateMany(
-                    {serviceId: serviceId},
-                    {
-                        $set: {
-                            ...(data.content && {content: data.content}),
-                            ...(data.updatedBy && {updatedBy: data.updatedBy})
-                        }
-                    }
-                );
+            // Xử lý việc upload file nếu có
+            let imageUrl;
+            if (file) {
+                const uploadedImage = await uploadSingleImageToCloudinary(file.path);
+                imageUrl = uploadedImage.secure_url;
             }
 
-            return service;
+            // Cập nhật service
+            const serviceUpdateData = {
+                name: data.name,
+                description: data.description,
+            };
+
+            if (imageUrl) {
+                serviceUpdateData.image = imageUrl;
+            }
+
+            const service = await ServiceModel.findByIdAndUpdate(
+                serviceId,
+                {$set: serviceUpdateData},
+                {new: true, runValidators: true}
+            );
+
+            if (!service) {
+                throw new Error('Không tìm thấy dịch vụ');
+            }
+
+            // Cập nhật hoặc tạo mới serviceDetail
+            const serviceDetailUpdateData = {
+                content: data.content,
+                createdBy: data.createdBy,
+            };
+
+            const serviceDetail = await ServiceDetailModel.findOneAndUpdate(
+                {serviceId: service._id},
+                {$set: serviceDetailUpdateData},
+                {new: true, upsert: true, runValidators: true}
+            );
+
+            return [service, serviceDetail];
         } catch (e) {
             throw e;
         }
     }
+
 
     async getServiceById(serviceId) {
         try {

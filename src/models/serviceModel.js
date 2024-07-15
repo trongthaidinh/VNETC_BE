@@ -8,6 +8,14 @@ const serviceSchema = new Schema({
         type: String,
         required: true
     },
+    image: {
+        type: mongoose.Schema.Types.Mixed,
+        required: true,
+    },
+    summary: {
+        type: String,
+        default: ''
+    },
     views: {
         type: Number,
         default: 0

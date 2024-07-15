@@ -18,7 +18,8 @@ const io = require('socket.io')(server,{
     origin: '*'
   }
 })
-
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(cors())
 app.use(bodyParser.json())
 app.use(morgan('dev'))
