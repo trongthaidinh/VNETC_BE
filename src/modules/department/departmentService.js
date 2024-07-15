@@ -124,5 +124,6 @@ export const departmentService = {
     updateDepartment,
     getMember,
     updatedMember,
-    deleteMember
+    deleteMember,
+    getMemberById
 }

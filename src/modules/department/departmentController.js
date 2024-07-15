@@ -79,12 +79,12 @@ const deleteMember = async (req, res, next) => {
         next(e)
     }
 }
-const getMemberById = async (req,res, next) =>{
+const getMemberById = async (req, res, next) => {
     try {
         const id = req.params.memberId
         const result = await departmentService.getMemberById(id)
         SuccessRes(res, result, 'Delete Member Success')
-    }catch (e) {
+    } catch (e) {
         next(e)
     }
 }
@@ -92,5 +92,5 @@ export const departmentController = {
     create,
     getAll,
     createMember,
-    deleteDepartment, updateDepartment, updateMember, getMember, deleteMember,getMemberById
+    deleteDepartment, updateDepartment, updateMember, getMember, deleteMember, getMemberById
 }

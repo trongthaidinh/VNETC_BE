@@ -16,6 +16,6 @@ Router.route('/:id')
 Router.route('/:id/members').get(departmentController.getMember)
 Router.route('/:id/members/:memberId')
     .patch(upload.single('image'),departmentController.updateMember)  // Sửa thông tin thành viên
-    .delete(departmentController.deleteMember);  // Xóa thành viên
-    .get(departmentController.getMemberByID)
+    .delete(departmentController.deleteMember) // Xóa thành viên
+    .get(departmentController.getMemberById)
 export const departmentRoute = Router
