@@ -12,5 +12,5 @@ const slugify = (val) => {
             .replace(/\s+/g, '-') // thay thế các khoảng trắng bằng dấu gạch ngang
             .replace(/-+/g, '-') // loại bỏ các dấu gạch ngang liên tiếp
     }
-
+}
     export default slugify
