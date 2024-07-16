@@ -118,6 +118,7 @@ class SerService {
                 views: service.views,
                 createdBy: service.createdBy,
                 updatedBy: service.updatedBy,
+                image: service.image,
                 // createdAt: service.createdAt,
                 // updatedAt: service.updatedAt,
                 content: serviceDetails.content // Ensure content is included
