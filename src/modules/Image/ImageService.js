@@ -13,6 +13,11 @@ class ImageService {
 
         return savedImages;
     }
+
+    async getImage(req) {
+        const {page, limit} = req.query
+        return LibraryImage.find().skip(limit * (page - 1)).limit(limit)
+    }
 }
 
 const imageService = new ImageService();

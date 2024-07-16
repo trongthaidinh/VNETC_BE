@@ -6,5 +6,5 @@ import {addImage, getImage} from "~/modules/Image/imageController";
 const Image = Router();
 
 Image.post("/", upload.array("image"), addImage)
-// Image.get("/", getImage)
+Image.get("/", getImage)
 export const ImageLibratyRoute = Image;
