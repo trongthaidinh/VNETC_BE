@@ -38,12 +38,14 @@ const create = async (req, creator) => {
 };
 
 
-const getAll = async (query) => {
-    const {page, limit, category_id} = query
-    console.log(category_id)
-    const products = await Product.find({category_id})
+const getAll = async (data) => {
+    const {page, limit, category_id} = data
+    const query = category_id ? {category_id} : {};
+    console.log(query)
+    const products = await Product.find(query)
         .skip(limit * (page - 1))
         .limit(limit)
+        .sort({createdAt: -1});
     return products
 }
 const updateProduct = async (id, accountName, data, imageData) => {

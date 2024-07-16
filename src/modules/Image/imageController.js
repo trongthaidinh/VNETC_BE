@@ -10,3 +10,10 @@ export const addImage = async (req, res, next) => {
         next(error)
     }
 }
+// export  const getImage =async  (req,res, next) => {
+//     try {
+//         const
+//     }catch (e) {
+//         next(e)
+//     }
+// }
