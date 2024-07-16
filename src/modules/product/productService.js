@@ -14,7 +14,6 @@ const create = async (req, creator) => {
         if (!req.files || !req.body) {
             throw new ApiErr(StatusCodes.BAD_REQUEST, "Invalid request data");
         }
-        console.log(req.files)
         const uploadedImage = await uploadImageToCloudinary(req.files);
         const productData = {
             ...req.body,
@@ -40,9 +39,10 @@ const create = async (req, creator) => {
 
 
 const getAll = async (query) => {
-    const {page = 0, limit = 8} = query
-    const products = await Product.find()
-        .skip(page * limit)
+    const {page, limit, category_id} = query
+    console.log(category_id)
+    const products = await Product.find({category_id})
+        .skip(limit * (page - 1))
         .limit(limit)
     return products
 }
