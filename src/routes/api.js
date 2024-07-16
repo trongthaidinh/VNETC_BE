@@ -10,6 +10,7 @@ import {departmentRoute} from "./departmentRoute"
 import {ConfigRoute} from "./ConfigRoute"
 import {ServiceRoute} from "~/routes/serviceRoute";
 import {ProjectRoute} from "~/routes/projectRoute";
+import {SearchRoute} from "~/routes/SearchRoute";
 
 const initApis = (app) => {
     app.use("/api/navigation", navigationRoute)
@@ -24,6 +25,7 @@ const initApis = (app) => {
     app.use("/api/configuration", ConfigRoute)
     app.use("/api/services", ServiceRoute)
     app.use("/api/project", ProjectRoute)
+    app.use("/api/search", SearchRoute)
 }
 
 export default initApis
