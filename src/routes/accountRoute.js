@@ -6,7 +6,7 @@ const Router = express.Router()
 
 Router.route('/')
     .post(isAuth,valid.create, conntrol.create)
-    .put(conntrol.changePassword)
+    // .put(conntrol.changePassword)
     .delete(conntrol.deleteAccount)
     .patch(conntrol.updateAccount)
     .get(conntrol.getAllAccount)

@@ -107,7 +107,7 @@ class ProjectService {
 
             const projectDetails = await projectDetail.findOne({projectId: projectId});
             if (!projectDetails) {
-                throw new ApiErr(StatusCodes.BAD_REQUEST, "Service details not found");
+                throw new ApiErr(StatusCodes.BAD_REQUEST, "Project details not found");
             }
             const data = {
                 // _id: project._id,
@@ -118,8 +118,8 @@ class ProjectService {
                 projectType: project.projectType,
                 createdBy: project.createdBy,
                 updatedBy: project.updatedBy,
-                // createdAt: service.createdAt,
-                // updatedAt: service.updatedAt,
+                createdAt: project.createdAt,
+                updatedAt: project.updatedAt,
                 content: projectDetails.content // Ensure content is included
             };
             return data;

@@ -1,15 +1,16 @@
-import { StatusCodes } from 'http-status-codes'
+import {StatusCodes} from 'http-status-codes'
 import mongoose from 'mongoose'
-import { env } from '~/config/environment'
+import {env} from '~/config/environment'
 import ApiErr from '~/utils/ApiError'
-const { Schema } = mongoose
+
+const {Schema} = mongoose
 import bcryptjs from 'bcryptjs'
 
 const accountSchema = new Schema({
     username: {
         type: String,
         required: true,
-        unique:true
+        unique: true
     },
     password: {
         type: String,
@@ -17,10 +18,12 @@ const accountSchema = new Schema({
     },
     email: {
         type: String,
+        unique: true,
         required: true
     },
     fullName: {
         type: String,
+        unique: true,
         required: true
     },
     createdBy: {
@@ -35,7 +38,7 @@ const accountSchema = new Schema({
         type: Boolean,
         default: false
     },
-}, { timestamps: true })
+}, {timestamps: true})
 
 export const Account = mongoose.model('Account', accountSchema)
 
@@ -45,8 +48,8 @@ const isAdmin = (email) => {
     }
 }
 const addAccount = async (data) => {
-    const { email } = data
-    const accountExist = await Account.exists({ email: email })
+    const {email} = data
+    const accountExist = await Account.exists({email: email})
 
     console.log(accountExist);
 
@@ -55,7 +58,7 @@ const addAccount = async (data) => {
     }
 
     const salt = bcryptjs.genSaltSync(10)
-    const hash = bcryptjs.hashSync(password,salt)
+    const hash = bcryptjs.hashSync(password, salt)
     data.password = hash
 
     const newAccount = new Account(data)
@@ -63,8 +66,8 @@ const addAccount = async (data) => {
     return newAccount
 }
 const changePassword = async (data) => {
-    const { accountId, newPassword } = data
-    const changed = await Account.findByIdAndUpdate(accountId, { password: newPassword })
+    const {accountId, newPassword} = data
+    const changed = await Account.findByIdAndUpdate(accountId, {password: newPassword})
     if (!changed) {
         throw new Error('Update fail')
     }
@@ -73,11 +76,11 @@ const changePassword = async (data) => {
 const updateAccount = async (data) => {
     const {accountId, username, fullName} = data
 
-    const account = await getAccountById(accountId,{username:1,fullName:1})
+    const account = await Account.findByIdAndUpdate(accountId, {username: 1, fullName: 1})
     account.username = username
     account.fullName = fullName
     await account.save()
-    return account 
+    return account
 }
 const deleteAccount = async (id) => {
     const deleted = await Account.findByIdAndDelete(id)
@@ -87,7 +90,7 @@ const deleteAccount = async (id) => {
     return true
 }
 const getAllAccount = async () => {
-    const accounts = await Account.find({_destroy:{$ne: true}},{password:0,_destroy:0})
+    const accounts = await Account.find({_destroy: {$ne: true}}, {password: 0, _destroy: 0})
     return accounts
 }
 

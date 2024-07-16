@@ -14,6 +14,7 @@ const create = async (req, creator) => {
         if (!req.files || !req.body) {
             throw new ApiErr(StatusCodes.BAD_REQUEST, "Invalid request data");
         }
+        console.log(req.files)
         const uploadedImage = await uploadImageToCloudinary(req.files);
         const productData = {
             ...req.body,

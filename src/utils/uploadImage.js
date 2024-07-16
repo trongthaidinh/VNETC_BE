@@ -1,15 +1,18 @@
 import cloudinary from "~/helper/cloundinary"
 
-const uploadImageToCloudinary = (filePath) => {
-    return new Promise((resolve, reject) => {
-        cloudinary.uploader.upload(filePath, (err, result) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(result);
-            }
-        });
-    });
+const uploadImageToCloudinary = async (filePaths) => {
+    try {
+        const uploadPromises = filePaths.map((filePath) =>
+            cloudinary.uploader.upload(filePath.path)
+        );
+
+        const uploadResults = await Promise.all(uploadPromises);
+        const secureUrls = uploadResults.map(result => result.secure_url);
+
+        return secureUrls;
+    } catch (error) {
+        throw new Error(`Image upload failed: ${error.message}`);
+    }
 };
 
 module.exports = uploadImageToCloudinary;

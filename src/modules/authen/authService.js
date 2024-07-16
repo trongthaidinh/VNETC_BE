@@ -7,7 +7,7 @@ import bcrypt from 'bcryptjs'
 
 const login = async (email, password) => {
     try {
-        const account = await Account.findOne({email}, {});
+        const account = await Account.findOne({email});
         if (!account) {
             throw new ApiErr(StatusCodes.NOT_FOUND, 'Account not found');
         }
