@@ -7,9 +7,7 @@ const uploadImageToCloudinary = async (filePaths) => {
         );
 
         const uploadResults = await Promise.all(uploadPromises);
-        const secureUrls = uploadResults.map(result => result.secure_url);
-
-        return secureUrls;
+        return uploadResults.map(result => result.secure_url);
     } catch (error) {
         throw new Error(`Image upload failed: ${error.message}`);
     }

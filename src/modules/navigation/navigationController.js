@@ -31,7 +31,19 @@ const addNavigation = async (req, res, next) => {
         next(error)
     }
 }
+const updateNavigation = async (req, res, next) => {
+    try {
 
+        const added = await navigationService.updateNavigation(
+            req.params.id,
+            req.body,
+            req.account.username,
+        )
+        SuccessRes(res, added, "Add navigation successful")
+    } catch (error) {
+        next(error)
+    }
+}
 const deleteNavigation = async (req, res, next) => {
     try {
         const deleted = await navigationService.deleteNaigation(req.body)
@@ -41,9 +53,21 @@ const deleteNavigation = async (req, res, next) => {
     }
 }
 
+const getNaigationById = async (req, res, next) => {
+    try {
+        const id = req.params.id
+        const result = await navigationService.getNaigationById(id)
+        SuccessRes(res, result, "Get By ID Success")
+    } catch (e) {
+        next(e)
+    }
+}
+
 export const navigationController = {
     getNavigation,
     getNaigationBySlug,
     addNavigation,
     deleteNavigation,
+    getNaigationById,
+    updateNavigation
 }

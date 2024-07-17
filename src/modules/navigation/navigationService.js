@@ -30,45 +30,112 @@ const getNavigationBySlug = async (slug) => {
     parentNav._doc.childs = childNavs
     return parentNav
 }
+const getNaigationById = async (id) => {
+    const parentNav = await ParentNav.findById(id)
+    if (!parentNav) {
+        throw new ApiErr(StatusCodes.NOT_FOUND, "Not found")
+    }
+    const childNavs = await ChildNav.find(
+        {parentNavId: parentNav._id.toString()},
+        // {title: 1}
+    )
+    if (!childNavs) {
+        throw new ApiErr(StatusCodes.NOT_FOUND, "Not found")
+    }
+    parentNav._doc.childs = childNavs
+    return parentNav
+}
+
 
 const addNavigation = async (data, creator) => {
-    let nav
-    if (data.type == NAV.PARENT) {
-        const {title} = data
-        //check navigation exists
-        const navExists = await ParentNav.exists({title})
+    const {type, title, parentNavId} = data;
+    const slug = slugify(title);
+
+    if (type === NAV.PARENT) {
+        const navExists = await ParentNav.exists({title});
         if (navExists) {
-            throw new ApiErr(StatusCodes.CONFLICT, "Navigation is exists!")
+            throw new ApiErr(StatusCodes.CONFLICT, "Navigation already exists!");
         }
 
-        nav = new ParentNav({
-            title,
-            slug: slugify(title),
-            createdBy: creator,
-        })
+        const nav = new ParentNav({title, slug, createdBy: creator});
+        return await nav.save();
+    } else {
+        const [parentNavExist, childNavExists] = await Promise.all([
+            ParentNav.exists({_id: parentNavId}),
+            ChildNav.exists({parentNavId, title})
+        ]);
+
+        if (!parentNavExist) {
+            throw new ApiErr(StatusCodes.NOT_FOUND, "Parent navigation not found");
+        }
+        if (childNavExists) {
+            throw new ApiErr(StatusCodes.CONFLICT, "Navigation already exists");
+        }
+
+        const nav = new ChildNav({title, parentNavId, slug, createdBy: creator});
+        return await nav.save();
+    }
+};
+const updateNavigation = async (id, data, updater) => {
+    let nav
+    console.log(id)
+    if (data.type == NAV.PARENT) {
+        const {title} = data
+        nav = await ParentNav.findById(id)
+        if (!nav) {
+            throw new ApiErr(StatusCodes.NOT_FOUND, "Parent navigation not found")
+        }
+
+        if (title && title !== nav.title) {
+            const navExists = await ParentNav.exists({title})
+            if (navExists) {
+                throw new ApiErr(StatusCodes.CONFLICT, "Navigation with this title already exists")
+            }
+        }
+
+        if (title) {
+            nav.title = title
+            nav.slug = slugify(title)
+        }
+        nav.updatedBy = updater
 
         await nav.save()
     } else {
-        const {title, parentNavId} = data
-        //check parentNavigation
-        const parentNavExist = await ParentNav.exists({_id: parentNavId})
-        if (!parentNavExist) {
-            throw new ApiErr(StatusCodes.NOT_FOUND, "Not found parent navigation")
+        const {title} = data
+        nav = await ChildNav.findById(id)
+        if (!nav) {
+            throw new ApiErr(StatusCodes.NOT_FOUND, "Child navigation not found")
         }
-        //check parentNavigation
-        const childNavExists = await ChildNav.exists({parentNavId, title})
-        if (childNavExists) {
-            throw new ApiErr(StatusCodes.CONFLICT, "Navigation is exists")
+        // if (parentNavId && parentNavId !== nav.parentNavId.toString()) {
+        //         const parentNavExists = await ParentNav.exists({_id: nav.parentNavId})
+        //     if (!parentNavExists) {
+        //         throw new ApiErr(StatusCodes.NOT_FOUND, "New parent navigation not found")
+        //     }
+        // }
+        if (title && title !== nav.title) {
+            const childNavExists = await ChildNav.exists({
+                // parentNavId: parentNavId || nav.parentNavId,
+                title,
+                _id: {$ne: id}
+            })
+            if (childNavExists) {
+                throw new ApiErr(StatusCodes.CONFLICT, "Child navigation with this title already exists")
+            }
         }
-        nav = new ChildNav({
-            title, parentNavId,
-            slug: slugify(title), createdBy: creator
-        })
+
+        if (title) {
+            nav.title = title
+            nav.slug = slugify(title)
+        }
+        // if (parentNavId) {
+        //     nav.parentNavId = parentNavId
+        // }
+        nav.updatedBy = updater
+
         await nav.save()
     }
     return nav
 }
-
 const deleteNaigation = async (data) => {
     const {type, navId} = data
     let deleted
@@ -88,4 +155,6 @@ export const navigationService = {
     getNavigationBySlug,
     addNavigation,
     deleteNaigation,
+    getNaigationById,
+    updateNavigation
 }
