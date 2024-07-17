@@ -168,7 +168,10 @@ const searchNews = async (searchTerm, page, limit) => {
         const skip = (page - 1) * limit;
 
         const searchQuery = {
-            $or: [{title: {$regex: searchTerm, $options: 'i'}}, {summary: {$regex: searchTerm, $options: 'i'}}]
+            $or: [
+                {title: {$regex: searchTerm, $options: 'i'}},
+                {summary: {$regex: searchTerm, $options: 'i'}}
+            ]
         };
 
         const [news, totalCount] = await Promise.all([News.find(searchQuery)
