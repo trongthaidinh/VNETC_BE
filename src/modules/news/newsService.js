@@ -20,7 +20,7 @@ const findAllNews = async (data) => {
 
     return news
 }
-const createNews = async ({title, summary, views, categoryId, content}, image, account) => {
+const createNews = async ({title, summary, views, categoryId, content, isFeatured}, image, account) => {
     try {
         const uploadImage = await uploadSingleImageToCloudinary(image.path);
         if (!uploadImage) throw new ApiErr(StatusCodes.BAD_REQUEST, "Upload Image fail");
@@ -32,7 +32,7 @@ const createNews = async ({title, summary, views, categoryId, content}, image, a
         if (!cateIdExist) throw new ApiErr(StatusCodes.BAD_REQUEST, "Category ID does not exist");
 
         const news = new News({
-            title, summary, views, images, categoryId, createdBy: account.username
+            title, summary, views, images, categoryId, isFeatured, createdBy: account.username
         });
         const newsDetail = new NewsDetail({
             content, newsId: news._id, createdBy: account.username
@@ -43,8 +43,7 @@ const createNews = async ({title, summary, views, categoryId, content}, image, a
 
         return news;
     } catch (error) {
-        console.error("Error creating news:", error);
-        throw new ApiErr(StatusCodes.INTERNAL_SERVER_ERROR, "Internal server error");
+        throw error
     }
 };
 
