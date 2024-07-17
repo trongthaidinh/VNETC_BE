@@ -20,16 +20,14 @@ const findAllNews = async (data) => {
 
     return news
 }
-const createNews = async ({title, summary, views, categoryId, accCreateId, content}, image) => {
+const createNews = async ({title, summary, views, categoryId, content}, image, account) => {
     try {
-        if (!image.path) throw new ApiErr(StatusCodes.BAD_REQUEST, "Cant find Image");
         const uploadImage = await uploadSingleImageToCloudinary(image.path);
         if (!uploadImage) throw new ApiErr(StatusCodes.BAD_REQUEST, "Upload Image fail");
         const images = uploadImage.secure_url;
 
-        const [cateIdExist, account, findNew] = await Promise.all([
+        const [cateIdExist, findNew] = await Promise.all([
             Category.exists({_id: categoryId}),
-            accountService.findById(accCreateId, {username: 1}),
             News.exists({title}),
         ]);
 
@@ -61,15 +59,14 @@ const createNews = async ({title, summary, views, categoryId, accCreateId, conte
 };
 
 
-const createNewsDetail = async (data) => {
-    const {content, newsId, accCreateId} = data
+const createNewsDetail = async (data, account) => {
+    const {content, newsId} = data
 
     const newsIdExists = await News.exists({_id: newsId})
     if (!newsIdExists) {
         throw new Error('NewsId is not exists')
     }
 
-    const account = await accountModel.getAccountById(accCreateId, {username: 1})
 
     const newsDetail = new NewsDetail({content, newsId, createdBy: account.username})
     await newsDetail.save()
@@ -101,7 +98,7 @@ const getNewsByNId = async (newsId) => {
 };
 
 
-const updateNews = async (id, data, file) => {
+const updateNews = async (id, data, file, account) => {
     try {
         const {content} = data;
 
@@ -111,12 +108,12 @@ const updateNews = async (id, data, file) => {
         const [updatedNews, updatedNewsDetail] = await Promise.all([
             News.findByIdAndUpdate(
                 {_id: id},
-                {$set: {...data, images, updatedBy: "admin"}},
+                {$set: {...data, images, updatedBy: account.username}},
                 {new: true}
             ),
             NewsDetail.findOneAndUpdate(
                 {newsId: id},
-                {$set: {content, updatedBy: "admin"}},
+                {$set: {content, updatedBy: account.username}},
                 {new: true}
             ),
         ]);

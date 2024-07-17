@@ -6,7 +6,7 @@ import uploadSingleImageToCloudinary from "~/utils/uploadSingleImage";
 import {projectDetail} from "~/models/ProjectDetailModel";
 
 class ProjectService {
-    async addProject(data, file) {
+    async addProject(data, file, account) {
         try {
             const uploadedImage = await uploadSingleImageToCloudinary(file.path);
             const project = new Project(data);
@@ -16,7 +16,7 @@ class ProjectService {
             const newProjectDetail = new projectDetail({
                 projectId: project._id,
                 content: data.content,
-                createdBy: data.createdBy
+                createdBy: account.username
             });
             await newProjectDetail.save();
 
@@ -50,7 +50,7 @@ class ProjectService {
     }
 
 
-    async updateProject(projectId, data, file) {
+    async updateProject(projectId, data, file, account) {
         try {
             // Handle file upload if present
             let imageUrl;
@@ -67,7 +67,7 @@ class ProjectService {
             // Update the project
             const project = await Project.findByIdAndUpdate(
                 projectId,
-                {$set: data},
+                {$set: data, updatedBy: account.username},
                 {new: true, runValidators: true}
             );
 
@@ -78,7 +78,7 @@ class ProjectService {
             // Update project details
             const projectDetailUpdateData = {
                 content: data.content,
-                updatedBy: data.updatedBy,
+                updatedBy: account.username,
             };
 
             const updatedProjectDetail = await projectDetail.findOneAndUpdate(

@@ -5,8 +5,8 @@ const {SuccessRes} = require("~/utils/SuccessRes")
 
 const addNews = async (req, res, next) => {
     try {
-        const {body: data, file: image} = req
-        const added = await newsService.createNews(data, image)
+        const {body: data, file: image, account} = req
+        const added = await newsService.createNews(data, image,account)
         SuccessRes(res, added, 'Add news succesfull')
     } catch (error) {
         next(error)
@@ -14,7 +14,7 @@ const addNews = async (req, res, next) => {
 }
 const addNewsDetail = async (req, res, next) => {
     try {
-        const added = await newsService.createNewsDetail(req.body)
+        const added = await newsService.createNewsDetail(req.body,req.account)
         SuccessRes(res, added, 'Add news detail successful')
     } catch (error) {
         next(error)
@@ -47,7 +47,7 @@ const deleteNews = async (req, res, next) => {
 }
 const updateNews = async (req, res, next) => {
     try {
-        const update = await newsService.updateNews(req.params.id, req.body, req.file)
+        const update = await newsService.updateNews(req.params.id, req.body, req.file, req.account)
         SuccessRes(res, update, 'Updated successful')
     } catch (error) {
         next(error)

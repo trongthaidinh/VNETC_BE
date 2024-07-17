@@ -24,8 +24,7 @@ const addNavigation = async (req, res, next) => {
     try {
         const added = await navigationService.addNavigation(
             req.body,
-            "admin"
-            // req.account.username,
+            req.account.username,
         )
         SuccessRes(res, added, "Add navigation successful")
     } catch (error) {

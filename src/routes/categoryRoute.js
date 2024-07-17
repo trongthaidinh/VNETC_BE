@@ -7,7 +7,7 @@ Router.route('/')
     .get(controller.getCates)
     .post(isAuth,controller.addCategory)
 Router.route('/:id')
-    .delete(controller.deleteCate)
+    .delete(isAuth,controller.deleteCate)
 Router.route('/type').get(controller.getByType)
 
 export const categoryRoute = Router

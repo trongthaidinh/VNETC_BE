@@ -11,11 +11,11 @@ import {
 
 const Project = Router();
 
-Project.post("/", upload.single("image"), addProject);
+Project.post("/",isAuth, upload.single("image"), addProject);
 Project.get("/", getProject)
 Project.get("/:id", getProjectById)
-Project.patch("/:id", upload.single("image"), updateProject)
-Project.delete("/:id", deleteProject)
+Project.patch("/:id",isAuth, upload.single("image"), updateProject)
+Project.delete("/:id",isAuth, deleteProject)
 Project.get("/views", getByTopViews)
 
 export const ProjectRoute = Project;

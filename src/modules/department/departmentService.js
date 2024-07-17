@@ -20,7 +20,7 @@ const getAll = async () => {
     const departments = await Department.find()
     return departments
 }
-const createMember = async (id, data, file) => {
+const createMember = async (id, data, file, creator) => {
     try {
         if (!file) throw new ApiErr(StatusCodes.BAD_REQUEST, 'Cannot find Image')
         const checkDepartmet = await Department.exists({_id: id})
@@ -31,7 +31,7 @@ const createMember = async (id, data, file) => {
         const member = new Member(data)
         member.image = uploadImage.secure_url
         member.departmentId = id
-        member.createdBy = 'admin'
+        member.createdBy = creator
 
         await member.save()
         return member
@@ -51,10 +51,10 @@ const deleteDepartment = async (id) => {
         throw e
     }
 }
-const updateDepartment = async (id, data) => {
+const updateDepartment = async (id, data, creator) => {
     try {
         if (!data) throw new ApiErr(StatusCodes.BAD_REQUEST, 'Please Check The Value')
-        const department = await Department.findByIdAndUpdate(id, {name: data.name, updatedBy: "admin"})
+        const department = await Department.findByIdAndUpdate(id, {name: data.name, updatedBy: creator})
         if (!department) throw new ApiErr(StatusCodes.BAD_REQUEST, 'Cannot Find Department')
         return department
     } catch (e) {

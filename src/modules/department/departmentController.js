@@ -25,7 +25,7 @@ const getAll = async (req, res, next) => {
 const createMember = async (req, res, next) => {
     try {
         const {body: data, params: {id}, file} = req
-        const result = await departmentService.createMember(id, data, file)
+        const result = await departmentService.createMember(id, data, file, req.account.username)
         SuccessRes(res, result, ' Create Member Success')
     } catch (e) {
         next(e)
@@ -44,7 +44,7 @@ const updateDepartment = async (req, res, next) => {
         const id = req.params.id
         const data = req.body
         const file = req.file
-        const result = await departmentService.updateDepartment(id, data, file)
+        const result = await departmentService.updateDepartment(id, data, file, req.account.username)
         SuccessRes(res, result, 'Updated Department')
     } catch (e) {
         next(e)

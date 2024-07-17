@@ -6,7 +6,8 @@ const {productService} = require("./productService")
 
 const create = async (req, res, next) => {
     try {
-        const created = await productService.create(req, "admin")//req.account.username
+        console.log(req)
+        const created = await productService.create(req, req.account.username)
         if (!created) {
             throw new ApiErr(444, "Create fail")
         }
@@ -36,7 +37,7 @@ const updateProduct = async (req, res, next) => {
     try {
         // const {username: accountName} = req.account;
         const {body: data, params: {id}, files: imageData} = req;
-        const product = await productService.updateProduct(id, "admin", data, imageData);
+        const product = await productService.updateProduct(id, req.account.username, data, imageData);
         SuccessRes(res, product, "Update product success");
     } catch (error) {
         next(error);
@@ -45,9 +46,9 @@ const updateProduct = async (req, res, next) => {
 
 const createNewsDetail = async (req, res, next) => {
     try {
-        // const {username: accountName} = req.account;
+        const {username: accountName} = req.account;
         const {body: data, params: {id}} = req;
-        const product = await productService.createProductDetail(id, "admin", data);
+        const product = await productService.createProductDetail(id, accountName, data);
         SuccessRes(res, product, "Create product detail success");
     } catch (error) {
         next(error);
@@ -56,8 +57,8 @@ const createNewsDetail = async (req, res, next) => {
 
 const updateProductDetail = async (req, res, next) => {
     try {
-        const {body: data, params: {productId}} = req //, account: user
-        const product = await productService.updateProductDetail(productId, data, "admin");
+        const {body: data, params: {productId}, account: user} = req //,
+        const product = await productService.updateProductDetail(productId, data, user);
         SuccessRes(res, product, "Update product detail success");
     } catch (error) {
         next(error);

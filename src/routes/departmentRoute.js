@@ -10,12 +10,12 @@ Router.route('/')
     .get(departmentController.getAll)
 
 Router.route('/:id')
-    .post(upload.single('image'), departmentController.createMember)
-    .delete(departmentController.deleteDepartment)
-    .patch(departmentController.updateDepartment)
+    .post(isAuth,upload.single('image'), departmentController.createMember)
+    .delete(isAuth,departmentController.deleteDepartment)
+    .patch(isAuth,departmentController.updateDepartment)
 Router.route('/:id/members').get(departmentController.getMember)
 Router.route('/:id/members/:memberId')
-    .patch(upload.single('image'),departmentController.updateMember)  // Sửa thông tin thành viên
-    .delete(departmentController.deleteMember) // Xóa thành viên
+    .patch(isAuth,upload.single('image'),departmentController.updateMember)  // Sửa thông tin thành viên
+    .delete(isAuth,departmentController.deleteMember) // Xóa thành viên
     .get(departmentController.getMemberById)
 export const departmentRoute = Router
