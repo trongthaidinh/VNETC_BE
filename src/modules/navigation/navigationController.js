@@ -58,7 +58,7 @@ const deleteNavigation = async (req, res, next) => {
 const getNaigationById = async (req, res, next) => {
     try {
         const id = req.params.id
-        const result = await navigationService.getNaigationById(id)
+        const result = await navigationService.getNavigationById(id)
         SuccessRes(res, result, "Get By ID Success")
     } catch (e) {
         next(e)
