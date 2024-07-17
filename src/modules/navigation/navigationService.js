@@ -25,7 +25,7 @@ const getNavigationBySlug = async (slug) => {
     parentNav._doc.childs = childNavs
     return parentNav
 }
-const getNavigationById  = async (id) => {
+const getNavigationById = async (id) => {
     const parentNav = await ParentNav.findById(id);
 
     if (!parentNav) {
@@ -76,7 +76,7 @@ const addNavigation = async (data, creator) => {
 };
 const updateNavigation = async (id, data, updater) => {
     let nav
-    if (data.type == NAV.PARENT) {
+    if (data.type === NAV.PARENT) {
         const {title} = data
         nav = await ParentNav.findById(id)
         if (!nav) {
