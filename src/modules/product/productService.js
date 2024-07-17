@@ -117,6 +117,7 @@ const getProductById = async (id) => {
             throw new ApiErr(StatusCodes.NOT_FOUND, "Product not found");
         }
 
+
         const formattedDetails = productDetails.map(detail => ({
             brand: detail.brand,
             wattage: detail.wattage,
@@ -129,6 +130,7 @@ const getProductById = async (id) => {
         const result = {
             id: product ? product._id : null,
             name: product ? product.name : null,
+            category_id: product ? product.category_id : null,
             image: product ? product.image : null,
             detail: formattedDetails,
         };
