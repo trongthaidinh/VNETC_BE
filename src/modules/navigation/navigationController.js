@@ -1,7 +1,7 @@
 import {navigationService} from "./navigationService"
 import {SuccessRes} from "~/utils/SuccessRes"
 import slugify from "~/utils/stringToSlug";
-
+const axios = require('axios');
 const getNavigation = async (req, res, next) => {
     try {
         const re = await navigationService.getAllNavigation()
@@ -33,7 +33,9 @@ const addNavigation = async (req, res, next) => {
 }
 const updateNavigation = async (req, res, next) => {
     try {
-
+        // const response = await axios.get('https://api.ipify.org?format=json');
+        // const ip = response.data.ip;
+        // console.log(ip)
         const added = await navigationService.updateNavigation(
             req.params.id,
             req.body,

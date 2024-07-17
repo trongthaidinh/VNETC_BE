@@ -8,9 +8,7 @@ const getAllNavigation = async () => {
     let parentNavs = await ParentNav.find({}, {title: 1, slug: 1})
     let childNavs = await ChildNav.find({}, {title: 1, parentNavId: 1, slug: 1})
     return parentNavs.map((parent) => {
-        const childs = childNavs.filter(
-            (child) => parent._id.toString() === child.parentNavId.toString()
-        )
+        const childs = childNavs.filter((child) => parent._id.toString() === child.parentNavId.toString())
         return {...parent._doc, childs}
     })
 }
@@ -20,10 +18,7 @@ const getNavigationBySlug = async (slug) => {
     if (!parentNav) {
         throw new ApiErr(StatusCodes.NOT_FOUND, "Not found")
     }
-    const childNavs = await ChildNav.find(
-        {parentNavId: parentNav._id.toString()},
-        {title: 1}
-    )
+    const childNavs = await ChildNav.find({parentNavId: parentNav._id.toString()}, {title: 1})
     if (!childNavs) {
         throw new ApiErr(StatusCodes.NOT_FOUND, "Not found")
     }
@@ -32,17 +27,20 @@ const getNavigationBySlug = async (slug) => {
 }
 const getNaigationById = async (id) => {
     const parentNav = await ParentNav.findById(id)
+    let childNavs
     if (!parentNav) {
-        throw new ApiErr(StatusCodes.NOT_FOUND, "Not found")
+        childNavs = await ChildNav.findById(id, // {title: 1}
+        )
+        return childNavs
+    } else {
+        childNavs = await ChildNav.find({parentNavId: parentNav._id.toString()}, // {title: 1}
+        )
+        if (!childNavs) {
+            throw new ApiErr(StatusCodes.NOT_FOUND, "Not found")
+        }
+        parentNav._doc.childs = childNavs
+
     }
-    const childNavs = await ChildNav.find(
-        {parentNavId: parentNav._id.toString()},
-        // {title: 1}
-    )
-    if (!childNavs) {
-        throw new ApiErr(StatusCodes.NOT_FOUND, "Not found")
-    }
-    parentNav._doc.childs = childNavs
     return parentNav
 }
 
@@ -60,10 +58,10 @@ const addNavigation = async (data, creator) => {
         const nav = new ParentNav({title, slug, createdBy: creator});
         return await nav.save();
     } else {
-        const [parentNavExist, childNavExists] = await Promise.all([
-            ParentNav.exists({_id: parentNavId}),
-            ChildNav.exists({parentNavId, title})
-        ]);
+        const [parentNavExist, childNavExists] = await Promise.all([ParentNav.exists({_id: parentNavId}), ChildNav.exists({
+            parentNavId,
+            title
+        })]);
 
         if (!parentNavExist) {
             throw new ApiErr(StatusCodes.NOT_FOUND, "Parent navigation not found");
@@ -78,7 +76,6 @@ const addNavigation = async (data, creator) => {
 };
 const updateNavigation = async (id, data, updater) => {
     let nav
-    console.log(id)
     if (data.type == NAV.PARENT) {
         const {title} = data
         nav = await ParentNav.findById(id)
@@ -115,8 +112,7 @@ const updateNavigation = async (id, data, updater) => {
         if (title && title !== nav.title) {
             const childNavExists = await ChildNav.exists({
                 // parentNavId: parentNavId || nav.parentNavId,
-                title,
-                _id: {$ne: id}
+                title, _id: {$ne: id}
             })
             if (childNavExists) {
                 throw new ApiErr(StatusCodes.CONFLICT, "Child navigation with this title already exists")
@@ -151,10 +147,5 @@ const deleteNaigation = async (data) => {
 }
 
 export const navigationService = {
-    getAllNavigation,
-    getNavigationBySlug,
-    addNavigation,
-    deleteNaigation,
-    getNaigationById,
-    updateNavigation
+    getAllNavigation, getNavigationBySlug, addNavigation, deleteNaigation, getNaigationById, updateNavigation
 }
