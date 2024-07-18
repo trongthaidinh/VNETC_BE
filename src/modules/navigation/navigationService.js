@@ -133,12 +133,12 @@ const updateNavigation = async (id, data, updater) => {
     return nav
 }
 const deleteNaigation = async (data) => {
-    const {type, navId} = data
+    const {type, id} = data
     let deleted
     if (type == NAV.PARENT) {
-        deleted = await ParentNav.findByIdAndDelete(navId)
+        deleted = await ParentNav.findByIdAndDelete(id)
     } else {
-        deleted = await ChildNav.findByIdAndDelete(navId)
+        deleted = await ChildNav.findByIdAndDelete(id)
     }
     if (!deleted) {
         throw new ApiErr(StatusCodes.CONFLICT, "Delete fail")
