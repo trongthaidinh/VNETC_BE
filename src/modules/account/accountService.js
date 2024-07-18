@@ -76,17 +76,24 @@ const changePassword = async (data) => {
     return channged
 }
 const getAccountById = async (id) => {
-    const account = await Account.findById(id);
+    const fieldsToInclude = {
+        email: 1,
+        username: 1,
+        fullName: 1
+    };
+    const account = await Account.findById(id)
+        .select(fieldsToInclude)
+        .lean();
     if (!account) throw new ApiErr(StatusCodes.NOT_FOUND, 'Account not found');
 
-    const secureAccountData = {
-        id: account._id,
-        email: account.email,
-        username: account.username,
-        fullName: account.fullName
-    };
+    // const secureAccountData = {
+    //     id: account._id,
+    //     email: account.email,
+    //     username: account.username,
+    //     fullName: account.fullName
+    // };
 
-    return secureAccountData
+    return account
 };
 
 export const accountService = {
