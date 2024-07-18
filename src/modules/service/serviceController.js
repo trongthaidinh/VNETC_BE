@@ -5,7 +5,7 @@ import {newsService} from "~/modules/news/newsService";
 
 export const addService = async (req, res, next) => {
     try {
-        const {body:data, file} = await req
+        const {body: data, file} = await req
         const result = await Service.addService(data, file)
         SuccessRes(res, result, "Create new Service success")
     } catch (error) {
@@ -35,7 +35,7 @@ export const updateService = async (req, res, next) => {
         const id = req.params.id
         const data = req.body
         const file = req.file
-        const result = await Service.updateService(id, data,file)
+        const result = await Service.updateService(id, data, file)
         SuccessRes(res, result, "Update Service success")
     } catch (e) {
         next(e)
@@ -62,6 +62,15 @@ export const getByFeatured = async (req, res, next) => {
     try {
         const result = await Service.getFeatured()
         SuccessRes(res, result, 'Get Featured Successs')
+    } catch (e) {
+        next(e)
+    }
+}
+export const search = async (req, res, next) => {
+    try {
+        const {data, page, limit} = req.query
+        const result = await Service.search(data, page, limit)
+        SuccessRes(res, result, 'search Successs')
     } catch (e) {
         next(e)
     }

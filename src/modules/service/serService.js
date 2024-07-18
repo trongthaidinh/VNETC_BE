@@ -3,6 +3,7 @@ import {ServiceDetailModel} from "~/models/serviceDetailModel";
 import ApiErr from "~/utils/ApiError";
 import {StatusCodes} from "http-status-codes";
 import uploadSingleImageToCloudinary from "~/utils/uploadSingleImage";
+import {News, NewsDetail} from "~/models/newsModel";
 
 class SerService {
     async addService(data, file) {
@@ -145,6 +146,36 @@ class SerService {
             return await ServiceModel.find({isFeatured: true}).limit(5).sort({createdAt: -1})
         } catch (e) {
             throw e
+        }
+    }
+
+    async search(searchTerm, page, limit) {
+        try {
+            const skip = (page - 1) * limit;
+            const searchQuery = {
+                $or: [
+                    {title: {$regex: searchTerm, $options: 'i'}},
+                    {summary: {$regex: searchTerm, $options: 'i'}}
+                ]
+            };
+            const [service, totalCount] = await Promise.all([ServiceModel.find(searchQuery)
+                .skip(skip)
+                .limit(limit)
+                .sort({createdAt: -1}), ServiceModel.countDocuments(searchQuery)]);
+            const newsIds = service.map(item => item._id);
+            const newsDetails = await ServiceDetailModel.find({newsId: {$in: newsIds}});
+            const fullResults = service.map(newsItem => {
+                const detail = newsDetails.find(detail => detail.newsId.toString() === newsItem._id.toString());
+                return {
+                    ...newsItem.toObject(), content: detail ? detail.content : null
+                };
+            });
+            return {
+                results: fullResults, totalCount, totalPages: Math.ceil(totalCount / limit), currentPage: page
+            };
+        } catch (error) {
+            console.error("Error searching :", error);
+            throw new ApiErr(StatusCodes.INTERNAL_SERVER_ERROR, "Error searching news");
         }
     }
 }

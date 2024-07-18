@@ -5,7 +5,7 @@ import {
     addService,
     deleteService, getByFeatured, getByTopViews,
     getService,
-    getServiceById,
+    getServiceById, search,
     updateService
 } from "~/modules/service/serviceController";
 
@@ -14,6 +14,7 @@ Service.post("/", isAuth, upload.single("image"), addService)
 Service.get("/", getService)
 Service.get("/views", getByTopViews)
 Service.get("/featured", getByFeatured)
+Service.get("/search", search)
 Service.get('/:id', getServiceById)
 Service.patch('/:id', isAuth, upload.single("image"), updateService)
 Service.delete("/:id", isAuth, deleteService)
