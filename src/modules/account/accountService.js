@@ -86,12 +86,6 @@ const getAccountById = async (id) => {
         .lean();
     if (!account) throw new ApiErr(StatusCodes.NOT_FOUND, 'Account not found');
 
-    // const secureAccountData = {
-    //     id: account._id,
-    //     email: account.email,
-    //     username: account.username,
-    //     fullName: account.fullName
-    // };
 
     return account
 };
