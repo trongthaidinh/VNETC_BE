@@ -7,7 +7,7 @@ import {Project} from "~/models/projectModel";
 export const addProject = async (req, res, next) => {
     try {
         const {body: data, file, account} = await req
-        const result = await projectService.addProject(data, file)
+        const result = await projectService.addProject(data, file,account)
         SuccessRes(res, result, "Create new Service success")
     } catch (error) {
         next(error)

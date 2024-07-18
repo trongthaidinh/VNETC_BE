@@ -11,8 +11,8 @@ import {ConfigRoute} from "./ConfigRoute"
 import {ServiceRoute} from "~/routes/serviceRoute";
 import {ProjectRoute} from "~/routes/projectRoute";
 import {SearchRoute} from "~/routes/SearchRoute";
-import {ImageLibratyRoute} from "~/routes/ImageLibraryRoute";
-import {VideoLibratyRoute} from "~/routes/VideoLibraryRoute";
+import {ImageLibraryRoute} from "~/routes/ImageLibraryRoute";
+import {VideoLibraryRoute} from "~/routes/VideoLibraryRoute";
 
 const initApis = (app) => {
     app.use("/api/navigation", navigationRoute)
@@ -28,8 +28,8 @@ const initApis = (app) => {
     app.use("/api/services", ServiceRoute)
     app.use("/api/project", ProjectRoute)
     app.use("/api/search", SearchRoute)
-    app.use("/api/image", ImageLibratyRoute)
-    app.use("/api/video", VideoLibratyRoute)
+    app.use("/api/image", ImageLibraryRoute)
+    app.use("/api/video", VideoLibraryRoute)
 }
 
 export default initApis

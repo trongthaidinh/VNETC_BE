@@ -9,20 +9,38 @@ class ProjectService {
     async addProject(data, file, account) {
         try {
             const uploadedImage = await uploadSingleImageToCloudinary(file.path);
-            const project = new Project(data);
-            project.image = uploadedImage.secure_url
-            await project.save();
+
+            const project = new Project({
+                ...data,
+                image: uploadedImage.secure_url,
+                createdBy: account.username
+            });
+
+            let savedProject;
+            try {
+                savedProject = await project.save();
+            } catch (projectError) {
+                throw new ApiErr(StatusCodes.BAD_REQUEST, `Failed to save project: ${projectError.message}`);
+            }
 
             const newProjectDetail = new projectDetail({
-                projectId: project._id,
+                projectId: savedProject._id,
                 content: data.content,
                 createdBy: account.username
             });
-            await newProjectDetail.save();
-
-            return [project, newProjectDetail];
+            let savedProjectDetail;
+            try {
+                savedProjectDetail = await newProjectDetail.save();
+            } catch (detailError) {
+                await Project.findByIdAndDelete(savedProject._id);
+                throw new ApiErr(StatusCodes.BAD_REQUEST, `Failed to save project detail: ${detailError.message}`);
+            }
+            return [savedProject, savedProjectDetail];
         } catch (e) {
-            throw e;
+            if (e instanceof ApiErr) {
+                throw e;
+            }
+            throw new ApiErr(StatusCodes.INTERNAL_SERVER_ERROR, `Add project failed: ${e.message}`);
         }
     }
 
@@ -63,7 +81,6 @@ class ProjectService {
             if (imageUrl) {
                 data.image = imageUrl;
             }
-            console.log(data)
             // Update the project
             const project = await Project.findByIdAndUpdate(
                 projectId,
