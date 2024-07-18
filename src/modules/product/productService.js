@@ -191,6 +191,57 @@ const deleteProduct = async (id) => {
         throw error;
     }
 }
+const searchProducts = async (searchTerm, page, limit) => {
+    try {
+        if (!searchTerm) {
+            throw new ApiErr(StatusCodes.BAD_REQUEST, "Search term is required");
+        }
+
+        const regex = new RegExp(searchTerm, 'i');
+        const query = {name: regex};
+
+        const [products, totalCount] = await Promise.all([
+            Product.find(query)
+                .skip(limit * (page - 1))
+                .limit(limit)
+                .sort({createdAt: -1}),
+            Product.countDocuments(query)
+        ]);
+
+        const productsWithDetails = await Promise.all(products.map(async (product) => {
+            const productDetails = await ProductDetail.find({productId: product._id}).lean();
+
+            const formattedDetails = productDetails.map(detail => ({
+                brand: detail.brand,
+                wattage: detail.wattage,
+                weight: detail.weight,
+                size: detail.size,
+                warranty: detail.warranty,
+                content: detail.content
+            }));
+
+            return {
+                id: product._id,
+                name: product.name,
+                category_id: product.category_id,
+                image: product.image,
+                detail: formattedDetails
+            };
+        }));
+
+        const totalPages = Math.ceil(totalCount / limit);
+
+        return {
+            products: productsWithDetails,
+            currentPage: page,
+            totalPages,
+            totalCount
+        };
+    } catch (error) {
+        console.error("Error searching products:", error.message);
+        throw new ApiErr(StatusCodes.INTERNAL_SERVER_ERROR, "Error searching products");
+    }
+};
 export const productService = {
     create,
     getAll,
@@ -198,5 +249,6 @@ export const productService = {
     updateProduct,
     createProductDetail,
     updateProductDetail,
-    deleteProduct
+    deleteProduct,
+    searchProducts
 }

@@ -73,6 +73,15 @@ const deleteProduct = async (req, res, next) => {
         next(error);
     }
 }
+const searchProductsController = async (req, res, next) => {
+    try {
+        const {data, page, limit} = req.query;
+        const result = await productService.searchProducts(data, parseInt(page), parseInt(limit));
+        SuccessRes(res, result, "Search product success");
+    } catch (error) {
+        next(error);
+    }
+};
 export const productController = {
     create,
     getAll,
@@ -80,6 +89,7 @@ export const productController = {
     updateProduct,
     createNewsDetail,
     updateProductDetail,
-    deleteProduct
+    deleteProduct,
+    searchProductsController
     // getAllProductDetail
 }

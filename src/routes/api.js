@@ -21,7 +21,7 @@ const initApis = (app) => {
     app.use('/api/category', categoryRoute)
     app.use('/api/news', newsRoute)
     app.use("/api/partner", partnerRoute)
-    // app.use('/api/contact', contactRoute)
+    app.use('/api/contact', contactRoute)
     app.use("/api/product", productRoute)
     app.use("/api/department", departmentRoute)
     app.use("/api/configuration", ConfigRoute)
