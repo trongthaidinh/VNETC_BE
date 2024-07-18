@@ -9,20 +9,17 @@ class ProjectService {
     async addProject(data, file, account) {
         try {
             const uploadedImage = await uploadSingleImageToCloudinary(file.path);
-
             const project = new Project({
                 ...data,
                 image: uploadedImage.secure_url,
                 createdBy: account.username
             });
-
             let savedProject;
             try {
                 savedProject = await project.save();
             } catch (projectError) {
                 throw new ApiErr(StatusCodes.BAD_REQUEST, `Failed to save project: ${projectError.message}`);
             }
-
             const newProjectDetail = new projectDetail({
                 projectId: savedProject._id,
                 content: data.content,
@@ -55,12 +52,11 @@ class ProjectService {
 
     async deleteProject(projectId) {
         try {
-            await projectDetail.deleteMany({projectId: projectId});
-            const result = await Project.findByIdAndDelete(projectId);
-            if (!result) {
-                throw new Error('Service not found');
-            }
-
+            const result = await Promise.all([
+                projectDetail.deleteMany({projectId}),
+                Project.findByIdAndDelete(projectId),
+            ]);
+            if (!result) throw new ApiErr(StatusCodes.BAD_REQUEST, `Failed to save project detail: ${result.message}`);
             return result;
         } catch (e) {
             throw e;

@@ -7,7 +7,7 @@ import {Project} from "~/models/projectModel";
 export const addProject = async (req, res, next) => {
     try {
         const {body: data, file, account} = await req
-        const result = await projectService.addProject(data, file,account)
+        const result = await projectService.addProject(data, file, account)
         SuccessRes(res, result, "Create new Service success")
     } catch (error) {
         next(error)
@@ -36,7 +36,8 @@ export const updateProject = async (req, res, next) => {
         const id = req.params.id
         const data = req.body
         const file = req.file
-        const result = await projectService.updateProject(id, data,file)
+        const account = req.account
+        const result = await projectService.updateProject(id, data, file, account)
         SuccessRes(res, result, "Update Project success")
     } catch (e) {
         next(e)
