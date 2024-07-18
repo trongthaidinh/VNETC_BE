@@ -94,6 +94,7 @@ const getAllAccount = async () => {
     return accounts
 }
 
+
 export const accountModel = {
     addAccount,
     isAdmin,

@@ -42,7 +42,6 @@ const changePassword = async (req, res, next) => {
 
 const updateAccount = async (req, res, next) => {
     try {
-
         const updated = await accountModel.updateAccount(req.body)
         delete updated.password
         SuccessRes(res,updated, 'Update successful')
@@ -50,10 +49,21 @@ const updateAccount = async (req, res, next) => {
         next(error)
     }
 }
+const getAccountById = async (req,res, next) => {
+    try {
+        const {id}= req.params
+        const result = await  accountService.getAccountById(id)
+        SuccessRes(res,result, 'Get Account successful')
+    }catch (e) {
+        next(e)
+    }
+}
+
 export const accountController = {
     create,
     deleteAccount,
     changePassword,
     updateAccount,
-    getAllAccount
+    getAllAccount,
+    getAccountById
 }

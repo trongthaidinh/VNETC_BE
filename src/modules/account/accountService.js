@@ -1,7 +1,7 @@
-import { StatusCodes } from "http-status-codes"
-import { env } from "~/config/environment"
-import { jwtHelper } from "~/helper/jwtHelper"
-import { Account, accountModel } from "~/models/accountModel"
+import {StatusCodes} from "http-status-codes"
+import {env} from "~/config/environment"
+import {jwtHelper} from "~/helper/jwtHelper"
+import {Account, accountModel} from "~/models/accountModel"
 import ApiErr from "~/utils/ApiError"
 import bcrypt from 'bcryptjs'
 
@@ -9,11 +9,11 @@ import bcrypt from 'bcryptjs'
 const create = async (account, creator) => {
     const emailExists = await Account.exists({email: account.email})
     if (emailExists) {
-        throw new ApiErr(StatusCodes.BAD_REQUEST,'Email is already in use!')
+        throw new ApiErr(StatusCodes.BAD_REQUEST, 'Email is already in use!')
     }
     const usernameExists = await Account.exists({email: account.email})
     if (usernameExists) {
-        throw new ApiErr(StatusCodes.BAD_REQUEST,'Username is already in use!')
+        throw new ApiErr(StatusCodes.BAD_REQUEST, 'Username is already in use!')
     }
     console.log(account);
     console.log(creator);
@@ -30,9 +30,9 @@ const deleteAccount = async (data) => {
     const {accDelId, id} = data
     const accDel = await Account.findById(accDelId)
     if (!accDel) {
-        throw new ApiErr(StatusCodes.CONFLICT,'Delete fail')
-    }else if (accDel.email != env.ADMIN_EMAIL) {
-        throw new ApiErr(StatusCodes.CONFLICT,'Delete fail')
+        throw new ApiErr(StatusCodes.CONFLICT, 'Delete fail')
+    } else if (accDel.email != env.ADMIN_EMAIL) {
+        throw new ApiErr(StatusCodes.CONFLICT, 'Delete fail')
     }
     const deleted = await accountModel.deleteAccount(id)
     return deleted
@@ -40,7 +40,7 @@ const deleteAccount = async (data) => {
 
 const findById = async (id, projection) => {
     console.log(id);
-    const account = await Account.findOne({ _id: id }, projection || {})
+    const account = await Account.findOne({_id: id}, projection || {})
     console.log(account);
     if (!account) {
         throw new ApiErr(StatusCodes.NOT_FOUND, 'Not found account')
@@ -64,23 +64,36 @@ const changePassword = async (data) => {
     //check permission
     const accChange = await accountModel.getAccountById(accChangeId)
     if (email !== accChange.email) {
-        throw new ApiErr(StatusCodes.NOT_FOUND,'KHông phải email của account này')
+        throw new ApiErr(StatusCodes.NOT_FOUND, 'KHông phải email của account này')
     }
 
     //check password
     if (accChange.password !== oldPassword) {
-        throw new ApiErr(StatusCodes.CONFLICT,'Wrong password')
+        throw new ApiErr(StatusCodes.CONFLICT, 'Wrong password')
     }
 
-    const channged = await accountModel.changePassword({accountId:accChangeId,newPassword})
+    const channged = await accountModel.changePassword({accountId: accChangeId, newPassword})
     return channged
 }
+const getAccountById = async (id) => {
+    const account = await Account.findById(id);
+    if (!account) throw new ApiErr(StatusCodes.NOT_FOUND, 'Account not found');
 
+    const secureAccountData = {
+        id: account._id,
+        email: account.email,
+        username: account.username,
+        fullName: account.fullName
+    };
+
+    return secureAccountData
+};
 
 export const accountService = {
     create,
     save,
     deleteAccount,
     changePassword,
-    findById
+    findById,
+    getAccountById
 }
