@@ -23,15 +23,10 @@ const login = async (email, password) => {
         throw error;
     }
 };
-const logout = async (authHeader,) => {
+const logout = async () => {
     try {
-
-        const token = {}
-        return {token, message: 'Logged out successfully'};
+        return "Logout Success"
     } catch (error) {
-        if (error instanceof ApiErr) {
-            throw error;
-        }
         throw new ApiErr(StatusCodes.INTERNAL_SERVER_ERROR, 'Logout failed');
     }
 };

@@ -11,8 +11,7 @@ const login = async (req, res, next) => {
 }
 const logout = async (req, res, next) => {
     try {
-        const authHeader = req.header("Authorization");
-        const result = await authService.logout(authHeader, req)
+        const result = await authService.logout()
         SuccessRes(res, result, 'logout success!')
     } catch (e) {
         next(e)
