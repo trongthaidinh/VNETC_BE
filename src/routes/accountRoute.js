@@ -12,4 +12,5 @@ Router.route('/')
     .patch(conntrol.updateAccount)
     .get(conntrol.getAllAccount)
 Router.route('/:id').get(conntrol.getAccountById)
+    .patch(conntrol.changePassword)
 export const accountRoute = Router

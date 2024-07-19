@@ -15,8 +15,6 @@ const create = async (account, creator) => {
     if (usernameExists) {
         throw new ApiErr(StatusCodes.BAD_REQUEST, 'Username is already in use!')
     }
-    console.log(account);
-    console.log(creator);
     const salt = bcrypt.genSaltSync(10)
     const ac = new Account(account)
     ac.password = bcrypt.hashSync(account.password, salt)
@@ -56,21 +54,20 @@ const save = async (data) => {
     await account.save()
 }
 //Auth
-const changePassword = async (data) => {
-    const {accChangeId, email, oldPassword, newPassword} = data
+const changePassword = async (id, data) => {
+    const {oldPassword, newPassword} = data
 
     //check permission
-    const accChange = await accountModel.getAccountById(accChangeId)
-    if (email !== accChange.email) {
-        throw new ApiErr(StatusCodes.NOT_FOUND, 'KHông phải email của account này')
-    }
-
-    //check password
-    if (accChange.password !== oldPassword) {
+    const accChange = await Account.findById(id)
+    const passwordMatch = bcrypt.compareSync(oldPassword, accChange.password);
+    if (!passwordMatch) {
         throw new ApiErr(StatusCodes.CONFLICT, 'Wrong password')
     }
-
-    const channged = await accountModel.changePassword({accountId: accChangeId, newPassword})
+    const salt = bcrypt.genSaltSync(10)
+    console.log(newPassword)
+    const hashPassword = bcrypt.hashSync(newPassword, salt)
+    console.log(hashPassword)
+    const channged = await accountModel.changePassword({accountId: id,hashPassword})
     return channged
 }
 const getAccountById = async (id) => {

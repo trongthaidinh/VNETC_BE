@@ -42,7 +42,8 @@ const deleteAccount = async (req, res, next) => {
 
 const changePassword = async (req, res, next) => {
     try {
-        const changed = await accountService.changePassword(req.body)
+        const {id} = req.params
+        const changed = await accountService.changePassword(id,req.body)
         SuccessRes(res, changed, 'Change password successful')
     } catch (error) {
         next(error)

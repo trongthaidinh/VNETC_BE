@@ -64,12 +64,12 @@ const addAccount = async (data) => {
     return newAccount
 }
 const changePassword = async (data) => {
-    const {accountId, newPassword} = data
-    const changed = await Account.findByIdAndUpdate(accountId, {password: newPassword})
+    const {accountId, hashPassword} = data
+    const changed = await Account.findByIdAndUpdate(accountId, {password: hashPassword})
     if (!changed) {
         throw new Error('Update fail')
     }
-    return true
+    return changed
 }
 const updateAccount = async (data) => {
     const {accountId, username, fullName} = data
