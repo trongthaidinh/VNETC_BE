@@ -39,9 +39,7 @@ const deleteAccount = async (data) => {
 }
 
 const findById = async (id, projection) => {
-    console.log(id);
     const account = await Account.findOne({_id: id}, projection || {})
-    console.log(account);
     if (!account) {
         throw new ApiErr(StatusCodes.NOT_FOUND, 'Not found account')
     }
@@ -89,12 +87,26 @@ const getAccountById = async (id) => {
 
     return account
 };
+const getAccountByEmail = async (email) => {
+    const fieldsToInclude = {
+        email: 1,
+        username: 1,
+        fullName: 1
+    };
+    const account = await Account.findOne({email})
+        .select(fieldsToInclude)
+        .lean();
+    if (!account) throw new ApiErr(StatusCodes.NOT_FOUND, 'Account not found!');
 
+
+    return account
+};
 export const accountService = {
     create,
     save,
     deleteAccount,
     changePassword,
     findById,
-    getAccountById
+    getAccountById,
+    getAccountByEmail
 }

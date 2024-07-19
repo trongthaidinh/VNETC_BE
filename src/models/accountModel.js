@@ -51,8 +51,6 @@ const addAccount = async (data) => {
     const {email} = data
     const accountExist = await Account.exists({email: email})
 
-    console.log(accountExist);
-
     if (accountExist) {
         throw new ApiErr(StatusCodes.CONFLICT, 'Email is exist')
     }

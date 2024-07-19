@@ -1,21 +1,30 @@
-import { accountModel } from "~/models/accountModel"
+import {accountModel} from "~/models/accountModel"
 
-const { StatusCodes } = require("http-status-codes")
-const { SuccessRes } = require("~/utils/SuccessRes")
-const { accountService } = require("./accountService")
+const {StatusCodes} = require("http-status-codes")
+const {SuccessRes} = require("~/utils/SuccessRes")
+const {accountService} = require("./accountService")
 
 const getAllAccount = async (req, res, next) => {
     try {
-        const accounts = await accountModel.getAllAccount()
-        SuccessRes(res, accounts, 'Get all account successful')
+        const {email} = req.query;
+        let accounts;
+
+        if (email) {
+            accounts = await accountService.getAccountByEmail(email);
+        } else {
+            accounts = await accountModel.getAllAccount();
+        }
+
+        SuccessRes(res, accounts, 'Get account successful');
     } catch (error) {
-        next(error)
+        next(error);
     }
 }
 
+
 const create = async (req, res, next) => {
     try {
-        const created = await accountService.create(req.body,req.account.username)
+        const created = await accountService.create(req.body, req.account.username)
         SuccessRes(res, created, 'Add account successful')
     } catch (error) {
         next(error)
@@ -34,7 +43,7 @@ const deleteAccount = async (req, res, next) => {
 const changePassword = async (req, res, next) => {
     try {
         const changed = await accountService.changePassword(req.body)
-        SuccessRes(res,changed, 'Change password successful')
+        SuccessRes(res, changed, 'Change password successful')
     } catch (error) {
         next(error)
     }
@@ -44,17 +53,17 @@ const updateAccount = async (req, res, next) => {
     try {
         const updated = await accountModel.updateAccount(req.body)
         delete updated.password
-        SuccessRes(res,updated, 'Update successful')
+        SuccessRes(res, updated, 'Update successful')
     } catch (error) {
         next(error)
     }
 }
-const getAccountById = async (req,res, next) => {
+const getAccountById = async (req, res, next) => {
     try {
-        const {id}= req.params
-        const result = await  accountService.getAccountById(id)
-        SuccessRes(res,result, 'Get Account successful')
-    }catch (e) {
+        const {id} = req.params
+        const result = await accountService.getAccountById(id)
+        SuccessRes(res, result, 'Get Account successful')
+    } catch (e) {
         next(e)
     }
 }
@@ -65,5 +74,5 @@ export const accountController = {
     changePassword,
     updateAccount,
     getAllAccount,
-    getAccountById
+    getAccountById,
 }

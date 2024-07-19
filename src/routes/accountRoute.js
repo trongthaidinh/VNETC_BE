@@ -11,7 +11,5 @@ Router.route('/')
     .delete(conntrol.deleteAccount)
     .patch(conntrol.updateAccount)
     .get(conntrol.getAllAccount)
-
 Router.route('/:id').get(conntrol.getAccountById)
-
 export const accountRoute = Router
