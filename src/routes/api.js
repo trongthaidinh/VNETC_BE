@@ -13,6 +13,8 @@ import {ProjectRoute} from "~/routes/projectRoute";
 import {SearchRoute} from "~/routes/SearchRoute";
 import {ImageLibraryRoute} from "~/routes/ImageLibraryRoute";
 import {VideoLibraryRoute} from "~/routes/VideoLibraryRoute";
+import {PageRoute} from "~/routes/PageRoute";
+
 
 const initApis = (app) => {
     app.use("/api/navigation", navigationRoute)
@@ -30,6 +32,7 @@ const initApis = (app) => {
     app.use("/api/search", SearchRoute)
     app.use("/api/image", ImageLibraryRoute)
     app.use("/api/video", VideoLibraryRoute)
+    app.use("/api/gioi-thieu", PageRoute)
 }
 
 export default initApis
