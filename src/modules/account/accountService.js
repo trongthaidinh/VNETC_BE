@@ -64,9 +64,7 @@ const changePassword = async (id, data) => {
         throw new ApiErr(StatusCodes.CONFLICT, 'Wrong password')
     }
     const salt = bcrypt.genSaltSync(10)
-    console.log(newPassword)
     const hashPassword = bcrypt.hashSync(newPassword, salt)
-    console.log(hashPassword)
     const channged = await accountModel.changePassword({accountId: id,hashPassword})
     return channged
 }
