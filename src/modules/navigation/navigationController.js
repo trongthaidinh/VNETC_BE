@@ -1,14 +1,11 @@
-import { StatusCodes } from "http-status-codes"
-import { navigationService } from "./navigationService"
-import { SuccessRes } from "~/utils/SuccessRes"
-import { ParentNav, navigationModel } from "~/models/navigationModel"
-import { NAVIGATION as NAV } from "~/utils/appConst"
-
+import {navigationService} from "./navigationService"
+import {SuccessRes} from "~/utils/SuccessRes"
+import slugify from "~/utils/stringToSlug";
+const axios = require('axios');
 const getNavigation = async (req, res, next) => {
     try {
-        const childs = req.query.childs
-        const re = await navigationModel.getNavigations(childs || 0)
-        SuccessRes(res, re, 'Get navigation succesful')
+        const re = await navigationService.getAllNavigation()
+        SuccessRes(res, re, "Get navigation succesful")
     } catch (error) {
         next(error)
     }
@@ -16,9 +13,8 @@ const getNavigation = async (req, res, next) => {
 
 const getNaigationBySlug = async (req, res, next) => {
     try {
-        const slug = req.params.slug
-        const result = await navigationModel.getNavigationBySlug(slug)
-        SuccessRes(res,result, 'Get navigation successful')
+        const result = await navigationService.getNavigationBySlug(req.params.slug)
+        SuccessRes(res, result, "Get navigation successful")
     } catch (error) {
         next(error)
     }
@@ -26,48 +22,54 @@ const getNaigationBySlug = async (req, res, next) => {
 
 const addNavigation = async (req, res, next) => {
     try {
-        const { accountId, type } = req.body
-        const newData = req.body
-        delete newData.accountId
-        delete newData.type
-        const data = {
-            type,
-            accountId,
-            newData
-        }
-
-        const added = await navigationService.addNaigation(data)
-        SuccessRes(res,added, 'Add navigation successful')
+        const added = await navigationService.addNavigation(
+            req.body,
+            req.account.username,
+        )
+        SuccessRes(res, added, "Add navigation successful")
     } catch (error) {
         next(error)
     }
 }
-
-const updateNavigation = (req, res, next) => {
+const updateNavigation = async (req, res, next) => {
     try {
-        const accountId = req.query.accountId
-        const { type, id, title } = req.body
-
-        const updated = navigationModel.updateNavigation(req.body)
-        SuccessRes(res, updated,'Update succcessful')
+        // const response = await axios.get('https://api.ipify.org?format=json');
+        // const ip = response.data.ip;
+        // console.log(ip)
+        const added = await navigationService.updateNavigation(
+            req.params.id,
+            req.body,
+            req.account.username,
+        )
+        SuccessRes(res, added, "Add navigation successful")
     } catch (error) {
         next(error)
     }
 }
-
 const deleteNavigation = async (req, res, next) => {
     try {
-        const deleted = await navigationModel.deleteNavigation(req.body)
-        SuccessRes(res,deleted, 'Delete successful')
+        const deleted = await navigationService.deleteNaigation(req.body)
+        SuccessRes(res, deleted, "Delete successful")
     } catch (error) {
         next(error)
+    }
+}
+
+const getNaigationById = async (req, res, next) => {
+    try {
+        const id = req.params.id
+        const result = await navigationService.getNavigationById(id)
+        SuccessRes(res, result, "Get By ID Success")
+    } catch (e) {
+        next(e)
     }
 }
 
 export const navigationController = {
     getNavigation,
     getNaigationBySlug,
-    updateNavigation,
     addNavigation,
-    deleteNavigation
+    deleteNavigation,
+    getNaigationById,
+    updateNavigation
 }

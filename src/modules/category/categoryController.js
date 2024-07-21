@@ -5,23 +5,33 @@ import { categoryModel } from "~/models/categoryModel"
 
 const addCategory = async (req, res, next) => {
     try {
-        const added = await categoryService.addCategory(req.body)
-        SuccessRes(res, added, 'Add categor successful')
+        const profile = req.account
+        const added = await categoryService.addCategory(req.body,profile)
+        SuccessRes(res, added, 'Add category successful')
     } catch (error) {
         next(error)
     }
 }
 const getCates = async (req, res, next) => {
     try {
-        const cates = await categoryModel.getCates()
+        const cates = await categoryService.getCates()
         SuccessRes(res, cates, 'Get categories successful')
     } catch (error) {
         next(error)
     }
 }
+const getByType = async (req, res, next) => {
+    try {
+        const {value} = req.query
+        const result = await categoryService.getByType(value)
+        SuccessRes(res, result, 'Get categories successful')
+    }catch (e) {
+        next(e)
+    }
+}
 const deleteCate = async (req, res, next) => {
     try {
-        const deleted = await categoryModel.deleteCate(req.params.id)
+        const deleted = await categoryService.deleteCate(req.params.id)
         SuccessRes(res,deleted,'Deleted successful')
     } catch (error) {
         next(error)
@@ -31,5 +41,6 @@ const deleteCate = async (req, res, next) => {
 export const categoryController = {
     addCategory,
     getCates,
-    deleteCate
+    deleteCate,
+    getByType,
 }
