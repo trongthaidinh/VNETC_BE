@@ -5,7 +5,9 @@ import projectService from "~/modules/project/projectService";
 import {Project} from "~/models/projectModel";
 
 export const addProject = async (req, res, next) => {
+    console.log("vao")
     try {
+        console.log(req, res)
         const {body: data, file, account} = await req
         const result = await projectService.addProject(data, file, account)
         SuccessRes(res, result, "Create new Service success")
