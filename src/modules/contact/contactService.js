@@ -36,7 +36,13 @@ const getMessage = async (data) => {
     return messages
 }
 const deleteMessage = async (data) => {
-
+    try {
+        const result = await Contact.findByIdAndDelete(data)
+        if (!result) throw new ApiErr(444, "Delete fail")
+        return result
+    }catch (e) {
+        throw e
+    }
 }
 
 export const contactService = {

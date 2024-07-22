@@ -24,7 +24,6 @@ class Page {
             slug: slug,
             createdBy: account.username
         });
-        console.log(result)
         try {
             await result.save();
             return result;
