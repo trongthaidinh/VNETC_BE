@@ -37,7 +37,7 @@ setupSocketIO(io)
 initApis(app)
 
 // Error handling
-app.use(errorHandlingMiddleWare())
+app.use(errorHandlingMiddleWare)
 
 // Start server
 const startServer = () => {
