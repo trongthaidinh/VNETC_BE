@@ -13,6 +13,11 @@ const parentNavSchema = new Schema(
             required: true,
             unique: true,
         },
+        position: {  
+            type: Number,
+            required: true,
+            unique: true,
+        },
         createdBy: {
             type: String,
             required: true,
@@ -22,7 +27,7 @@ const parentNavSchema = new Schema(
             default: null,
         },
     },
-    {timestamps: true}
+    { timestamps: true }
 )
 
 const childNavSchema = new Schema(
@@ -40,6 +45,10 @@ const childNavSchema = new Schema(
             required: true,
             unique: true,
         },
+        position: {  
+            type: Number,
+            required: true,
+        },
         createdBy: {
             type: String,
             required: true,
@@ -49,7 +58,7 @@ const childNavSchema = new Schema(
             default: null,
         },
     },
-    {timestamps: true}
+    { timestamps: true }
 )
 
 export const ChildNav = mongoose.model("ChildNav", childNavSchema)
