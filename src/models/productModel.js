@@ -1,6 +1,6 @@
-import mongoose from "mongoose"
-import { ObjectId } from "mongodb"
-const { Schema } = mongoose
+import mongoose from "mongoose";
+import { ObjectId } from "mongodb";
+const { Schema } = mongoose;
 
 const productSchema = new Schema(
   {
@@ -9,7 +9,7 @@ const productSchema = new Schema(
       required: true,
     },
     image: {
-        type: mongoose.Schema.Types.Mixed,
+      type: mongoose.Schema.Types.Mixed,
       required: true,
     },
     category_id: {
@@ -19,13 +19,16 @@ const productSchema = new Schema(
       type: String,
       required: true,
     },
-
     updatedBy: {
       type: String,
       default: null,
     },
+    summary: { 
+      type: String,
+      required: true,  
+    },
   },
   { timestamps: true }
-)
+);
 
-export const Product = mongoose.model("Product", productSchema)
+export const Product = mongoose.model("Product", productSchema);

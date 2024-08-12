@@ -2,6 +2,7 @@ import {accountRoute} from "./accountRoute"
 import {navigationRoute} from "./navigationRoute"
 import {categoryRoute} from "./categoryRoute"
 import {newsRoute} from "./newsRoute"
+import {recruitmentRoute} from "./recruitmentRoute"
 import {partnerRoute} from "./partnerRoute"
 import {contactRoute} from "./contactRoute"
 import {authRoute} from "./authRoute"
@@ -23,6 +24,7 @@ const initApis = (app) => {
     app.use("/api/account", accountRoute)
     app.use('/api/category', categoryRoute)
     app.use('/api/news', newsRoute)
+    app.use('/api/recruitment', recruitmentRoute)
     app.use("/api/partner", partnerRoute)
     app.use('/api/contact', contactRoute)
     app.use("/api/product", productRoute)
