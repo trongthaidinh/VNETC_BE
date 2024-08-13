@@ -1,21 +1,21 @@
-import {Router} from "express"
-import isAuth from "~/middlewares/authMiddleware"
-import {upload} from "~/middlewares/multipleUploadMiddleware"
-import {
-    addService,
-    deleteService, getByFeatured, getByTopViews,
-    getService,
-    getServiceById, search,
-    updateService
-} from "~/modules/service/serviceController";
+import express from 'express'
+import {serviceController} from '~/modules/service/serviceController'
+import {upload} from "~/middlewares/multipleUploadMiddleware";
+import isAuth from "~/middlewares/authMiddleware";
 
-const Service = Router()
-Service.post("/", isAuth, upload.single("image"), addService)
-Service.get("/", getService)
-Service.get("/views", getByTopViews)
-Service.get("/featured", getByFeatured)
-Service.get("/search", search)
-Service.get('/:id', getServiceById)
-Service.patch('/:id', isAuth, upload.single("image"), updateService)
-Service.delete("/:id", isAuth, deleteService)
-export const ServiceRoute = Service
+const Router = express.Router()
+
+Router.route('/')
+    .post(isAuth,upload.single('images'), serviceController.addService)
+    .get(serviceController.getService)
+Router.route('/views').get(serviceController.getTopViews)
+Router.route('/featured').get(serviceController.getFeatured)
+Router.route('/search').get(serviceController.search)
+Router.route('/:id')
+    .post(isAuth,serviceController.addServiceDetail)
+    .get(serviceController.getServicebyid)
+    .delete(isAuth,serviceController.deleteService)
+    .patch(isAuth,upload.single('images'), serviceController.updateService)
+
+
+export const serviceRoute = Router

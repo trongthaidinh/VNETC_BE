@@ -6,5 +6,6 @@ export const NAVIGATION = {
 
 export const Cat_type = {
   PRODUCT: 1,
-  NEW: 2
+  NEW: 2,
+  SERVICE: 3
 }

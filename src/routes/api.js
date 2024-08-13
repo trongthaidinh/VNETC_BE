@@ -9,8 +9,7 @@ import {authRoute} from "./authRoute"
 import {productRoute} from "./productRoute"
 import {departmentRoute} from "./departmentRoute"
 import {ConfigRoute} from "./ConfigRoute"
-import {ServiceRoute} from "~/routes/serviceRoute";
-import {ProjectRoute} from "~/routes/projectRoute";
+import {serviceRoute, ServiceRoute} from "~/routes/serviceRoute";
 import {SearchRoute} from "~/routes/SearchRoute";
 import {ImageLibraryRoute} from "~/routes/ImageLibraryRoute";
 import {VideoLibraryRoute} from "~/routes/VideoLibraryRoute";
@@ -24,14 +23,13 @@ const initApis = (app) => {
     app.use("/api/account", accountRoute)
     app.use('/api/category', categoryRoute)
     app.use('/api/news', newsRoute)
+    app.use('/api/services', serviceRoute)
     app.use('/api/recruitment', recruitmentRoute)
     app.use("/api/partner", partnerRoute)
     app.use('/api/contact', contactRoute)
     app.use("/api/product", productRoute)
     app.use("/api/department", departmentRoute)
     app.use("/api/configuration", ConfigRoute)
-    app.use("/api/services", ServiceRoute)
-    app.use("/api/project", ProjectRoute)
     app.use("/api/search", SearchRoute)
     app.use("/api/image", ImageLibraryRoute)
     app.use("/api/video", VideoLibraryRoute)

@@ -1,20 +1,17 @@
 import mongoose from "mongoose"
-import {number} from "joi";
+import {Category} from "./categoryModel"
+import {Account, accountModel} from "./accountModel"
 
 const {Schema} = mongoose
 
 const serviceSchema = new Schema({
-    name: {
+    title: {
         type: String,
         required: true
     },
-    image: {
-        type: mongoose.Schema.Types.Mixed,
-        required: true,
-    },
     summary: {
         type: String,
-        default: ''
+        required: true
     },
     views: {
         type: Number,
@@ -24,6 +21,15 @@ const serviceSchema = new Schema({
         type: Boolean,
         default: false
     },
+    images: {
+        type: String,
+        required: true
+    },
+    categoryId: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'Category'
+    },
     createdBy: {
         type: String,
         required: true
@@ -32,11 +38,27 @@ const serviceSchema = new Schema({
         type: String,
         default: null
     },
-    serviceType: {
-        type: Number,
-        enum: [0, 1, 2,3],
-        required: true
-    }
 }, {timestamps: true})
 
-export const ServiceModel = mongoose.model('Service', serviceSchema)
+const serviceDetailSchema = new Schema({
+    content: {
+        type: String,
+        required: true
+    },
+    serviceId: {
+        type: Schema.Types.ObjectId,
+        ref: 'Service'
+    },
+    createdBy: {
+        type: String,
+        required: true
+    },
+    updatedBy: {
+        type: String,
+        default: null
+    },
+}, {timestamps: true})
+
+
+export const ServiceDetail = mongoose.model('ServiceDetail', serviceDetailSchema)
+export const Service = mongoose.model('Service', serviceSchema)
