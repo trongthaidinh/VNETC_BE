@@ -119,17 +119,13 @@ const getProductById = async (id) => {
 
 
         const formattedDetails = productDetails.map(detail => ({
-            brand: detail.brand,
-            wattage: detail.wattage,
-            weight: detail.weight,
-            size: detail.size,
-            warranty: detail.warranty,
             content: detail.content
         }));
 
         const result = {
             id: product ? product._id : null,
             name: product ? product.name : null,
+            summary: product ? product.summary : null,
             category_id: product ? product.category_id : null,
             image: product ? product.image : null,
             detail: formattedDetails,
@@ -212,11 +208,7 @@ const searchProducts = async (searchTerm, page, limit) => {
             const productDetails = await ProductDetail.find({productId: product._id}).lean();
 
             const formattedDetails = productDetails.map(detail => ({
-                brand: detail.brand,
-                wattage: detail.wattage,
-                weight: detail.weight,
-                size: detail.size,
-                warranty: detail.warranty,
+
                 content: detail.content
             }));
 
