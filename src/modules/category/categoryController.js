@@ -5,13 +5,24 @@ import { categoryModel } from "~/models/categoryModel"
 
 const addCategory = async (req, res, next) => {
     try {
-        const profile = req.account
-        const added = await categoryService.addCategory(req.body,profile)
-        SuccessRes(res, added, 'Add category successful')
+        const { name, type } = req.body;
+
+        if (!name || !type) {
+            throw new ApiErr(400, "Name and type are required.");
+        }
+
+        const profile = req.account; 
+        const added = await categoryService.addCategory({
+            name,
+            type,
+            image: req.file, 
+        }, profile);
+        SuccessRes(res, added, 'Add category successful');
     } catch (error) {
-        next(error)
+        next(error);
     }
-}
+};
+
 const getCates = async (req, res, next) => {
     try {
         const cates = await categoryService.getCates()

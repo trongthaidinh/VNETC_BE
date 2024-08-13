@@ -1,11 +1,13 @@
 import express from 'express'
-import { categoryController as controller} from '~/modules/category/categoryController'
+import { categoryController, categoryController as controller} from '~/modules/category/categoryController'
 import isAuth from "~/middlewares/authMiddleware";
+import { upload } from "~/middlewares/multipleUploadMiddleware";
+
 const Router = express.Router()
 
 Router.route('/')
     .get(controller.getCates)
-    .post(isAuth,controller.addCategory)
+    .post(isAuth,upload.single('image'), categoryController.addCategory)
 Router.route('/:id')
     .delete(isAuth,controller.deleteCate)
 Router.route('/type').get(controller.getByType)
