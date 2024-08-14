@@ -5,9 +5,11 @@ import {Account} from "~/models/accountModel"
 import ApiErr from "~/utils/ApiError"
 import bcrypt from 'bcryptjs'
 
+const jwt = require('jsonwebtoken');
+
 const login = async (email, password) => {
     try {
-        const account = await Account.findOne({email});
+        const account = await Account.findOne({ email });
         if (!account) {
             throw new ApiErr(StatusCodes.NOT_FOUND, 'Account not found');
         }
@@ -18,11 +20,14 @@ const login = async (email, password) => {
         }
 
         const token = await jwtHelper.generateToken(account, env.ACCESS_TOKEN_SECRET, env.ACCESS_TOKEN_LIFE);
-        return token;
+        const decoded = jwt.decode(token);
+
+        return { token, decoded }; 
     } catch (error) {
         throw error;
     }
 };
+
 const logout = async () => {
     try {
         return "Logout Success"
