@@ -49,27 +49,35 @@ const getAll = async (data) => {
 }
 const updateProduct = async (id, accountName, data, imageData) => {
     try {
-        if (!id || !accountName || !data || !imageData) {
+        if (!id || !accountName || !data) {
             throw new ApiErr(StatusCodes.BAD_REQUEST, "Invalid input data");
         }
-        const {updateName: name, updateCate: category_id} = data;
-        const [imageUpload, product] = await Promise.all([
-            uploadImageToCloudinary(imageData),
-            Product.findById(id)
-        ]);
+
+        const { updateName: name, updateCate: category_id, updateImage } = data;
+
+        const product = await Product.findById(id);
         if (!product) {
             throw new ApiErr(StatusCodes.NOT_FOUND, "Product not found");
         }
-        const updatedFields = {name, updatedBy: accountName, image: imageUpload, category_id};
+
+        let imageUpload;
+        if (typeof updateImage === 'string' && updateImage.startsWith('http')) {
+            imageUpload = [updateImage];
+        } else {
+            imageUpload = await uploadImageToCloudinary(imageData);
+        }
+
+        const updatedFields = { name, updatedBy: accountName, image: imageUpload, category_id };
         const productData = Object.keys(updatedFields).reduce((acc, key) => {
             if (updatedFields[key] !== undefined && updatedFields[key] !== product[key]) {
                 acc[key] = updatedFields[key];
             }
             return acc;
         }, {});
+
         const result = await Promise.all([
-            Product.findByIdAndUpdate(id, productData, {new: true, runValidators: true}),
-            ProductDetail.findOneAndUpdate({productId: id}, {...data, updatedBy: accountName}, {
+            Product.findByIdAndUpdate(id, productData, { new: true, runValidators: true }),
+            ProductDetail.findOneAndUpdate({ productId: id }, { ...data, updatedBy: accountName }, {
                 new: true,
                 runValidators: true
             })
@@ -81,6 +89,7 @@ const updateProduct = async (id, accountName, data, imageData) => {
         throw new ApiErr(StatusCodes.INTERNAL_SERVER_ERROR, "Error updating product");
     }
 };
+
 
 
 // const updateProduct = async (id, accountName, data, imageData) => {
