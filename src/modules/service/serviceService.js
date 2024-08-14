@@ -84,23 +84,40 @@ const getServiceByNId = async (serviceId) => {
 
 const updateService = async (id, data, file, account) => {
     try {
-        const {content} = data;
+        const { content, images: oldImage } = data;
 
-        const uploadImage = file ? await uploadSingleImageToCloudinary(file.path) : null;
-        const images = uploadImage ? uploadImage.secure_url : null;
+        let images;
 
-        const [updatedService, updatedServiceDetail] = await Promise.all([Service.findByIdAndUpdate({_id: id}, {
-            $set: {
-                ...data,
-                images,
-                updatedBy: account.username
-            }
-        }, {new: true}), ServiceDetail.findOneAndUpdate({serviceId: id}, {
-            $set: {
-                content,
-                updatedBy: account.username
-            }
-        }, {new: true}),]);
+        if (file) {
+            images = await uploadSingleImageToCloudinary(file.path);
+            images = images.secure_url; 
+        } else {
+            images = oldImage;
+        }
+
+        const [updatedService, updatedServiceDetail] = await Promise.all([
+            Service.findByIdAndUpdate(
+                { _id: id },
+                {
+                    $set: {
+                        ...data,
+                        images,
+                        updatedBy: account.username,
+                    },
+                },
+                { new: true }
+            ),
+            ServiceDetail.findOneAndUpdate(
+                { serviceId: id },
+                {
+                    $set: {
+                        content,
+                        updatedBy: account.username,
+                    },
+                },
+                { new: true }
+            ),
+        ]);
 
         if (!updatedService) {
             throw new Error('Service not found');
@@ -110,11 +127,12 @@ const updateService = async (id, data, file, account) => {
             throw new Error('ServiceDetail not found');
         }
 
-        return {updatedService, updatedServiceDetail};
+        return { updatedService, updatedServiceDetail };
     } catch (err) {
         throw new Error(`Error updating service: ${err.message}`);
     }
 };
+
 
 
 const updateServiceDetail = async (data) => {
