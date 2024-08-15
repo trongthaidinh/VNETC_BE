@@ -10,7 +10,7 @@ import { setupSocketIO } from './modules/socketService';
 import { connectToDatabase } from './config/mongodb';
 import { errorHandlingMiddleWare } from '~/middlewares/errorHandlingMiddleWare';
 import helmet from 'helmet';
-import path from 'path'; // Import path module
+import path from 'path'; 
 
 const app = express();
 const server = http.createServer(app);
@@ -36,7 +36,7 @@ connectToDatabase();
 setupSocketIO(io);
 
 // Serve static files from the React app
-app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(express.static(path.join(__dirname, 'build/src')));
 
 // Put API routes here (if any)
 initApis(app);
@@ -44,7 +44,7 @@ initApis(app);
 // The "catchall" handler: for any request that doesn't
 // match one above, send back React's index.html file.
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname + '/client/build/index.html'));
+    res.sendFile(path.join(__dirname, 'build/src/index.html')); 
 });
 
 // Error handling middleware
