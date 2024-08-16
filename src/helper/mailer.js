@@ -5,7 +5,7 @@ import { env } from '~/config/environment'
 const adminEmail = env.ADMIN_EMAIL
 const adminPassword = env.PASSWORD_ADMIN_EMAIL
 // Mình sử dụng host của google - gmail
-const mailHost = 'smtp.mailersend.net'
+const mailHost = 'smtp.gmail.com'
 // 587 là một cổng tiêu chuẩn và phổ biến trong giao thức SMTP
 const mailPort = 587
 
@@ -14,16 +14,12 @@ export const sendMail = (to, subject, htmlContent) => {
   const transporter = nodeMailer.createTransport({
     host: mailHost,
     port: mailPort,
-    secure: false, // nếu dùng port 587, để false
+    secure: false, // nếu các bạn dùng port 465 (smtps) thì để true, còn lại hãy để false cho tất cả các port khác
     auth: {
       user: adminEmail,
       pass: adminPassword
-    },
-    tls: {
-      rejectUnauthorized: false // Bỏ qua kiểm tra chứng chỉ tự ký
     }
-  });
-  
+  })
 
   const options = {
     from: adminEmail, // địa chỉ admin email bạn dùng để gửi
