@@ -15,7 +15,7 @@ const parentNavSchema = new Schema(
         },
         position: {  
             type: Number,
-            required: true,
+            required: false,
             unique: true,
         },
         createdBy: {
@@ -27,7 +27,7 @@ const parentNavSchema = new Schema(
             default: null,
         },
     },
-    { timestamps: true }
+    {timestamps: true}
 )
 
 const childNavSchema = new Schema(

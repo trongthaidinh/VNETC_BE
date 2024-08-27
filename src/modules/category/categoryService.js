@@ -1,83 +1,101 @@
-import { Category } from "~/models/categoryModel";
-import slugify from "~/utils/stringToSlug";
-import ApiErr from "~/utils/ApiError";
-import { News } from "~/models/newsModel";
-import uploadSingleImageToCloudinary from "~/utils/uploadSingleImage"
+import { Category } from "~/models/categoryModel"
+import { News } from "~/models/newsModel"
+import slugify from "~/utils/stringToSlug"
+import ApiErr from "~/utils/ApiError"
+import mongoose from "mongoose";
 
 const addCategory = async (data, profile) => {
-    const { name, type } = data;
-    const slug = slugify(name);
+    const { name, type, subcategories } = data
+    const slug = slugify(name)
 
-    const cateExists = await Category.exists({ name });
+    const cateExists = await Category.exists({ name })
     if (cateExists) {
-        throw new ApiErr(444, "Category already exists");
+        throw new ApiErr(444, "Category already exists")
     }
 
-    let uploadedImageUrl = null;
-    if (data.image) {
-        try {
-            const result = await uploadSingleImageToCloudinary(data.image.path); // Sử dụng đường dẫn tệp hình ảnh
-            uploadedImageUrl = result.secure_url; // Lấy URL của hình ảnh đã upload
-        } catch (uploadError) {
-            throw new ApiErr(500, "Image upload failed: " + uploadError.message);
-        }
-    }
-
-    // Tạo danh mục mới với URL hình ảnh
     const category = new Category({
+        _id: new mongoose.Types.ObjectId(),
         name,
         slug,
         type,
-        image: uploadedImageUrl || null, // Sử dụng URL hình ảnh đã upload hoặc null
-        createdBy: profile, // Thêm thông tin người tạo
-    });
+        createdBy: profile,
+        subcategories: subcategories ? subcategories.map(subName => ({
+            _id: new mongoose.Types.ObjectId(),
+            name: subName,
+            slug: slugify(subName)
+        })) : [] // Nếu subcategories không co', gán []
+    })
 
-    // Lưu danh mục vào cơ sở dữ liệu
-    await category.save();
-    return category; // Trả về danh mục đã tạo
-};
+    await category.save()
+    return category
+}
 
-// Các hàm khác (deleteCate, getCates, getByType, updateCate) không thay đổi
-const deleteCate = async (id) => {
-    const cate = await Category.findById(id);
-    if (!cate) {
-        throw new Error('Category not found');
+const deleteCategory = async (id) => {
+    try {
+        const category = await Category.findById(id)
+        if (!category) {
+            throw new ApiErr(404, "Category not found")
+        }
+
+        if (await News.exists({ categoryId: category._id })) {
+            throw new ApiErr(400, "Cannot delete category with associated news")
+        }
+
+        await category.deleteOne()
+        return true
+    } catch (error) {
+        if (error instanceof ApiErr) throw error
+        throw new ApiErr(500, "Error deleting category: " + error.message)
     }
+}
 
-    const newsExists = await News.exists({ categoryId: cate._id.toString() });
-    if (newsExists) {
-        throw new Error('Lỗi khóa ngoại');
+const getCategories = async () => {
+    try {
+        return await Category.find()
+    } catch (error) {
+        throw new ApiErr(500, "Error fetching categories: " + error.message)
     }
+}
 
-    await Category.findByIdAndDelete(id);
-    return true;
-};
-
-const getCates = async () => {
-    const cates = await Category.find();
-    return cates;
-};
-
-const getByType = async (value) => {
-    const cates = await Category.find({ type: value });
-    return cates;
-};
-
-const updateCate = async (data) => {
-    const { id, name, updatedBy } = data;
-
-    const updated = await Category.findByIdAndUpdate(id, { name, updatedBy });
-
-    if (!updated) {
-        throw new Error('Update fail');
+const getCategoriesByType = async (type) => {
+    try {
+        return await Category.find({ type })
+    } catch (error) {
+        throw new ApiErr(500, "Error fetching categories by type: " + error.message)
     }
-    return updated;
-};
+}
+
+const updateCategory = async (id,{  name, updatedBy, subcategories }, profile) => {
+    try {
+        const updated = await Category.findByIdAndUpdate(
+            id,
+            {
+                name,
+                slug: slugify(name),
+                updatedBy: profile,
+                subcategories: subcategories.map(subName => ({
+                    _id: new mongoose.Types.ObjectId(),
+                    name: subName,
+                    slug: slugify(subName)
+                }))
+            },
+            { new: true, runValidators: true }
+        )
+
+        if (!updated) {
+            throw new ApiErr(404, "Category not found")
+        }
+        return updated
+    } catch (error) {
+        if (error instanceof ApiErr) throw error
+        throw new ApiErr(500, "Error updating category: " + error.message)
+    }
+}
 
 export const categoryService = {
     addCategory,
-    deleteCate,
-    updateCate,
-    getCates,
-    getByType,
-};
+    deleteCategory,
+    updateCategory,
+    getCategories,
+    getCategoriesByType
+}

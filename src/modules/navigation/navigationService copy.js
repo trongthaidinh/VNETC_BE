@@ -14,8 +14,8 @@ const buildChildTree = async (parentId) => {
 };
 
 const getAllNavigation = async () => {
-    const parentNavs = await ParentNav.find({}, { title: 1, slug: 1, position: 1 }).lean();
-    const childNavs = await ChildNav.find({}, { title: 1, parentNavId: 1, slug: 1, position: 1 }).lean();
+    const parentNavs = await ParentNav.find({}, { title: 1, slug: 1 }).lean();
+    const childNavs = await ChildNav.find({}, { title: 1, parentNavId: 1, slug: 1 }).lean();
 
     const buildTree = (navItems, parentId) => {
         return navItems

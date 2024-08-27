@@ -5,36 +5,37 @@ import { categoryModel } from "~/models/categoryModel"
 
 const addCategory = async (req, res, next) => {
     try {
-        const { name, type } = req.body;
-
-        if (!name || !type) {
-            throw new ApiErr(400, "Name and type are required.");
-        }
-
-        const profile = req.account; 
-        const added = await categoryService.addCategory({
-            name,
-            type,
-            image: req.file, 
-        }, profile);
-        SuccessRes(res, added, 'Add category successful');
+        const profile = req.account
+        console.log(req)
+        const added = await categoryService.addCategory(req.body,profile)
+        SuccessRes(res, added, 'Add category successful')
     } catch (error) {
-        next(error);
+        next(error)
     }
-};
-
+}
 const getCates = async (req, res, next) => {
     try {
-        const cates = await categoryService.getCates()
+        const cates = await categoryService.getCategories()
         SuccessRes(res, cates, 'Get categories successful')
     } catch (error) {
+        next(error)
+    }
+}
+const updateCate = async (req, res, next) => {
+    try {
+        const id = req.params.id
+        const data = req.body
+        const profile = req.account
+        const result = await categoryService.updateCategory(id,data,profile)
+        SuccessRes(res, result, 'Update Categories Successfully')
+    }catch (error) {
         next(error)
     }
 }
 const getByType = async (req, res, next) => {
     try {
         const {value} = req.query
-        const result = await categoryService.getByType(value)
+        const result = await categoryService.getCategoriesByType(value)
         SuccessRes(res, result, 'Get categories successful')
     }catch (e) {
         next(e)
@@ -42,7 +43,7 @@ const getByType = async (req, res, next) => {
 }
 const deleteCate = async (req, res, next) => {
     try {
-        const deleted = await categoryService.deleteCate(req.params.id)
+        const deleted = await categoryService.deleteCategory(req.params.id)
         SuccessRes(res,deleted,'Deleted successful')
     } catch (error) {
         next(error)
@@ -54,4 +55,5 @@ export const categoryController = {
     getCates,
     deleteCate,
     getByType,
+    updateCate
 }

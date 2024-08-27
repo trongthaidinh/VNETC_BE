@@ -1,4 +1,4 @@
-import {Visit} from '~/models/Visit';
+import { Visit } from '~/models/Visit';
 
 let onlineUsers = 0;
 
@@ -11,8 +11,8 @@ const handleConnection = async (socket, io) => {
     console.log("New connection established");
 
     try {
-        const visit = await updateVisitCount();
-        emitStats(io, visit.count);
+        await updateVisitCount();
+        emitStats(io);
 
         socket.on('disconnect', () => handleDisconnect(io));
     } catch (error) {
@@ -27,27 +27,35 @@ const handleDisconnect = (io) => {
 
 const updateVisitCount = async () => {
     try {
-        let visit = await Visit.findOne();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Set to the beginning of the day
+
+        let visit = await Visit.findOne({ date: today });
         if (!visit) {
-            visit = new Visit({count: 1});
+            visit = new Visit({ date: today, dailyCount: 1, totalCount: 1 });
         } else {
-            visit.count++;
+            visit.dailyCount++;
+            visit.totalCount++;
         }
+
         await visit.save();
         return visit;
     } catch (error) {
         console.error("Error updating visit count:", error);
-        throw error; // Re-throw the error to be caught in handleConnection
+        throw error;
     }
 };
 
-const emitStats = async (io, totalVisits = null) => {
+const emitStats = async (io) => {
     try {
-        if (totalVisits === null) {
-            const visit = await Visit.findOne();
-            totalVisits = visit ? visit.count : 0;
-        }
-        io.emit('stats', {online: onlineUsers, total: totalVisits});
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); 
+
+        const visit = await Visit.findOne({ date: today });
+        const dailyVisits = visit ? visit.dailyCount : 0;
+        const totalVisits = visit ? visit.totalCount : 0;
+
+        io.emit('stats', { online: onlineUsers, daily: dailyVisits, total: totalVisits });
     } catch (error) {
         console.error("Error emitting stats:", error);
     }

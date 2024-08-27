@@ -41,6 +41,8 @@ const createNews = async ({title, summary, views, categoryId, content, isFeature
         await news.save();
         await newsDetail.save();
 
+        io.emit('newsAdded', news);
+
         return news;
     } catch (error) {
         throw error

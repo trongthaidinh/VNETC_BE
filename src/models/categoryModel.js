@@ -3,21 +3,35 @@ import {News} from "./newsModel"
 import slugify from "~/utils/stringToSlug"
 import {Cat_type} from "~/utils/appConst";
 
-const {Schema} = mongoose
+const {Schema, Types} = mongoose
 
-const categorySchema = new Schema({
+const subcategorySchema = new Schema({
+    _id: {
+        type: Types.ObjectId,
+        default: Types.ObjectId
+    },
     name: {
         type: String,
-        required: true,
-        unique: true
+        required: true
     },
     slug: {
         type: String,
         required: true
+    }
+});
+
+const categorySchema = new Schema({
+    _id: {
+        type: Types.ObjectId,
+        default: Types.ObjectId
     },
-    image: {
+    name: {
         type: String,
-        default: null,
+        required: true
+    },
+    slug: {
+        type: String,
+        required: true
     },
     type: {
         type: String,
@@ -31,6 +45,7 @@ const categorySchema = new Schema({
         type: String,
         default: null
     },
+    subcategories: [subcategorySchema],
 }, {timestamps: true})
 
 export const Category = mongoose.model('Category', categorySchema)
