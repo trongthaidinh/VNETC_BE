@@ -1,25 +1,49 @@
-import {accountService as news, accountService} from "../account/accountService";
-
 import uploadSingleImageToCloudinary from "~/utils/uploadSingleImage"
 import {body} from "express-validator";
 import {log} from "console";
 import ApiErr from "~/utils/ApiError";
 import {StatusCodes} from "http-status-codes";
+import {io} from "~/server";
 
 const {Category} = require("~/models/categoryModel");
 const {News, NewsDetail} = require("~/models/newsModel")
 
 const findAllNews = async (data) => {
-    const {page, limit, categoryId} = data
-    // const {page, limit} = data
-    const query = categoryId ? {categoryId} : {};
-    const news = await News.find(query)
-        .skip(limit * (page - 1))
-        .limit(limit)
-        .sort({createdAt: -1});
+    const {page = 1, limit = 10, categoryId, startDate, endDate} = data;
 
-    return news
-}
+    let query = {};
+
+    if (categoryId) {
+        query.categoryId = categoryId;
+    }
+
+    if (startDate || endDate) {
+        query.createdAt = {};
+        if (startDate) {
+            query.createdAt.$gte = new Date(startDate);
+        }
+        if (endDate) {
+            query.createdAt.$lte = new Date(endDate);
+        }
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [news, totalCount] = await Promise.all([
+        News.find(query)
+            .skip(skip)
+            .limit(parseInt(limit))
+            .sort({createdAt: -1}),
+        News.countDocuments(query)
+    ]);
+
+    return {
+        news,
+        currentPage: page,
+        totalPages: Math.ceil(totalCount / limit),
+        totalCount
+    };
+};
 const createNews = async ({title, summary, views, categoryId, content, isFeatured}, image, account) => {
     try {
         const uploadImage = await uploadSingleImageToCloudinary(image.path);
@@ -41,11 +65,12 @@ const createNews = async ({title, summary, views, categoryId, content, isFeature
         await news.save();
         await newsDetail.save();
 
+        // Bắn socket cho client khi thêm tin tức mới
         io.emit('newsAdded', news);
 
         return news;
     } catch (error) {
-        throw error
+        throw error;
     }
 };
 
@@ -86,40 +111,23 @@ const getNewsByNId = async (newsId) => {
 
 const updateNews = async (id, data, file, account) => {
     try {
-        const { content, images: oldImage } = data;
+        const {content} = data;
 
-        let images;
+        const uploadImage = file ? await uploadSingleImageToCloudinary(file.path) : null;
+        const images = uploadImage ? uploadImage.secure_url : null;
 
-        if (file) {
-            images = await uploadSingleImageToCloudinary(file.path);
-            images = images.secure_url; 
-        } else {
-            images = oldImage;
-        }
-
-        const [updatedNews, updatedNewsDetail] = await Promise.all([
-            News.findByIdAndUpdate(
-                { _id: id },
-                {
-                    $set: {
-                        ...data,
-                        images,
-                        updatedBy: account.username,
-                    },
-                },
-                { new: true }
-            ),
-            NewsDetail.findOneAndUpdate(
-                { newsId: id },
-                {
-                    $set: {
-                        content,
-                        updatedBy: account.username,
-                    },
-                },
-                { new: true }
-            ),
-        ]);
+        const [updatedNews, updatedNewsDetail] = await Promise.all([News.findByIdAndUpdate({_id: id}, {
+            $set: {
+                ...data,
+                images,
+                updatedBy: account.username
+            }
+        }, {new: true}), NewsDetail.findOneAndUpdate({newsId: id}, {
+            $set: {
+                content,
+                updatedBy: account.username
+            }
+        }, {new: true}),]);
 
         if (!updatedNews) {
             throw new Error('News not found');
@@ -129,12 +137,11 @@ const updateNews = async (id, data, file, account) => {
             throw new Error('NewsDetail not found');
         }
 
-        return { updatedNews, updatedNewsDetail };
+        return {updatedNews, updatedNewsDetail};
     } catch (err) {
         throw new Error(`Error updating news: ${err.message}`);
     }
 };
-
 
 
 const updateNewsDetail = async (data) => {
@@ -182,29 +189,48 @@ const getFeatured = async () => {
         throw e
     }
 }
-const searchNews = async (searchTerm, page, limit) => {
+const searchNews = async (searchTerm, page, limit, startDate, endDate) => {
     try {
         const skip = (page - 1) * limit;
-        const searchQuery = {
+        let searchQuery = {
             $or: [
                 {title: {$regex: searchTerm, $options: 'i'}},
                 {summary: {$regex: searchTerm, $options: 'i'}}
             ]
         };
-        const [news, totalCount] = await Promise.all([News.find(searchQuery)
-            .skip(skip)
-            .limit(limit)
-            .sort({createdAt: -1}), News.countDocuments(searchQuery)]);
-        const newsIds = news.map(item => item._id);
-        const newsDetails = await NewsDetail.find({newsId: {$in: newsIds}});
-        const fullNewsResults = news.map(newsItem => {
-            const detail = newsDetails.find(detail => detail.newsId.toString() === newsItem._id.toString());
-            return {
-                ...newsItem.toObject(), content: detail ? detail.content : null
+
+        if (startDate && endDate) {
+            searchQuery.createdAt = {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate)
             };
-        });
+        } else if (startDate) {
+            searchQuery.createdAt = {$gte: new Date(startDate)};
+        } else if (endDate) {
+            searchQuery.createdAt = {$lte: new Date(endDate)};
+        }
+        const [news, totalCount] = await Promise.all([
+            News.find(searchQuery)
+                .skip(skip)
+                .limit(limit)
+                .sort({createdAt: -1})
+                .lean(),
+            News.countDocuments(searchQuery)
+        ]);
+
+        const newsIds = news.map(item => item._id);
+        const newsDetails = await NewsDetail.find({newsId: {$in: newsIds}}).lean();
+
+        const fullNewsResults = news.map(newsItem => ({
+            ...newsItem,
+            content: newsDetails.find(detail => detail.newsId.toString() === newsItem._id.toString())?.content || null
+        }));
+
         return {
-            results: fullNewsResults, totalCount, totalPages: Math.ceil(totalCount / limit), currentPage: page
+            results: fullNewsResults,
+            totalCount,
+            totalPages: Math.ceil(totalCount / limit),
+            currentPage: page
         };
     } catch (error) {
         console.error("Error searching news:", error);

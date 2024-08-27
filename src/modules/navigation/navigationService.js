@@ -68,7 +68,7 @@ const getNavigationById = async (id) => {
 };
 
 const addNavigation = async (data, creator) => {
-    const { type, title, parentNavId } = data;
+    const { type, title, position, parentNavId } = data;
     const slug = slugify(title);
 
     if (type === NAV.PARENT) {
@@ -93,7 +93,7 @@ const addNavigation = async (data, creator) => {
         //     throw new ApiErr(StatusCodes.CONFLICT, "Navigation already exists");
         // }
 
-        const nav = new ChildNav({ title, parentNavId, slug, createdBy: creator });
+        const nav = new ChildNav({ title, parentNavId, position, slug, createdBy: creator });
         return await nav.save();
     }
 };
