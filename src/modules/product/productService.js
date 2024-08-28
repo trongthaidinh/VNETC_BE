@@ -6,6 +6,7 @@ import {ObjectId} from "mongodb"
 import uploadImageToCloudinary from "~/utils/uploadImage"
 import mongoose from "mongoose";
 import req from "express/lib/request";
+import slugify from 'slugify';
 
 const {Product} = require("~/models/productModel")
 
@@ -15,7 +16,7 @@ const create = async (req, creator) => {
             throw new ApiErr(StatusCodes.BAD_REQUEST, "Invalid request data");
         }
 
-        const slug = req.body.name.toLowerCase().replace(/\s+/g, '-');
+        const slug = slugify(req.body.name).toLowerCase();
 
         const uploadedImage = await uploadImageToCloudinary(req.files);
         const productData = {
@@ -73,12 +74,13 @@ const updateProduct = async (id, accountName, data, imageData) => {
         }
 
         const updatedFields = { 
-            name, 
+            name: name || product.name, 
             updatedBy: accountName, 
-            image: imageUpload, 
-            category_id,
-            slug
+            image: imageUpload || product.image, 
+            category_id: category_id || product.category_id,
+            slug: slug || slugify(name || product.name).toLowerCase()  
         };
+        
         const productData = Object.keys(updatedFields).reduce((acc, key) => {
             if (updatedFields[key] !== undefined && updatedFields[key] !== product[key]) {
                 acc[key] = updatedFields[key];
@@ -88,7 +90,7 @@ const updateProduct = async (id, accountName, data, imageData) => {
 
         const result = await Promise.all([
             Product.findByIdAndUpdate(id, productData, { new: true, runValidators: true }),
-            ProductDetail.findOneAndUpdate({ productId: id }, { ...data, updatedBy: accountName }, {
+            ProductDetail.findOneAndUpdate({ productId: id }, { ...data, updatedBy: accountName, slug: updatedFields.slug }, {
                 new: true,
                 runValidators: true
             })
