@@ -6,7 +6,7 @@ import {ObjectId} from "mongodb"
 import uploadImageToCloudinary from "~/utils/uploadImage"
 import mongoose from "mongoose";
 import req from "express/lib/request";
-import slugify from 'slugify';
+import slugify from "~/utils/stringToSlug"
 
 const {Product} = require("~/models/productModel")
 
@@ -16,7 +16,7 @@ const create = async (req, creator) => {
             throw new ApiErr(StatusCodes.BAD_REQUEST, "Invalid request data");
         }
 
-        const slug = slugify(req.body.name).toLowerCase();
+        const slug = slugify(req.body.name);
 
         const uploadedImage = await uploadImageToCloudinary(req.files);
         const productData = {
@@ -78,7 +78,7 @@ const updateProduct = async (id, accountName, data, imageData) => {
             updatedBy: accountName, 
             image: imageUpload || product.image, 
             category_id: category_id || product.category_id,
-            slug: slug || slugify(name || product.name).toLowerCase()  
+            slug: slug || slugify(name || product.name) 
         };
         
         const productData = Object.keys(updatedFields).reduce((acc, key) => {

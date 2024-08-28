@@ -47,7 +47,7 @@ const childNavSchema = new Schema(
         },
         position: {  
             type: Number,
-            required: true,
+            required: false,
         },
         createdBy: {
             type: String,
