@@ -23,9 +23,14 @@ const productSchema = new Schema(
       type: String,
       default: null,
     },
-    summary: { 
+    summary: {
       type: String,
-      required: true,  
+      required: true,
+    },
+    slug: {
+      type: String,
+      required: true,
+      unique: true, 
     },
   },
   { timestamps: true }

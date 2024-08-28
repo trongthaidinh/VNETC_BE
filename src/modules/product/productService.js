@@ -14,12 +14,16 @@ const create = async (req, creator) => {
         if (!req.files || !req.body) {
             throw new ApiErr(StatusCodes.BAD_REQUEST, "Invalid request data");
         }
+
+        const slug = req.body.name.toLowerCase().replace(/\s+/g, '-');
+
         const uploadedImage = await uploadImageToCloudinary(req.files);
         const productData = {
             ...req.body,
             image: uploadedImage,
             category_id: new ObjectId(req.body.categoryID),
-            createdBy: creator
+            createdBy: creator,
+            slug  
         };
         const product = new Product(productData);
         await product.save();
@@ -27,33 +31,34 @@ const create = async (req, creator) => {
             ...req.body,
             productId: product._id,
             createdBy: creator,
+            slug
         };
         const productDetail = new ProductDetail(productDetailData);
         await productDetail.save();
         return product;
     } catch (error) {
         console.error("Error creating product:", error.message);
-        throw error
+        throw error;
     }
 };
 
-
 const getAll = async (data) => {
-    const {page, limit, category_id} = data
-    const query = category_id ? {category_id} : {};
+    const { page, limit, category_id } = data;
+    const query = category_id ? { category_id } : {};
     const products = await Product.find(query)
         .skip(limit * (page - 1))
         .limit(limit)
-        .sort({createdAt: -1});
-    return products
-}
+        .sort({ createdAt: -1 });
+    return products;
+};
+
 const updateProduct = async (id, accountName, data, imageData) => {
     try {
         if (!id || !accountName || !data) {
             throw new ApiErr(StatusCodes.BAD_REQUEST, "Invalid input data");
         }
 
-        const { updateName: name, updateCate: category_id, updateImage } = data;
+        const { updateName: name, updateCate: category_id, updateImage, slug } = data;
 
         const product = await Product.findById(id);
         if (!product) {
@@ -67,7 +72,13 @@ const updateProduct = async (id, accountName, data, imageData) => {
             imageUpload = await uploadImageToCloudinary(imageData);
         }
 
-        const updatedFields = { name, updatedBy: accountName, image: imageUpload, category_id };
+        const updatedFields = { 
+            name, 
+            updatedBy: accountName, 
+            image: imageUpload, 
+            category_id,
+            slug
+        };
         const productData = Object.keys(updatedFields).reduce((acc, key) => {
             if (updatedFields[key] !== undefined && updatedFields[key] !== product[key]) {
                 acc[key] = updatedFields[key];
@@ -90,42 +101,16 @@ const updateProduct = async (id, accountName, data, imageData) => {
     }
 };
 
-
-
-// const updateProduct = async (id, accountName, data, imageData) => {
-//     try {
-//         const {updateName: name, updateCate: category_id} = data;
-//         const {secure_url: image} = await uploadImageToCloudinary(imageData.path);
-//         const productData = {
-//             name,
-//             updatedBy: accountName,
-//             image,
-//             category_id
-//         };
-//         const updatedProduct = await Product.findByIdAndUpdate(
-//             id,
-//             productData,
-//             {new: true, runValidators: true}
-//         );
-//         if (!updatedProduct) throw new ApiErr(StatusCodes.UNAUTHORIZED, "Cannot find Product ")
-//         return updatedProduct;
-//     } catch (error) {
-//         throw error;
-//     }
-// };
-
-
 const getProductById = async (id) => {
     try {
         const [product, productDetails] = await Promise.all([
             Product.findById(id).lean(),
-            ProductDetail.find({productId: id}).lean()
+            ProductDetail.find({ productId: id }).lean()
         ]);
 
         if (!product && !productDetails.length) {
             throw new ApiErr(StatusCodes.NOT_FOUND, "Product not found");
         }
-
 
         const formattedDetails = productDetails.map(detail => ({
             content: detail.content
@@ -137,6 +122,7 @@ const getProductById = async (id) => {
             summary: product ? product.summary : null,
             category_id: product ? product.category_id : null,
             image: product ? product.image : null,
+            slug: product ? product.slug : null, 
             detail: formattedDetails,
         };
 
@@ -146,9 +132,40 @@ const getProductById = async (id) => {
         throw error;
     }
 };
+
+const getProductBySlug = async (slug) => {
+    try {
+        const product = await Product.findOne({ slug }).lean();
+        if (!product) {
+            throw new ApiErr(StatusCodes.NOT_FOUND, "Product not found");
+        }
+
+        const productDetails = await ProductDetail.find({ slug: product.slug }).lean();
+
+        const formattedDetails = productDetails.map(detail => ({
+            content: detail.content
+        }));
+
+        return {
+            id: product._id,
+            name: product.name,
+            summary: product.summary,
+            category_id: product.category_id,
+            image: product.image,
+            slug: product.slug,
+            detail: formattedDetails
+        };
+    } catch (error) {
+        console.error('Error fetching product by slug:', error);
+        throw error;
+    }
+};
+
+
+
 const createProductDetail = async (id, accountName, data) => {
     try {
-        const existingProductDetail = await ProductDetail.findOne({productId: id, brand: data.brand});
+        const existingProductDetail = await ProductDetail.findOne({ productId: id, brand: data.brand });
         if (existingProductDetail) {
             throw new ApiErr(StatusCodes.BAD_REQUEST, "Already exists for this product");
         }
@@ -164,7 +181,8 @@ const createProductDetail = async (id, accountName, data) => {
     } catch (error) {
         throw error;
     }
-}
+};
+
 const updateProductDetail = async (id, data, user) => {
     try {
         const productData = {
@@ -174,7 +192,7 @@ const updateProductDetail = async (id, data, user) => {
         const updatedProduct = await ProductDetail.findByIdAndUpdate(
             id,
             productData,
-            {new: true}
+            { new: true }
         );
         if (!updatedProduct) {
             throw new ApiErr(StatusCodes.BAD_REQUEST, "Cannot find this product");
@@ -183,19 +201,21 @@ const updateProductDetail = async (id, data, user) => {
     } catch (error) {
         throw error;
     }
-}
+};
+
 const deleteProduct = async (id) => {
     try {
         const result = await Promise.all([
             Product.findByIdAndDelete(id),
-            ProductDetail.deleteMany({productId: id})
+            ProductDetail.deleteMany({ productId: id })
         ]);
         if (!result[0]) throw new ApiErr(StatusCodes.BAD_REQUEST, "Cannot find this product");
-        return result
+        return result;
     } catch (error) {
         throw error;
     }
-}
+};
+
 const searchProducts = async (searchTerm, page, limit) => {
     try {
         if (!searchTerm) {
@@ -203,21 +223,20 @@ const searchProducts = async (searchTerm, page, limit) => {
         }
 
         const regex = new RegExp(searchTerm, 'i');
-        const query = {name: regex};
+        const query = { name: regex };
 
         const [products, totalCount] = await Promise.all([
             Product.find(query)
                 .skip(limit * (page - 1))
                 .limit(limit)
-                .sort({createdAt: -1}),
+                .sort({ createdAt: -1 }),
             Product.countDocuments(query)
         ]);
 
         const productsWithDetails = await Promise.all(products.map(async (product) => {
-            const productDetails = await ProductDetail.find({productId: product._id}).lean();
+            const productDetails = await ProductDetail.find({ productId: product._id }).lean();
 
             const formattedDetails = productDetails.map(detail => ({
-
                 content: detail.content
             }));
 
@@ -226,6 +245,7 @@ const searchProducts = async (searchTerm, page, limit) => {
                 name: product.name,
                 category_id: product.category_id,
                 image: product.image,
+                slug: product.slug,  
                 detail: formattedDetails
             };
         }));
@@ -243,13 +263,15 @@ const searchProducts = async (searchTerm, page, limit) => {
         throw new ApiErr(StatusCodes.INTERNAL_SERVER_ERROR, "Error searching products");
     }
 };
+
 export const productService = {
     create,
     getAll,
     getProductById,
+    getProductBySlug,
     updateProduct,
     createProductDetail,
     updateProductDetail,
     deleteProduct,
     searchProducts
-}
+};

@@ -18,6 +18,11 @@ const productDetailSchema = new Schema({
         type: String,
         default: ''
     },
+    slug: {
+        type: String,
+        required: true,
+        unique: true, 
+    },
     createdBy: {
         type: String,
         required: true

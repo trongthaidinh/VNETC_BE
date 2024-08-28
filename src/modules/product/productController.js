@@ -33,6 +33,17 @@ const getProductById = async (req, res, next) => {
         next(error)
     }
 }
+
+const getProductBySlug = async (req, res, next) => {
+    try {
+        const { slug } = req.params;
+        const product = await productService.getProductBySlug(slug);
+        SuccessRes(res, product, "Get product by slug success");
+    } catch (error) {
+        next(error);
+    }
+};
+
 const updateProduct = async (req, res, next) => {
     try {
         // const {username: accountName} = req.account;
@@ -86,6 +97,7 @@ export const productController = {
     create,
     getAll,
     getProductById,
+    getProductBySlug,
     updateProduct,
     createNewsDetail,
     updateProductDetail,
