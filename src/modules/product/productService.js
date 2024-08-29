@@ -59,7 +59,7 @@ const updateProduct = async (id, accountName, data, imageData) => {
             throw new ApiErr(StatusCodes.BAD_REQUEST, "Invalid input data");
         }
 
-        const { updateName: name, updateCate: category_id, updateImage, slug } = data;
+        const { updateName: name, updateCate: category_id, updateImage, slug, features } = data;
 
         const product = await Product.findById(id);
         if (!product) {
@@ -78,7 +78,8 @@ const updateProduct = async (id, accountName, data, imageData) => {
             updatedBy: accountName, 
             image: imageUpload || product.image, 
             category_id: category_id || product.category_id,
-            slug: slug || slugify(name || product.name) 
+            slug: slug || slugify(name || product.name),
+            features: features || product.features 
         };
         
         const productData = Object.keys(updatedFields).reduce((acc, key) => {
@@ -102,6 +103,7 @@ const updateProduct = async (id, accountName, data, imageData) => {
         throw new ApiErr(StatusCodes.INTERNAL_SERVER_ERROR, "Error updating product");
     }
 };
+
 
 const getProductById = async (id) => {
     try {
