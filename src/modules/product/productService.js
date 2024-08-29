@@ -32,7 +32,7 @@ const create = async (req, creator) => {
             ...req.body,
             productId: product._id,
             createdBy: creator,
-            slug
+            slug,
         };
         const productDetail = new ProductDetail(productDetailData);
         await productDetail.save();
@@ -125,6 +125,7 @@ const getProductById = async (id) => {
             category_id: product ? product.category_id : null,
             image: product ? product.image : null,
             slug: product ? product.slug : null, 
+            features: product.features,
             detail: formattedDetails,
         };
 
@@ -155,6 +156,7 @@ const getProductBySlug = async (slug) => {
             category_id: product.category_id,
             image: product.image,
             slug: product.slug,
+            featured: product.featured,
             detail: formattedDetails
         };
     } catch (error) {

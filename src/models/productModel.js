@@ -8,6 +8,10 @@ const productSchema = new Schema(
       type: String,
       required: true,
     },
+    features: {
+      type: mongoose.Schema.Types.Mixed,
+      required: true,
+    },
     image: {
       type: mongoose.Schema.Types.Mixed,
       required: true,
