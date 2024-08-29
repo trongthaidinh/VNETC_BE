@@ -158,7 +158,7 @@ const getProductBySlug = async (slug) => {
             category_id: product.category_id,
             image: product.image,
             slug: product.slug,
-            featured: product.featured,
+            features: product.features,
             detail: formattedDetails
         };
     } catch (error) {
