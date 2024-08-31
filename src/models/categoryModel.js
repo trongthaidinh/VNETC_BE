@@ -21,10 +21,6 @@ const subcategorySchema = new Schema({
 });
 
 const categorySchema = new Schema({
-    _id: {
-        type: Types.ObjectId,
-        default: Types.ObjectId
-    },
     name: {
         type: String,
         required: true
@@ -32,6 +28,10 @@ const categorySchema = new Schema({
     slug: {
         type: String,
         required: true
+    },
+    image: {
+        type: String,
+        default: null,
     },
     type: {
         type: String,

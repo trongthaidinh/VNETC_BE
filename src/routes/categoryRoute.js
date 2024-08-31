@@ -9,6 +9,8 @@ Router.route('/')
     .get(controller.getCates)
     .post(isAuth,upload.single('image'), categoryController.addCategory)
 Router.route('/:id')
+    .get(controller.getCateById)
+    .patch(isAuth,controller.updateCate)
     .delete(isAuth,controller.deleteCate)
 Router.route('/type').get(controller.getByType)
 

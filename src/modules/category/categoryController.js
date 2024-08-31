@@ -5,14 +5,24 @@ import { categoryModel } from "~/models/categoryModel"
 
 const addCategory = async (req, res, next) => {
     try {
-        const profile = req.account
-        console.log(req)
-        const added = await categoryService.addCategory(req.body,profile)
-        SuccessRes(res, added, 'Add category successful')
+        const { name, type, subcategories } = req.body;
+
+        if (!name || !type) {
+            throw new ApiErr(400, "Name and type are required.");
+        }
+
+        const profile = req.account; 
+        const added = await categoryService.addCategory({
+            name,
+            type,
+            subcategories,
+            image: req.file, 
+        }, profile);
+        SuccessRes(res, added, 'Add category successful');
     } catch (error) {
-        next(error)
+        next(error);
     }
-}
+};
 const getCates = async (req, res, next) => {
     try {
         const cates = await categoryService.getCategories()
@@ -41,6 +51,16 @@ const getByType = async (req, res, next) => {
         next(e)
     }
 }
+const getCateById = async (req, res, next) => {
+    try {
+        const id = req.params.id;
+        console.log(id)
+        const category = await categoryService.getCategoryById(id);
+        SuccessRes(res, category, 'Get category successful');
+    } catch (error) {
+        next(error);
+    }
+};
 const deleteCate = async (req, res, next) => {
     try {
         const deleted = await categoryService.deleteCategory(req.params.id)
@@ -55,5 +75,6 @@ export const categoryController = {
     getCates,
     deleteCate,
     getByType,
-    updateCate
+    updateCate,
+    getCateById
 }
