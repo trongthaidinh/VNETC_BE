@@ -34,13 +34,12 @@ const addCategory = async (data, profile) => {
             _id: new mongoose.Types.ObjectId(),
             name: subName,
             slug: slugify(subName)
-        })) : []
-    });
+        })) : [] 
+    })
 
-    await category.save();
-    return category;
-};
-
+    await category.save()
+    return category
+}
 
 const deleteCategory = async (id) => {
     try {
@@ -81,7 +80,6 @@ const getCategoryById = async (id) => {
         if (!mongoose.Types.ObjectId.isValid(id)) {
             throw new ApiErr(400, `Invalid category ID format ${id}` );
         }
-
         const category = await Category.findById(id);
         if (!category) {
             throw new ApiErr(404, "Category not found");
