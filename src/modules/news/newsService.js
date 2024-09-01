@@ -111,10 +111,16 @@ const getNewsByNId = async (newsId) => {
 
 const updateNews = async (id, data, file, account) => {
     try {
-        const {content} = data;
+        const { content, images: oldImage } = data;
 
-        const uploadImage = file ? await uploadSingleImageToCloudinary(file.path) : null;
-        const images = uploadImage ? uploadImage.secure_url : null;
+        let images;
+
+        if (file) {
+            images = await uploadSingleImageToCloudinary(file.path);
+            images = images.secure_url; 
+        } else {
+            images = oldImage;
+        }
 
         const [updatedNews, updatedNewsDetail] = await Promise.all([News.findByIdAndUpdate({_id: id}, {
             $set: {
