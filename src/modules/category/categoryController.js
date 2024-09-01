@@ -2,6 +2,8 @@ import { StatusCodes } from "http-status-codes"
 import { categoryService } from "./categoryService"
 import { SuccessRes } from "~/utils/SuccessRes"
 import { categoryModel } from "~/models/categoryModel"
+import ApiErr from "~/utils/ApiError"
+
 
 const addCategory = async (req, res, next) => {
     try {
@@ -33,10 +35,12 @@ const getCates = async (req, res, next) => {
 }
 const updateCate = async (req, res, next) => {
     try {
+        console.error(req.body);
         const id = req.params.id
         const data = req.body
         const profile = req.account
-        const result = await categoryService.updateCategory(id,data,profile)
+        const file = req.file
+        const result = await categoryService.updateCategory(id, data, file, profile)
         SuccessRes(res, result, 'Update Categories Successfully')
     }catch (error) {
         next(error)

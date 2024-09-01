@@ -11,7 +11,7 @@ Router.route('/')
 Router.route('/type').get(controller.getByType)
 Router.route('/:id')
     .get(controller.getCateById)
-    .patch(isAuth,controller.updateCate)
+    .patch(isAuth, upload.single('image'), categoryController.updateCate)
     .delete(isAuth,controller.deleteCate)
 
 export const categoryRoute = Router
