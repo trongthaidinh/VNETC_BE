@@ -1,8 +1,8 @@
 import { StatusCodes } from "http-status-codes"
-import { env } from "~/config/environment"
-import { Role } from "~/models/roleModel"
-import ApiErr from "~/utils/ApiError"
-import ErrRes from "~/utils/ErrRes"
+import { env } from "../config/environment.js"
+import { Role } from "../models/roleModel"
+import ApiErr from "../utils/ApiError.js"
+import ErrRes from "../utils/ErrRes.js"
 
 const checkAdminMiddleware = async (req, res, next) => {
     try {

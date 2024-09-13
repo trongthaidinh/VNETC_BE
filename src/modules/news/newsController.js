@@ -1,7 +1,6 @@
-import {newsService} from "./newsService"
+import {newsService} from "./newsService.js"
 
-const {newsModel} = require("~/models/newsModel")
-const {SuccessRes} = require("~/utils/SuccessRes")
+import { SuccessRes } from "../../utils/SuccessRes.js";
 
 const addNews = async (req, res, next) => {
     try {

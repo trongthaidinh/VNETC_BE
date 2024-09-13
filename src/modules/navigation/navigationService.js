@@ -1,15 +1,15 @@
 import {StatusCodes} from "http-status-codes"
-import {ChildNav, ParentNav} from "~/models/navigationModel"
-import ApiErr from "~/utils/ApiError"
-import {NAVIGATION as NAV} from "~/utils/appConst"
-import slugify from "~/utils/stringToSlug"
+import {ChildNav, ParentNav} from "../../models/navigationModel.js"
+import ApiErr from "../../utils/ApiError.js"
+import {NAVIGATION as NAV} from "../../utils/appConst.js"
+import slugify from "../../utils/stringToSlug.js"
 
 const buildChildTree = async (parentId) => {
     const childNavs = await ChildNav.find({ parentNavId: parentId }).lean();
     if (!childNavs.length) return [];
     return Promise.all(childNavs.map(async (child) => ({
         ...child,
-        child: await buildChildTree(child._id)
+        child: await buildChildTree(child._id)  
     })));
 };
 

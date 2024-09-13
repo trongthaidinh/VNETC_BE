@@ -1,5 +1,5 @@
-import {SuccessRes} from "~/utils/SuccessRes";
-import videoService from "~/modules/Video/videoService";
+import {SuccessRes} from "../../utils/SuccessRes.js";
+import videoService from "../../modules/Video/videoService.js";
 
 export const addVideo = async (req, res, next) => {
     try {

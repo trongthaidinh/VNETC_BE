@@ -1,12 +1,12 @@
 import {Router} from "express"
-import isAuth from "~/middlewares/authMiddleware"
-import {upload} from "~/middlewares/multipleUploadMiddleware"
+import isAuth from "../middlewares/authMiddleware.js"
+import {upload} from "../middlewares/multipleUploadMiddleware.js"
 import {
     addConfigController,
     deleteConfig,
     getAllConfig,
     getConfigById, updateConfig,
-} from "~/modules/Configuration/ConfigController"
+} from "../modules/Configuration/ConfigController.js"
 
 const Config = Router()
 

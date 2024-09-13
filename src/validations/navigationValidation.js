@@ -1,6 +1,7 @@
-const Joi = require("joi");
-import { NAVIGATION } from "~/utils/appConst";
-import { validConst as vc } from "~/utils/validConst";
+import Joi from "joi";
+
+import { NAVIGATION } from "../utils/appConst.js";
+import { validConst as vc } from "../utils/validConst.js";
 
 const addNavigation = async (req, res, next) => {
   const correctObj = {

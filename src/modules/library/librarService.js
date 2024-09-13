@@ -1,7 +1,7 @@
-import cloudinary from "~/helper/cloundinary"
-import { LibraryImage } from "~/models/libraryImageModel"
-import { LibraryVideo } from "~/models/libraryVideoModel"
-import ApiErr from "~/utils/ApiError"
+import cloudinary from "../../helper/cloundinary.js"
+import { LibraryImage } from "../../models/libraryImageModel.js"
+import { LibraryVideo } from "../../models/libraryVideoModel.js"
+import ApiErr from "../../utils/ApiError.js"
 
 const create = async (req, type, creator) => {
     let libPromise = new Promise((res, rej) => {

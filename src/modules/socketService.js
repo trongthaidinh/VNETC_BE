@@ -1,4 +1,4 @@
-import { Visit } from '~/models/Visit';
+import { Visit } from '../models/Visit.js';
 
 export const setupSocketIO = (io) => {
     io.on('connection', (socket) => handleConnection(socket, io));

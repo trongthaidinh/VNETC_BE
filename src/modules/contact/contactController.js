@@ -1,5 +1,5 @@
-import { SuccessRes } from "~/utils/SuccessRes"
-import { contactService } from "./contactService"
+import { SuccessRes } from "../../utils/SuccessRes.js"
+import { contactService } from "./contactService.js"
 
 const sendMessage = async (req, res, next) => {
     try {

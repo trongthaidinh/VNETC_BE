@@ -1,14 +1,10 @@
 import {StatusCodes} from "http-status-codes";
-import {Member} from "~/models/memberModel";
-import {Category} from "~/models/categoryModel";
-import {accountService} from "~/modules/account/accountService";
-import {News} from "~/models/newsModel";
-import ApiErr from "~/utils/ApiError";
-import {ServiceModel} from "~/models/serviceModel";
-import {ParentNav} from "~/models/navigationModel";
+import {Member} from "../../models/memberModel.js";
+import ApiErr from "../../utils/ApiError.js";
 
-const {Department} = require("~/models/departentModel")
-const uploadSingleImageToCloudinary = require("~/utils/uploadSingleImage")
+
+import {Department} from "../../models/departentModel.js"
+import uploadSingleImageToCloudinary from "../../utils/uploadSingleImage.js"
 const create = async (data, creator) => {
     const department = new Department(data)
     department.createdBy = creator

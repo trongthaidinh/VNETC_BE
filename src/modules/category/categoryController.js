@@ -1,8 +1,6 @@
-import { StatusCodes } from "http-status-codes"
-import { categoryService } from "./categoryService"
-import { SuccessRes } from "~/utils/SuccessRes"
-import { categoryModel } from "~/models/categoryModel"
-import ApiErr from "~/utils/ApiError"
+import { categoryService } from "./categoryService.js"
+import { SuccessRes } from "../../utils/SuccessRes.js"
+import ApiErr from "../../utils/ApiError.js"
 
 
 const addCategory = async (req, res, next) => {

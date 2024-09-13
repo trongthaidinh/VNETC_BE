@@ -1,5 +1,5 @@
-const Joi = require("joi")
-import { validConst as vc } from "~/utils/validConst"
+import Joi from "joi";
+import { validConst as vc } from "../utils/validConst.js"
 
 const login = async (req, res, next) => {
   const correct = Joi.object({

@@ -1,5 +1,5 @@
 import { StatusCodes } from "http-status-codes"
-import { ErrRes } from "~/utils/ErrRes"
+import { ErrRes } from "../utils/ErrRes.js"
 
 // Middleware xử lý lỗi tập trung trong ứng dụng Back-end NodeJS (ExpressJS)
 export const errorHandlingMiddleWare = (err, req, res, next) => {

@@ -1,12 +1,10 @@
-import uploadSingleImageToCloudinary from "~/utils/uploadSingleImage"
-import {body} from "express-validator";
-import {log} from "console";
-import ApiErr from "~/utils/ApiError";
+import uploadSingleImageToCloudinary from "../../utils/uploadSingleImage.js"
+import ApiErr from "../../utils/ApiError.js";
 import {StatusCodes} from "http-status-codes";
-import {io} from "~/server";
+import {io} from "../../../server.js";
 
-const {Category} = require("~/models/categoryModel");
-const {News, NewsDetail} = require("~/models/newsModel")
+import {Category} from  "../../models/categoryModel.js";
+import { News, NewsDetail } from "../../models/newsModel.js";
 
 const findAllNews = async (data) => {
     const {page = 1, limit = 10, categoryId, startDate, endDate} = data;

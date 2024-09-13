@@ -1,7 +1,4 @@
 import mongoose from "mongoose"
-import {News} from "./newsModel"
-import slugify from "~/utils/stringToSlug"
-import {Cat_type} from "~/utils/appConst";
 
 const {Schema, Types} = mongoose
 

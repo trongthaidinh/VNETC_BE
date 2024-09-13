@@ -1,7 +1,7 @@
 import express from "express"
-import isAuth from "~/middlewares/authMiddleware"
-import { navigationController as controller } from "~/modules/navigation/navigationController"
-import { navigationValidation as validation } from "~/validations/navigationValidation"
+import isAuth from "../middlewares/authMiddleware.js"
+import { navigationController as controller } from "../modules/navigation/navigationController.js"
+import { navigationValidation as validation } from "../validations/navigationValidation.js"
 const Router = express.Router()
 
 //http://localhost:8686/navigation

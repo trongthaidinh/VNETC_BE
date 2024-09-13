@@ -1,11 +1,11 @@
 import express, {Router} from "express";
-import isAuth from "~/middlewares/authMiddleware";
+import isAuth from "../middlewares/authMiddleware.js";
 import {
     addNotification,
     deleteNotiById,
     getNotiById,
     getNotification
-} from "~/modules/Notification/NotificationController";
+} from "../modules/Notification/NotificationController.js";
 
 const Notification = express.Router()
 

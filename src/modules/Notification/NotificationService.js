@@ -1,6 +1,6 @@
-import {Notification} from "~/models/NotificationModel";
+import {Notification} from "../../models/NotificationModel.js";
 import {StatusCodes} from "http-status-codes";
-import ApiErr from "~/utils/ApiError";
+import ApiErr from "../../utils/ApiError.js";
 
 class notification {
     async addNotification(data) {

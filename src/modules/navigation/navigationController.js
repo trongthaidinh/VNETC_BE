@@ -1,7 +1,7 @@
-import {navigationService} from "./navigationService"
-import {SuccessRes} from "~/utils/SuccessRes"
-import slugify from "~/utils/stringToSlug";
-const axios = require('axios');
+import {navigationService} from "./navigationService.js"
+import {SuccessRes} from "../../utils/SuccessRes.js"
+import axios from 'axios';
+
 const getNavigation = async (req, res, next) => {
     try {
         const re = await navigationService.getAllNavigation()

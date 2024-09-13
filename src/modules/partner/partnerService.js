@@ -1,7 +1,6 @@
-import cloudinary from "~/helper/cloundinary"
-import ApiErr from "~/utils/ApiError"
-const { accountService } = require("../account/accountService")
-const { Partner } = require("~/models/partnerModel")
+import cloudinary from "../../helper/cloundinary.js"
+import ApiErr from "../../utils/ApiError.js"
+import { Partner } from "../../models/partnerModel.js"
 
 const create = async (req, creator) => {
     let partnerPromise = new Promise((res, rej) => {

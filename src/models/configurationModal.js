@@ -1,5 +1,4 @@
-const { type } = require("express/lib/response")
-const mongoose = require("mongoose")
+import mongoose from "mongoose"
 
 const configSchema = new mongoose.Schema({
   name: {
@@ -31,6 +30,5 @@ const configSchema = new mongoose.Schema({
   },
 })
 
-const Configuration = mongoose.model("Configuration", configSchema)
+export const Configuration = mongoose.model("Configuration", configSchema)
 
-module.exports = Configuration

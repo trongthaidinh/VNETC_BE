@@ -1,6 +1,6 @@
-import cloudinary from "~/helper/cloundinary"
+import cloudinary from "../helper/cloundinary.js"
 
-const uploadImageToCloudinary = async (filePaths) => {
+export const uploadImageToCloudinary = async (filePaths) => {
     try {
         const uploadPromises = filePaths.map((filePath) =>
             cloudinary.uploader.upload(filePath.path)
@@ -12,5 +12,3 @@ const uploadImageToCloudinary = async (filePaths) => {
         throw new Error(`Image upload failed: ${error.message}`);
     }
 };
-
-module.exports = uploadImageToCloudinary;

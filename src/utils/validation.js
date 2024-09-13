@@ -1,7 +1,5 @@
-import {log} from 'console';
-import express from 'express';
 import {body, validationResult} from 'express-validator';
-import {EntityError, ErrorWithStatus} from '~/models/Errors';
+import {EntityError, ErrorWithStatus} from '../models/errors.js';
 
 // can be reused by many routes
 

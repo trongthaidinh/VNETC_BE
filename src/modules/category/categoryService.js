@@ -1,10 +1,9 @@
-import { Category } from "~/models/categoryModel"
-import { News } from "~/models/newsModel"
-import uploadSingleImageToCloudinary from "~/utils/uploadSingleImage"
-import slugify from "~/utils/stringToSlug"
-import ApiErr from "~/utils/ApiError"
+import { Category } from "../../models/categoryModel.js"
+import { News } from "../../models/newsModel.js"
+import uploadSingleImageToCloudinary from "../../utils/uploadSingleImage.js"
+import slugify from "../../utils/stringToSlug.js"
+import ApiErr from "../../utils/ApiError.js"
 import mongoose from "mongoose";
-import { response } from "express"
 
 const addCategory = async (data, profile) => {
     const { name, type, image, subcategories } = data;

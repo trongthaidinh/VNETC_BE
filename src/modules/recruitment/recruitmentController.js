@@ -1,7 +1,6 @@
-import {recruitmentService} from "./recruitmentService"
+import {recruitmentService} from "./recruitmentService.js"
 
-const {recruitmentModel} = require("~/models/recruitmentModel")
-const {SuccessRes} = require("~/utils/SuccessRes")
+import { SuccessRes } from "../../utils/SuccessRes.js";
 
 const addRecruitment = async (req, res, next) => {
     try {

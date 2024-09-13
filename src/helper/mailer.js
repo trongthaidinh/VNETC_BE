@@ -1,5 +1,5 @@
 import nodeMailer from 'nodemailer'
-import { env } from '~/config/environment'
+import { env } from '../config/environment.js'
 
 
 const adminEmail = env.ADMIN_EMAIL

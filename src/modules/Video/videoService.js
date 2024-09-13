@@ -1,7 +1,6 @@
-import ApiErr from "~/utils/ApiError";
+import ApiErr from "../../utils/ApiError.js";
 import {StatusCodes} from "http-status-codes";
-import {LibraryVideo} from "~/models/libraryVideoModel";
-import {LibraryImage} from "~/models/libraryImageModel";
+import {LibraryVideo} from "../../models/libraryVideoModel.js";
 
 function isValidUrl(input) {
     try {

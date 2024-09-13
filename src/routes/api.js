@@ -1,20 +1,20 @@
-import {accountRoute} from "./accountRoute"
-import {navigationRoute} from "./navigationRoute"
-import {categoryRoute} from "./categoryRoute"
-import {newsRoute} from "./newsRoute"
-import {recruitmentRoute} from "./recruitmentRoute"
-import {partnerRoute} from "./partnerRoute"
-import {contactRoute} from "./contactRoute"
-import {authRoute} from "./authRoute"
-import {productRoute} from "./productRoute"
-import {departmentRoute} from "./departmentRoute"
-import {ConfigRoute} from "./ConfigRoute"
-import {serviceRoute, ServiceRoute} from "~/routes/serviceRoute";
-import {SearchRoute} from "~/routes/SearchRoute";
-import {ImageLibraryRoute} from "~/routes/ImageLibraryRoute";
-import {VideoLibraryRoute} from "~/routes/VideoLibraryRoute";
-import {PageRoute} from "~/routes/PageRoute";
-import {notiRoute} from "~/routes/notiRoute";
+import {accountRoute} from "./accountRoute.js"
+import {navigationRoute} from "./navigationRoute.js"
+import {categoryRoute} from "./categoryRoute.js"
+import {newsRoute} from "./newsRoute.js"
+import {recruitmentRoute} from "./recruitmentRoute.js"
+import {partnerRoute} from "./partnerRoute.js"
+import {contactRoute} from "./contactRoute.js"
+import {authRoute} from "./authRoute.js"
+import {productRoute} from "./productRoute.js"
+import {departmentRoute} from "./departmentRoute.js"
+import {ConfigRoute} from "./ConfigRoute.js"
+import {serviceRoute} from "./serviceRoute.js";
+import {SearchRoute} from "./SearchRoute.js";
+import {ImageLibraryRoute} from "./ImageLibraryRoute.js";
+import {VideoLibraryRoute} from "./VideoLibraryRoute.js";
+import {PageRoute} from "./PageRoute.js";
+import {notiRoute} from "./notiRoute.js";
 
 
 const initApis = (app) => {

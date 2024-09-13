@@ -1,6 +1,6 @@
-import uploadImageToCloudinary from "~/utils/uploadImage";
-import {LibraryImage} from "~/models/libraryImageModel";
-import ApiErr from "~/utils/ApiError";
+import {uploadImageToCloudinary} from "../../utils/uploadImage.js";
+import {LibraryImage} from "../../models/libraryImageModel.js";
+import ApiErr from "../../utils/ApiError.js";
 import {StatusCodes} from "http-status-codes";
 
 class ImageService {

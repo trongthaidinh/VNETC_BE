@@ -1,6 +1,4 @@
-import {populate} from "dotenv"
 import mongoose from "mongoose"
-import {number} from "joi";
 
 const {Schema} = mongoose
 

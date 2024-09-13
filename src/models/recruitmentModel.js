@@ -1,6 +1,4 @@
 import mongoose from "mongoose"
-import {Category} from "./categoryModel"
-import {Account, accountModel} from "./accountModel"
 
 const {Schema} = mongoose
 

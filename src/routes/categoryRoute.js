@@ -1,7 +1,7 @@
 import express from 'express'
-import { categoryController, categoryController as controller} from '~/modules/category/categoryController'
-import isAuth from "~/middlewares/authMiddleware";
-import { upload } from "~/middlewares/multipleUploadMiddleware";
+import { categoryController, categoryController as controller} from '../modules/category/categoryController.js'
+import isAuth from "../middlewares/authMiddleware.js";
+import { upload } from "../middlewares/multipleUploadMiddleware.js";
 
 const Router = express.Router()
 

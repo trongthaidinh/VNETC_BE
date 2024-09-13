@@ -1,5 +1,5 @@
-import {SuccessRes} from "~/utils/SuccessRes"
-import {authService} from "./authService"
+import {SuccessRes} from "../../utils/SuccessRes.js"
+import {authService} from "./authService.js"
 
 const login = async (req, res, next) => {
     try {

@@ -1,6 +1,6 @@
 import {Router} from "express";
-import isAuth from "~/middlewares/authMiddleware";
-import {upload} from "~/middlewares/multipleUploadMiddleware";
+import isAuth from "../middlewares/authMiddleware.js";
+import {upload} from "../middlewares/multipleUploadMiddleware.js";
 
 const Search = Router();
 

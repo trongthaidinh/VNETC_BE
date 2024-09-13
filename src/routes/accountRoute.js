@@ -1,7 +1,7 @@
 import express from 'express'
-import isAuth from '~/middlewares/authMiddleware'
-import {accountController as conntrol} from '~/modules/account/accountController'
-import {accountValidation as valid} from '~/validations/accountValidation'
+import isAuth from '../middlewares/authMiddleware.js'
+import {accountController as conntrol} from '../modules/account/accountController.js'
+import {accountValidation as valid} from '../validations/accountValidation.js'
 
 const Router = express.Router()
 

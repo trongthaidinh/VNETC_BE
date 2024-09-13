@@ -1,6 +1,6 @@
 import express from 'express'
-import { contactController as controll } from '~/modules/contact/contactController'
-import { contactValidation as validate} from '~/validations/contactValidation'
+import { contactController as controll } from '../modules/contact/contactController.js'
+import { contactValidation as validate} from '../validations/contactValidation.js'
 const Router = express.Router()
 
 Router.route('/')

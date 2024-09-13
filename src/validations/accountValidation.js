@@ -1,5 +1,6 @@
-const Joi = require("joi");
-import { validConst as vc } from "~/utils/validConst";
+import Joi from "joi";
+
+import { validConst as vc } from "../utils/validConst.js";
 
 const create = async (req, res, next) => {
   const data = req.body;

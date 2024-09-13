@@ -1,8 +1,7 @@
-import {sendMail} from "~/helper/mailer";
-import {Account} from "~/models/accountModel";
-import {Contact} from "~/models/contactModel"
-import {accountService} from "../account/accountService";
-import {Notification} from "~/models/NotificationModel";
+import {sendMail} from "../../helper/mailer.js";
+import {Account} from "../../models/accountModel.js";
+import {Contact} from "../../models/contactModel.js"
+import {Notification} from "../../models/NotificationModel.js";
 
 const sendMessage = async (data) => {
     const contact = await saveContact(data);

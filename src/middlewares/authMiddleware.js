@@ -1,5 +1,5 @@
-import {env} from "~/config/environment"
-import {jwtHelper} from "~/helper/jwtHelper"
+import {env} from "../config/environment.js"
+import {jwtHelper} from "../helper/jwtHelper.js"
 
 const isAuth = async (req, res, next) => {
     const authHeader = req.header("Authorization");

@@ -1,5 +1,5 @@
-import {SuccessRes} from "~/utils/SuccessRes";
-import notificationService from "~/modules/Notification/NotificationService";
+import {SuccessRes} from "../../utils/SuccessRes.js";
+import notificationService from "../../modules/Notification/NotificationService.js";
 
 export const addNotification = async (req, res, next) => {
     try {

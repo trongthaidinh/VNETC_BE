@@ -1,7 +1,7 @@
 import {Router} from "express";
-import isAuth from "~/middlewares/authMiddleware";
-import {upload} from "~/middlewares/multipleUploadMiddleware";
-import {addPage, deletePage, getBySlug, getPage, updatePage} from "~/modules/Page/pageController";
+import isAuth from "../middlewares/authMiddleware.js";
+import {upload} from "../middlewares/multipleUploadMiddleware.js";
+import {addPage, deletePage, getBySlug, getPage, updatePage} from "../modules/Page/pageController.js";
 
 const Page = Router();
 Page.post("/", isAuth, addPage)

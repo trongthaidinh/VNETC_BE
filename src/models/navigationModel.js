@@ -1,6 +1,6 @@
-import mongoose from "mongoose"
+import mongoose from "mongoose";
 
-const {Schema} = mongoose
+const { Schema } = mongoose;
 
 const parentNavSchema = new Schema(
     {
@@ -27,8 +27,8 @@ const parentNavSchema = new Schema(
             default: null,
         },
     },
-    {timestamps: true}
-)
+    { timestamps: true }
+);
 
 const childNavSchema = new Schema(
     {
@@ -59,7 +59,7 @@ const childNavSchema = new Schema(
         },
     },
     { timestamps: true }
-)
+);
 
-export const ChildNav = mongoose.model("ChildNav", childNavSchema)
-export const ParentNav = mongoose.model("ParentNav", parentNavSchema)
+export const ParentNav = mongoose.model("ParentNav", parentNavSchema);
+export const ChildNav = mongoose.model("ChildNav", childNavSchema);

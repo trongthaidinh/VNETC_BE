@@ -1,11 +1,11 @@
 import {StatusCodes} from "http-status-codes"
-import {env} from "~/config/environment"
-import {jwtHelper} from "~/helper/jwtHelper"
-import {Account} from "~/models/accountModel"
-import ApiErr from "~/utils/ApiError"
+import {env} from "../../config/environment.js"
+import {jwtHelper} from "../../helper/jwtHelper.js"
+import {Account} from "../../models/accountModel.js"
+import ApiErr from "../../utils/ApiError.js"
 import bcrypt from 'bcryptjs'
 
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
 const login = async (email, password) => {
     try {

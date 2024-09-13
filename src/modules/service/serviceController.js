@@ -1,7 +1,6 @@
-import {serviceService} from "./serviceService"
+import {serviceService} from "./serviceService.js"
 
-const {serviceModel} = require("~/models/serviceModel")
-const {SuccessRes} = require("~/utils/SuccessRes")
+import {SuccessRes} from "../../utils/SuccessRes.js"
 
 const addService = async (req, res, next) => {
     try {

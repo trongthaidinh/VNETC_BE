@@ -1,13 +1,10 @@
-import {accountService as recruitment, accountService} from "../account/accountService";
 
-import uploadSingleImageToCloudinary from "~/utils/uploadSingleImage"
-import {body} from "express-validator";
-import {log} from "console";
-import ApiErr from "~/utils/ApiError";
+import uploadSingleImageToCloudinary from "../../utils/uploadSingleImage.js"
+import ApiErr from "../../utils/ApiError.js";
 import {StatusCodes} from "http-status-codes";
 
-const {Category} = require("~/models/categoryModel");
-const {Recruitment, RecruitmentDetail} = require("~/models/recruitmentModel")
+import {Category} from "../../models/categoryModel.js";
+import { Recruitment, RecruitmentDetail } from "../../models/recruitmentModel.js";
 
 const findAllRecruitment = async (data) => {
     const {page, limit, categoryId} = data

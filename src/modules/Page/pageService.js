@@ -1,10 +1,7 @@
-import ApiErr from "~/utils/ApiError";
+import ApiErr from "../../utils/ApiError.js";
 import {StatusCodes} from "http-status-codes";
-import {LibraryVideo} from "~/models/libraryVideoModel";
-import {LibraryImage} from "~/models/libraryImageModel";
-import slugify from "~/utils/stringToSlug";
-import {PageModel} from "~/models/PageModel";
-import {PageRoute} from "~/routes/PageRoute";
+import slugify from "../../utils/stringToSlug.js";
+import {PageModel} from "../../models/PageModel.js";
 
 function isValidUrl(input) {
     try {

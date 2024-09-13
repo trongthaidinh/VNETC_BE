@@ -1,5 +1,5 @@
-import {SuccessRes} from "~/utils/SuccessRes";
-import ImageService from "~/modules/Image/ImageService";
+import {SuccessRes} from "../../utils/SuccessRes.js";
+import ImageService from "../../modules/Image/ImageService.js";
 
 export const addImage = async (req, res, next) => {
     try {

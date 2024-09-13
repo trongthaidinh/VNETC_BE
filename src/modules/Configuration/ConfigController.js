@@ -1,8 +1,7 @@
 import {config} from "dotenv"
-import configService from "./ConfigService"
-import {SuccessRes} from "~/utils/SuccessRes"
-import ApiErr from "~/utils/ApiError"
-import {location} from "express/lib/response"
+import configService from "./ConfigService.js"
+import {SuccessRes} from "../../utils/SuccessRes.js"
+import ApiErr from "../../utils/ApiError.js"
 
 config()
 

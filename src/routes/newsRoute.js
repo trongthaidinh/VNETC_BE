@@ -1,7 +1,7 @@
 import express from 'express'
-import {newsController} from '~/modules/news/newsController'
-import {upload} from "~/middlewares/multipleUploadMiddleware";
-import isAuth from "~/middlewares/authMiddleware";
+import {newsController} from '../modules/news/newsController.js'
+import {upload} from "../middlewares/multipleUploadMiddleware.js";
+import isAuth from "../middlewares/authMiddleware.js";
 
 const Router = express.Router()
 

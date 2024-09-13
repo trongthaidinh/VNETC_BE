@@ -1,7 +1,7 @@
 import {StatusCodes} from 'http-status-codes'
 import mongoose from 'mongoose'
-import {env} from '~/config/environment'
-import ApiErr from '~/utils/ApiError'
+import {env} from '../config/environment.js'
+import ApiErr from '../utils/ApiError.js'
 
 const {Schema} = mongoose
 import bcryptjs from 'bcryptjs'

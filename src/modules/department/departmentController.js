@@ -1,6 +1,6 @@
-import ApiErr from "~/utils/ApiError"
-import {departmentService} from "./departmentService"
-import {SuccessRes} from "~/utils/SuccessRes"
+import ApiErr from "../../utils/ApiError.js"
+import {departmentService} from "./departmentService.js"
+import {SuccessRes} from "../../utils/SuccessRes.js"
 
 const create = async (req, res, next) => {
     try {

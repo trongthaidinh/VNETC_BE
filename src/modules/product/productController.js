@@ -1,8 +1,7 @@
-import ApiErr from "~/utils/ApiError"
-import isAuth from "~/middlewares/authMiddleware";
+import ApiErr from "../../utils/ApiError.js"
 
-const {SuccessRes} = require("~/utils/SuccessRes")
-const {productService} = require("./productService")
+import { SuccessRes }  from "../../utils/SuccessRes.js";
+import { productService } from "./productService.js";
 
 const create = async (req, res, next) => {
     try {

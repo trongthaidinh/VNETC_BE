@@ -1,5 +1,5 @@
-import {SuccessRes} from "~/utils/SuccessRes";
-import pageService from "~/modules/Page/pageService";
+import {SuccessRes} from "../../utils/SuccessRes.js";
+import pageService from "../../modules/Page/pageService.js";
 
 export const addPage = async (req, res, next) => {
     try {

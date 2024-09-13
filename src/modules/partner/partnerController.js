@@ -1,5 +1,5 @@
-import { SuccessRes } from "~/utils/SuccessRes"
-import { partnerService } from "./partnerService"
+import { SuccessRes } from "../../utils/SuccessRes.js"
+import { partnerService } from "./partnerService.js"
 
 const create = async (req, res, next) => {
     try {

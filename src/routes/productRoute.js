@@ -1,7 +1,7 @@
 import express from "express";
-import isAuth from "~/middlewares/authMiddleware";
-import { upload } from "~/middlewares/multipleUploadMiddleware";
-import { productController as control } from "~/modules/product/productController";
+import isAuth from "../middlewares/authMiddleware.js";
+import { upload } from "../middlewares/multipleUploadMiddleware.js";
+import { productController as control } from "../modules/product/productController.js";
 
 const Router = express.Router();
 

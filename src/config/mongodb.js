@@ -1,5 +1,5 @@
-const {default: mongoose} = require("mongoose");
-const {env} = require("./environment");
+import { mongoose} from "mongoose";
+import {env} from "./environment.js";
 
 export const connectToDatabase = async () => {
     try {

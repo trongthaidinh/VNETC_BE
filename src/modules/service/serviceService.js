@@ -1,13 +1,9 @@
-import {accountService as service, accountService} from "../account/accountService";
-
-import uploadSingleImageToCloudinary from "~/utils/uploadSingleImage"
-import {body} from "express-validator";
-import {log} from "console";
-import ApiErr from "~/utils/ApiError";
+import uploadSingleImageToCloudinary from "../../utils/uploadSingleImage.js"
+import ApiErr from "../../utils/ApiError.js";
 import {StatusCodes} from "http-status-codes";
 
-const {Category} = require("~/models/categoryModel");
-const {Service, ServiceDetail} = require("~/models/serviceModel")
+import {Category} from "../../models/categoryModel.js";
+import {Service, ServiceDetail} from "../../models/serviceModel.js"
 
 const findAllService = async (data) => {
     const {page, limit, categoryId} = data

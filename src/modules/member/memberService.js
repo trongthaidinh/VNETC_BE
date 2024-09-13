@@ -1,7 +1,7 @@
 import { StatusCodes } from "http-status-codes"
-import { Department } from "~/models/departentModel"
-import { Member } from "~/models/memberModel"
-import ApiErr from "~/utils/ApiError"
+import { Department } from "../../models/departentModel.js"
+import { Member } from "../../models/memberModel.js"
+import ApiErr from "../../utils/ApiError.js"
 
 const create = async (data, creator) => {
     const departmentExists = await Department.exists({_id: data.departmentId})

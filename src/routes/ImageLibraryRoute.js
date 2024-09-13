@@ -1,8 +1,8 @@
 import {Router} from "express";
-import isAuth from "~/middlewares/authMiddleware";
-import {upload} from "~/middlewares/multipleUploadMiddleware";
-import {addImage, deleteImage, getImage} from "~/modules/Image/imageController";
-import {deleteViddeo, getVideo} from "~/modules/Video/videoController";
+import isAuth from "../middlewares/authMiddleware.js";
+import {upload} from "../middlewares/multipleUploadMiddleware.js";
+import {addImage, deleteImage, getImage} from "../modules/Image/imageController.js";
+import {deleteViddeo, getVideo} from "../modules/Video/videoController.js";
 
 const Image = Router();
 

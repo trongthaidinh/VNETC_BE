@@ -1,6 +1,6 @@
-import cloudinary from "~/helper/cloundinary"
-import Configuration from "~/models/configurationModal"
-import ApiErr from "~/utils/ApiError";
+import cloudinary from "../../helper/cloundinary.js"
+import {Configuration} from "../../models/configurationModal.js"
+import ApiErr from "../../utils/ApiError.js";
 import {StatusCodes} from "http-status-codes";
 
 class ConfigService {

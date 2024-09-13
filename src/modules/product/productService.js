@@ -1,14 +1,11 @@
 import {StatusCodes} from "http-status-codes"
-import cloudinary from "~/helper/cloundinary"
-import {ProductDetail} from "~/models/productDetailModel"
-import ApiErr from "~/utils/ApiError"
+import {ProductDetail} from "../../models/productDetailModel.js"
+import ApiErr from "../../utils/ApiError.js"
 import {ObjectId} from "mongodb"
-import uploadImageToCloudinary from "~/utils/uploadImage"
-import mongoose from "mongoose";
-import req from "express/lib/request";
-import slugify from "~/utils/stringToSlug"
+import {uploadImageToCloudinary} from "../../utils/uploadImage.js"
+import slugify from "../../utils/stringToSlug.js"
 
-const {Product} = require("~/models/productModel")
+import  {Product}  from "../../models/productModel.js";
 
 const create = async (req, creator) => {
     try {

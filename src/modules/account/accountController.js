@@ -1,8 +1,6 @@
-import {accountModel} from "~/models/accountModel"
 
-const {StatusCodes} = require("http-status-codes")
-const {SuccessRes} = require("~/utils/SuccessRes")
-const {accountService} = require("./accountService")
+import { accountService } from "./accountService.js"
+import { SuccessRes } from "../../utils/SuccessRes.js"
 
 const getAllAccount = async (req, res, next) => {
     try {

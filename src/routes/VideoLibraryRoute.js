@@ -1,7 +1,7 @@
 import {Router} from "express";
-import isAuth from "~/middlewares/authMiddleware";
-import {upload} from "~/middlewares/multipleUploadMiddleware";
-import {addVideo, deleteViddeo, getVideo} from "~/modules/Video/videoController";
+import isAuth from "../middlewares/authMiddleware.js";
+import {upload} from "../middlewares/multipleUploadMiddleware.js";
+import {addVideo, deleteViddeo, getVideo} from "../modules/Video/videoController.js";
 
 const Video = Router();
 Video.post("/", isAuth, addVideo)
