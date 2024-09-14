@@ -1,0 +1,19 @@
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+#PassengerAppRoot "/home/takatech66e0/backend"
+#PassengerBaseURI "/"
+#PassengerNodejs "/home/takatech66e0/nodevenv/backend/19/bin/node"
+#PassengerAppType node
+#PassengerStartupFile server.js
+#PassengerAppLogFile "/home/takatech66e0/logs/backend.log"
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION BEGIN
+##<IfModule Litespeed>
+#</IfModule>
+# DO NOT REMOVE OR MODIFY. CLOUDLINUX ENV VARS CONFIGURATION END
+
+
+RewriteEngine On
+RewriteRule ^$ http://127.0.0.1:6901/$1 [P,L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ http://127.0.0.1:6901/$1 [P,L]
